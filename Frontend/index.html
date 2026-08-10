@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fresh Fadez Studios — Lelystad's Finest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { display: ['"Archivo Black"', 'sans-serif'], body: ['Inter', 'system-ui', 'sans-serif'] },
+        colors: { ink: '#0d0d0c', paper: '#f2f0ec', surface: '#1e1c19', surface2: '#151312' }
+      }
+    }
+  }
+</script>
+<style>
+  body{font-family:'Inter',system-ui,sans-serif}
+  ::selection{background:rgba(242,240,236,.35)}
+  .nav-link:hover{color:#f2f0ec}
+  .cta-secondary:hover{background:rgba(242,240,236,.08)}
+  .cta-primary:hover{background:#cfc9bd}
+  .ghost:hover{background:rgba(242,240,236,.14)}
+  [x-cloak]{display:none!important}
+</style>
+</head>
+<body class="bg-ink text-paper">
+
+<!-- NAV -->
+<header class="flex items-center gap-7 px-14 py-5 max-w-[1320px] mx-auto border-b border-paper/10">
+  <a href="#top" class="flex items-center gap-3 mr-auto">
+    <img src="./assets/logo.png" alt="Fresh Fadez Studios" class="w-11 h-11 rounded object-cover">
+    <span class="text-[10px] tracking-[3px] text-paper/55">LELYSTAD</span>
+  </a>
+  <nav class="hidden md:flex gap-8">
+    <a href="#top" class="nav-link text-[13px] font-semibold tracking-wide">Home</a>
+    <a href="#diensten" class="nav-link text-[13px] font-semibold tracking-wide">Diensten</a>
+    <a href="#gallery" class="nav-link text-[13px] font-semibold tracking-wide">Gallery</a>
+    <a href="#reviews" class="nav-link text-[13px] font-semibold tracking-wide">Reviews</a>
+    <a href="#contact" class="nav-link text-[13px] font-semibold tracking-wide">Contact</a>
+  </nav>
+  <button onclick="openBooking()" class="cta-secondary px-5 py-2.5 border border-paper rounded text-[13px] font-bold">Boek nu</button>
+</header>
+
+<!-- HERO -->
+<section id="top" class="relative h-[88vh] min-h-[620px] flex items-end overflow-hidden">
+  <img src="./assets/hero-photo.png" alt="Barbers aan het werk" class="absolute inset-0 w-full h-full object-cover" style="filter:saturate(.55) contrast(1.05) brightness(.8)">
+  <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(180deg, rgba(13,13,12,.15) 0%, rgba(13,13,12,.35) 45%, rgba(13,13,12,.92) 100%)"></div>
+  <div class="relative z-10 max-w-[1320px] w-full mx-auto px-14 pb-[72px]">
+    <div class="inline-flex items-center text-[11px] font-bold tracking-[1.5px] uppercase px-3.5 py-1.5 rounded border border-paper mb-6">Lelystad's Finest</div>
+    <h1 class="font-display text-[38px] md:text-[68px] leading-[1.05] max-w-[640px] mb-6">More than a cut. It's a lifestyle.</h1>
+    <p class="text-[17px] leading-relaxed text-paper/80 max-w-[460px] mb-9">Bij Fresh Fadez draait het niet alleen om een frisse fade, maar om zelfvertrouwen, stijl en kwaliteit — in een studio waar je welkom bent zoals je bent.</p>
+    <div class="flex gap-3.5 flex-wrap">
+      <button onclick="openBooking()" class="cta-primary px-7 py-4 bg-paper text-ink font-bold text-sm rounded-md">Afspraak maken</button>
+      <a href="#diensten" class="ghost px-7 py-4 border border-paper/30 rounded-md font-bold text-sm flex items-center gap-1.5">Bekijk diensten →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES & PRICING -->
+<section id="diensten" class="max-w-[1320px] mx-auto px-14 py-[70px] grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-16">
+  <div>
+    <div class="text-[11px] font-bold tracking-[1.5px] uppercase mb-3.5">Diensten &amp; prijzen</div>
+    <h2 class="font-display text-[28px] md:text-[38px] mb-4">Wat wij doen</h2>
+    <p class="text-[15px] leading-relaxed text-paper/68 max-w-[360px] mb-6">Elke fade begint met een goed gesprek. Onze barbers nemen de tijd voor precisie en advies op maat.</p>
+    <button onclick="openBooking()" class="ghost inline-flex items-center gap-1.5 px-6 py-3 border border-paper rounded text-[13.5px] font-bold">Volledige prijslijst →</button>
+  </div>
+  <div class="rounded-lg border border-paper/12 bg-surface px-7 py-2">
+    <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
+      <div><div class="font-display text-[17px] mb-1">Fade &amp; Style</div><div class="text-[13px] text-paper/55">Precisiefade met styling · 45 min</div></div>
+      <div class="font-display text-[19px]">€35</div>
+    </div>
+    <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
+      <div><div class="font-display text-[17px] mb-1">Baard Trim</div><div class="text-[13px] text-paper/55">Vorm &amp; lijnen bijwerken · 20 min</div></div>
+      <div class="font-display text-[19px]">€20</div>
+    </div>
+    <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
+      <div><div class="font-display text-[17px] mb-1">Fade + Baard</div><div class="text-[13px] text-paper/55">De volledige treatment · 60 min</div></div>
+      <div class="font-display text-[19px]">€50</div>
+    </div>
+    <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
+      <div><div class="font-display text-[17px] mb-1">Kids Cut</div><div class="text-[13px] text-paper/55">T/m 12 jaar · 30 min</div></div>
+      <div class="font-display text-[19px]">€25</div>
+    </div>
+    <div class="flex justify-between items-center gap-4 py-5">
+      <div><div class="font-display text-[17px] mb-1">Skin Fade</div><div class="text-[13px] text-paper/55">Strak tot op de huid · 45 min</div></div>
+      <div class="font-display text-[19px]">€38</div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="max-w-[1320px] mx-auto px-14 pb-[90px]">
+  <div class="mb-9">
+    <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5">Ons werk</div>
+    <h2 class="font-display text-[28px] md:text-[38px]">Fresh cuts</h2>
+  </div>
+  <div class="grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-4.5" style="grid-auto-rows:220px">
+    <div class="col-span-2 rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40">Foto: skin fade close-up</div>
+    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2">Foto: studio interieur</div>
+    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2">Foto: baard styling</div>
+    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2">Foto: klant portret</div>
+    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2">Foto: barber aan het werk</div>
+    <div class="col-span-2 rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40">Foto: voor &amp; na fade</div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="reviews" class="max-w-[1320px] mx-auto px-14 pb-[90px]">
+  <div class="mb-9">
+    <div class="text-[11px] font-bold tracking-[1.5px] uppercase mb-3.5">Klanten aan het woord</div>
+    <h2 class="font-display text-[28px] md:text-[38px]">Wat ze zeggen</h2>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div class="bg-surface border border-paper/10 rounded-lg p-7 flex flex-col gap-4">
+      <div class="text-xl tracking-[2px]">★★★★★</div>
+      <p class="text-[14.5px] leading-relaxed flex-1">"Beste barber van Lelystad. Elke keer weer een perfecte fade."</p>
+      <div class="flex items-center gap-2.5">
+        <div class="w-8.5 h-8.5 rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">Y</div>
+        <div class="text-[13px] font-semibold">Youssef K.</div>
+      </div>
+    </div>
+    <div class="bg-surface border border-paper/10 rounded-lg p-7 flex flex-col gap-4">
+      <div class="text-xl tracking-[2px]">★★★★★</div>
+      <p class="text-[14.5px] leading-relaxed flex-1">"Chille sfeer, strakke studio en ze nemen echt de tijd voor je."</p>
+      <div class="flex items-center gap-2.5">
+        <div class="w-8.5 h-8.5 rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">D</div>
+        <div class="text-[13px] font-semibold">Daan v.d. Berg</div>
+      </div>
+    </div>
+    <div class="bg-surface border border-paper/10 rounded-lg p-7 flex flex-col gap-4">
+      <div class="text-xl tracking-[2px]">★★★★★</div>
+      <p class="text-[14.5px] leading-relaxed flex-1">"Kwam voor een fade, kwam terug voor de service. Top team."</p>
+      <div class="flex items-center gap-2.5">
+        <div class="w-8.5 h-8.5 rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">M</div>
+        <div class="text-[13px] font-semibold">Marco R.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION & HOURS -->
+<section id="contact" class="max-w-[1320px] mx-auto px-14 pb-[100px] grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+  <div>
+    <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5">Bezoek ons</div>
+    <h2 class="font-display text-[28px] md:text-[38px] mb-6">Locatie &amp; openingstijden</h2>
+    <div class="flex flex-col gap-2 mb-7 text-[15px] text-paper/75">
+      <div class="font-bold text-paper">Fresh Fadez Studios</div>
+      <div>Stationsplein 12, 8232 CV Lelystad</div>
+      <div>hallo@freshfadez.nl · 06 12 34 56 78</div>
+    </div>
+    <div class="rounded-lg border border-paper/12 bg-surface p-6 flex flex-col gap-2.5 max-w-[380px]">
+      <div class="flex justify-between text-sm"><span class="font-semibold">Ma – Vr</span><span class="text-paper/60">12:00 – 20:00</span></div>
+      <div class="flex justify-between text-sm"><span class="font-semibold">Zaterdag</span><span class="text-paper/60">10:00 – 18:00</span></div>
+      <div class="flex justify-between text-sm"><span class="font-semibold">Zondag</span><span class="text-paper/60">Gesloten</span></div>
+    </div>
+  </div>
+  <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 h-[400px] w-full">Kaart: locatie in Lelystad</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-surface2 border-t border-paper/10 px-14 pt-12 pb-7">
+  <div class="max-w-[1320px] mx-auto flex justify-between items-start gap-10 flex-wrap">
+    <div>
+      <div class="font-display text-[19px] mb-1.5">Fresh Fadez Studios</div>
+      <div class="text-[13px] text-paper/60">Lelystad's finest barbershop.</div>
+    </div>
+    <div class="flex gap-11 flex-wrap">
+      <div class="flex flex-col gap-2.5">
+        <span class="text-[11px] tracking-[1.5px] uppercase text-paper/50 mb-1">Studio</span>
+        <a href="#diensten" class="text-[13px]">Diensten</a>
+        <a href="#gallery" class="text-[13px]">Gallery</a>
+        <a href="#contact" class="text-[13px]">Contact</a>
+      </div>
+      <div class="flex flex-col gap-2.5">
+        <span class="text-[11px] tracking-[1.5px] uppercase text-paper/50 mb-1">Volg ons</span>
+        <a href="#" class="text-[13px]">Instagram</a>
+        <a href="#" class="text-[13px]">TikTok</a>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-[1320px] mx-auto mt-9 pt-5 border-t border-paper/15 text-xs text-paper/45">© 2026 Fresh Fadez Studios. Alle rechten voorbehouden.</div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div id="booking-backdrop" x-cloak class="hidden fixed inset-0 z-[100] bg-black/70 items-center justify-center p-6">
+  <div class="w-[460px] max-w-full max-h-[88vh] overflow-y-auto bg-surface2 border border-paper/12 rounded-[10px] flex flex-col">
+
+    <!-- STEP 1 -->
+    <div id="step-1">
+      <div class="flex items-center justify-center relative px-5 pt-5 pb-4 border-b border-paper/10">
+        <div class="font-display text-base tracking-wide">KIES DIENSTEN</div>
+        <button onclick="closeBooking()" class="absolute right-5 top-4.5 text-paper/55 text-lg">✕</button>
+      </div>
+      <div id="category-pills" class="flex gap-2.5 px-5 py-4 overflow-x-auto"></div>
+      <div id="service-groups" class="px-5"></div>
+      <div class="flex items-center justify-between gap-4 px-5 py-4.5 border-t border-paper/10 sticky bottom-0 bg-surface2">
+        <div>
+          <div class="text-[11px] text-paper/55">Totaal</div>
+          <div id="total-price" class="font-display text-lg">€ 0,00</div>
+        </div>
+        <button id="go-time-btn" onclick="goStep(2)" class="px-6.5 py-3.5 bg-paper text-ink font-bold text-[13.5px] rounded-md opacity-40 pointer-events-none">Kies een tijd</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="step-2" class="hidden">
+      <div class="flex items-center justify-center relative px-5 pt-5 pb-4 border-b border-paper/10">
+        <button onclick="goStep(1)" class="absolute left-5 top-4.5 text-paper/60">←</button>
+        <div class="font-display text-base tracking-wide">KIES DATUM EN TIJD</div>
+        <button onclick="closeBooking()" class="absolute right-5 top-4.5 text-paper/55 text-lg">✕</button>
+      </div>
+      <div class="flex items-center gap-3 mx-5 my-4.5 p-3.5 border border-paper/10 rounded-lg">
+        <img src="./assets/logo.png" alt="Fresh Fadez Studios" class="w-10 h-10 rounded-full object-cover">
+        <div><div class="font-bold text-sm">Fresh Fadez Studios</div><div class="text-xs text-paper/55">Lelystad</div></div>
+      </div>
+      <div class="flex items-center gap-2 px-4">
+        <button onclick="shiftDate(-1)" class="text-paper/60 px-2 py-2">←</button>
+        <div id="date-strip" class="flex gap-2 overflow-x-auto flex-1"></div>
+        <button onclick="shiftDate(1)" class="text-paper/60 px-2 py-2">→</button>
+      </div>
+      <div id="time-section" class="hidden px-5 pt-6 pb-7">
+        <div id="time-label" class="text-[13.5px] text-paper/65 mb-3.5 text-center"></div>
+        <div id="time-slots" class="grid grid-cols-4 gap-2.5"></div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="step-3" class="hidden">
+      <div class="flex items-center justify-center relative px-5 pt-5 pb-4 border-b border-paper/10">
+        <button onclick="goStep(2)" class="absolute left-5 top-4.5 text-paper/60">←</button>
+        <div class="font-display text-base tracking-wide">JOUW GEGEVENS</div>
+        <button onclick="closeBooking()" class="absolute right-5 top-4.5 text-paper/55 text-lg">✕</button>
+      </div>
+      <div class="flex flex-col gap-3 p-5">
+        <div class="flex gap-3">
+          <input id="f-first" oninput="checkForm()" placeholder="Voornaam*" class="flex-1 min-w-0 bg-transparent border border-paper/20 rounded-md px-3.5 py-3 text-sm">
+          <input id="f-last" oninput="checkForm()" placeholder="Achternaam*" class="flex-1 min-w-0 bg-transparent border border-paper/20 rounded-md px-3.5 py-3 text-sm">
+        </div>
+        <input id="f-email" oninput="checkForm()" placeholder="E-mailadres*" class="bg-transparent border border-paper/20 rounded-md px-3.5 py-3 text-sm">
+        <input id="f-phone" oninput="checkForm()" placeholder="Telefoonnummer*" class="bg-transparent border border-paper/20 rounded-md px-3.5 py-3 text-sm">
+        <input id="f-notes" placeholder="Opmerkingen" class="bg-transparent border border-paper/20 rounded-md px-3.5 py-3 text-sm">
+
+        <div class="border border-paper/12 rounded-lg p-4 mt-1.5">
+          <div id="summary-line" class="font-bold text-[14.5px]"></div>
+          <div id="summary-duration" class="text-xs text-paper/55 my-1 mb-3"></div>
+          <div id="summary-items"></div>
+          <div class="flex justify-between font-bold text-[14.5px] pt-2.5 border-t border-paper/14 mt-1.5">
+            <span>Totaal</span><span id="summary-total"></span>
+          </div>
+        </div>
+
+        <label class="flex items-center gap-2.5 text-[13px] text-paper/75 mt-2 cursor-pointer">
+          <input id="f-save" type="checkbox" checked class="w-4.5 h-4.5 accent-paper">
+          Bewaar mijn gegevens voor de volgende keer
+        </label>
+        <label class="flex items-center gap-2.5 text-[13px] text-paper/75 cursor-pointer">
+          <input id="f-newsletter" type="checkbox" class="w-4.5 h-4.5 accent-paper">
+          Ja, ik meld me aan voor de nieuwsbrief
+        </label>
+
+        <button id="confirm-btn" onclick="confirmBooking()" class="mt-2 text-center opacity-40 pointer-events-none py-4 bg-paper text-ink font-bold text-sm rounded-md">Afspraak bevestigen</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div id="step-4" class="hidden flex-col items-center text-center px-8 py-12">
+      <div class="w-14 h-14 rounded-full bg-paper text-ink flex items-center justify-center text-2xl mb-5">✓</div>
+      <div class="font-display text-lg mb-2.5">Afspraak bevestigd</div>
+      <div id="confirm-line" class="text-[14.5px] text-paper/70 mb-1.5"></div>
+      <div id="confirm-total" class="text-[13px] text-paper/55 mb-7"></div>
+      <button onclick="closeBooking()" class="px-7 py-3 border border-paper font-bold text-[13.5px] rounded-md">Sluiten</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SERVICES = [
+  { id: 'contour', category: 'Contour (alleen)', name: 'Contour', duration: 30, price: 20 },
+  { id: 'skin-fade', category: 'Contour (alleen)', name: 'Skin Fade', duration: 45, price: 38 },
+  { id: 'baard', category: 'Baard', name: 'Baard trimmen', duration: 20, price: 20 },
+  { id: 'knippen-baard', category: 'Knippen (inclusief baard)', name: 'Knippen (inclusief baard)', duration: 60, price: 50 },
+  { id: 'fade-style', category: 'Knippen (inclusief baard)', name: 'Fade & Style', duration: 45, price: 35 },
+  { id: 'kids', category: 'Knipbeurt kinderen (tot 11 jaar)', name: 'Kids Cut', duration: 30, price: 25 },
+];
+const DAYS = ['Zo','Ma','Di','Wo','Do','Vr','Za'];
+const MONTHS = ['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'];
+const DAY_NAMES_FULL = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
+
+let selected = {};
+let activeCategory = null;
+let dateOffset = 0;
+let selectedDateIdx = null;
+let selectedTime = null;
+
+function euro(n){ return `€ ${n.toFixed(2).replace('.', ',')}`; }
+
+function openBooking(){
+  document.getElementById('booking-backdrop').classList.remove('hidden');
+  document.getElementById('booking-backdrop').classList.add('flex');
+  goStep(1);
+}
+function closeBooking(){
+  document.getElementById('booking-backdrop').classList.add('hidden');
+  document.getElementById('booking-backdrop').classList.remove('flex');
+  selected = {}; activeCategory = null; dateOffset = 0; selectedDateIdx = null; selectedTime = null;
+  ['f-first','f-last','f-email','f-phone','f-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-save').checked = true;
+  document.getElementById('f-newsletter').checked = false;
+  renderServices();
+}
+function goStep(n){
+  [1,2,3,4].forEach(i => document.getElementById('step-'+i).classList.add('hidden'));
+  const el = document.getElementById('step-'+n);
+  el.classList.remove('hidden');
+  if (n === 4) el.classList.add('flex'); else el.classList.remove('flex');
+  if (n === 2) renderDates();
+}
+
+function categories(){ return [...new Set(SERVICES.map(s => s.category))]; }
+
+function renderServices(){
+  const pills = document.getElementById('category-pills');
+  pills.innerHTML = categories().map(c => {
+    const active = c === activeCategory;
+    return `<button onclick="setCategory('${c}')" class="flex-none px-4 py-2.5 rounded-full text-[12.5px] font-semibold whitespace-nowrap border ${active ? 'bg-paper text-ink border-paper' : 'border-paper/20 text-[#e8e4dc]'}">${c}</button>`;
+  }).join('');
+
+  const groups = document.getElementById('service-groups');
+  groups.innerHTML = categories().map(cat => {
+    const items = SERVICES.filter(s => s.category === cat).map(s => {
+      const sel = !!selected[s.id];
+      return `<a href="javascript:void(0)" onclick="toggleService('${s.id}')" class="flex items-center gap-3.5 py-3.5 border-b border-paper/8">
+        <div class="w-5.5 h-5.5 flex-none rounded-full border-[1.5px] flex items-center justify-center text-ink text-xs ${sel ? 'bg-paper border-paper' : 'border-paper/30'}">${sel ? '✓' : ''}</div>
+        <div class="flex-1"><div class="font-bold text-[14.5px]">${s.name}</div><div class="text-[12.5px] text-paper/55 mt-0.5">${s.duration} minuten</div></div>
+        <div class="text-[14.5px] whitespace-nowrap">${euro(s.price)}</div>
+      </a>`;
+    }).join('');
+    return `<div><div class="text-[11px] tracking-wide text-paper/50 mt-4.5 mb-2.5 uppercase">${cat}</div>${items}</div>`;
+  }).join('');
+
+  const totalItems = SERVICES.filter(s => selected[s.id]);
+  const total = totalItems.reduce((sum, s) => sum + s.price, 0);
+  document.getElementById('total-price').textContent = euro(total);
+  const btn = document.getElementById('go-time-btn');
+  if (totalItems.length > 0){ btn.classList.remove('opacity-40','pointer-events-none'); } else { btn.classList.add('opacity-40','pointer-events-none'); }
+}
+function setCategory(c){ activeCategory = c; renderServices(); }
+function toggleService(id){ selected[id] = !selected[id]; renderServices(); }
+
+function bookingDates(){
+  const out = []; const today = new Date();
+  for (let i = 0; i < 14; i++){
+    const d = new Date(today); d.setDate(today.getDate() + i);
+    out.push({ day: DAYS[d.getDay()], date: d.getDate(), month: MONTHS[d.getMonth()], weekdayIdx: d.getDay() });
+  }
+  return out;
+}
+function renderDates(){
+  const dates = bookingDates();
+  const strip = document.getElementById('date-strip');
+  strip.innerHTML = dates.slice(dateOffset, dateOffset + 7).map((d, i) => {
+    const idx = dateOffset + i;
+    const active = idx === selectedDateIdx;
+    return `<button onclick="pickDate(${idx})" class="flex-none w-[58px] py-2.5 rounded-md text-center border ${active ? 'bg-paper text-ink border-paper' : 'border-paper/12'}">
+      <div class="text-[10.5px] opacity-75">${d.day}</div>
+      <div class="font-display text-[17px] my-0.5">${d.date}</div>
+      <div class="text-[9px] opacity-70">${d.month}</div>
+    </button>`;
+  }).join('');
+  renderTimes();
+}
+function shiftDate(dir){ dateOffset = Math.max(0, Math.min(7, dateOffset + dir)); renderDates(); }
+function pickDate(idx){ selectedDateIdx = idx; selectedTime = null; renderDates(); }
+function renderTimes(){
+  const section = document.getElementById('time-section');
+  if (selectedDateIdx == null){ section.classList.add('hidden'); return; }
+  section.classList.remove('hidden');
+  const d = bookingDates()[selectedDateIdx];
+  document.getElementById('time-label').textContent = `Beschikbare tijden op ${DAY_NAMES_FULL[d.weekdayIdx]} ${d.date} ${d.month.toLowerCase()}`;
+  const slots = ['12:00','13:00','14:00','15:00','18:00','19:00','20:00'];
+  document.getElementById('time-slots').innerHTML = slots.map(t => {
+    const active = t === selectedTime;
+    return `<button onclick="pickTime('${t}')" class="py-3 text-center rounded-md border font-semibold text-[13.5px] ${active ? 'bg-paper text-ink border-paper' : 'border-paper/15'}">${t}</button>`;
+  }).join('');
+}
+function pickTime(t){ selectedTime = t; renderSummary(); goStep(3); }
+
+function renderSummary(){
+  const d = bookingDates()[selectedDateIdx];
+  const label = `${DAY_NAMES_FULL[d.weekdayIdx]} ${d.date} ${d.month.toLowerCase()} om ${selectedTime}`;
+  document.getElementById('summary-line').textContent = label;
+  const items = SERVICES.filter(s => selected[s.id]);
+  const duration = items.reduce((sum, s) => sum + s.duration, 0);
+  document.getElementById('summary-duration').textContent = `${duration} minuten · Fresh Fadez Studios`;
+  document.getElementById('summary-items').innerHTML = items.map(s =>
+    `<div class="flex justify-between text-[13.5px] text-paper/80 py-1.5 border-t border-paper/8"><span>${s.name}</span><span>${euro(s.price)}</span></div>`
+  ).join('');
+  const total = items.reduce((sum, s) => sum + s.price, 0);
+  document.getElementById('summary-total').textContent = euro(total);
+  document.getElementById('confirm-line').textContent = label;
+  document.getElementById('confirm-total').textContent = `Totaal ${euro(total)} · Fresh Fadez Studios`;
+}
+function checkForm(){
+  const ok = document.getElementById('f-first').value && document.getElementById('f-last').value &&
+             document.getElementById('f-email').value && document.getElementById('f-phone').value;
+  const btn = document.getElementById('confirm-btn');
+  if (ok){ btn.classList.remove('opacity-40','pointer-events-none'); } else { btn.classList.add('opacity-40','pointer-events-none'); }
+}
+function confirmBooking(){ goStep(4); }
+
+renderServices();
+</script>
+</body>
+</html>
