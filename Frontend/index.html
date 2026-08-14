@@ -55,17 +55,17 @@
     <a href="#reviews" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_reviews">Reviews</a>
     <a href="#contact" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_contact">Contact</a>
   </nav>
-  <div class="flex items-center gap-2.5 justify-self-end">
-    <div class="relative hidden md:block">
-      <button id="lang-toggle-btn" onclick="toggleLangMenu()" class="flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg bg-paper/[0.08] border border-paper/20 text-[11.5px] font-bold tracking-wide">
-        <span aria-hidden="true">🌐</span><span id="lang-toggle-label">NEDERLANDS</span><span aria-hidden="true" class="text-[9px] opacity-70">▾</span>
+  <div class="flex items-center gap-2.5 justify-self-end col-start-3">
+    <div class="relative">
+      <button id="lang-toggle-btn" onclick="toggleLangMenu()" aria-label="Taal wijzigen" class="flex items-center gap-1.5 px-2.5 md:px-3.5 py-2.5 rounded-lg bg-paper/[0.08] border border-paper/20 text-[11.5px] font-bold tracking-wide">
+        <span aria-hidden="true">🌐</span><span id="lang-toggle-label" class="hidden md:inline">NEDERLANDS</span><span aria-hidden="true" class="hidden md:inline text-[9px] opacity-70">▾</span>
       </button>
       <div id="lang-menu" class="hidden absolute right-0 top-[calc(100%+8px)] w-40 rounded-lg bg-surface2 border border-paper/20 shadow-[0_8px_24px_rgba(0,0,0,0.35)] overflow-hidden">
         <button onclick="setLanguage('nl')" data-lang-option="nl" class="lang-option w-full text-left px-4 py-2.5 text-[13px] font-semibold hover:bg-paper/10">Nederlands</button>
         <button onclick="setLanguage('en')" data-lang-option="en" class="lang-option w-full text-left px-4 py-2.5 text-[13px] font-semibold hover:bg-paper/10">English</button>
       </div>
     </div>
-    <button onclick="openBooking()" class="cta-secondary px-5 py-2.5 border border-paper rounded text-[13px] font-bold" data-i18n="nav_book">Boek nu</button>
+    <button onclick="openBooking()" class="cta-secondary px-3 md:px-5 py-2.5 border border-paper rounded text-[13px] font-bold whitespace-nowrap" data-i18n="nav_book">Boek nu</button>
     <button onclick="toggleMobileNav()" aria-label="Menu openen" class="md:hidden flex flex-col justify-center gap-[5px] w-9 h-9 flex-none">
       <span class="block w-5 h-[1.5px] bg-paper mx-auto"></span>
       <span class="block w-5 h-[1.5px] bg-paper mx-auto"></span>
