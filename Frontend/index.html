@@ -12,139 +12,179 @@
     theme: {
       extend: {
         fontFamily: { display: ['"Archivo Black"', 'sans-serif'], body: ['Inter', 'system-ui', 'sans-serif'] },
-        colors: { ink: '#0d0d0c', paper: '#f2f0ec', surface: '#1e1c19', surface2: '#151312' }
+        colors: { ink: '#0d0d0c', paper: '#f2f0ec', surface: '#1e1c19', surface2: '#151312', accent: '#e0332b' }
       }
     }
   }
 </script>
 <style>
-  body{font-family:'Inter',system-ui,sans-serif}
+  body{font-family:'Inter',system-ui,sans-serif;position:relative}
+  body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 20% 10%,rgba(90,120,160,.14),transparent 55%),radial-gradient(circle at 85% 60%,rgba(160,140,90,.10),transparent 55%),#0d0d0c}
   ::selection{background:rgba(242,240,236,.35)}
+  .nav-link{position:relative;padding:6px 10px;border-radius:8px;transition:color .25s}
   .nav-link:hover{color:#f2f0ec}
+  .nav-link::before{content:'';position:absolute;inset:0;border-radius:8px;background:radial-gradient(circle at 50% 50%,rgba(242,240,236,.16),rgba(242,240,236,0) 70%);opacity:0;transform:scale(.6);transition:opacity .3s,transform .3s;pointer-events:none}
+  .nav-link:hover::before{opacity:1;transform:scale(1)}
   .cta-secondary:hover{background:rgba(242,240,236,.08)}
   .cta-primary:hover{background:#cfc9bd}
   .ghost:hover{background:rgba(242,240,236,.14)}
   [x-cloak]{display:none!important}
+  .lang-option.active{background:rgba(242,240,236,.10);color:#f2f0ec}
+  .lang-option-mobile.active{border-color:#e0332b;color:#f2f0ec}
 </style>
 </head>
-<body class="bg-ink text-paper">
+<body class="bg-ink text-paper relative">
+
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+  <div class="absolute w-[560px] h-[560px] rounded-full bg-[#8a8074]/45 blur-[90px]" style="top:2%;left:-6%"></div>
+  <div class="absolute w-[520px] h-[520px] rounded-full bg-[#786f62]/40 blur-[100px]" style="top:40%;right:-8%"></div>
+  <div class="absolute w-[480px] h-[480px] rounded-full bg-[#5f5850]/45 blur-[85px]" style="top:78%;left:20%"></div>
+  <div class="absolute w-[440px] h-[440px] rounded-full bg-[#928878]/35 blur-[95px]" style="top:110%;right:10%"></div>
+</div>
 
 <!-- NAV -->
-<header class="flex items-center gap-4 sm:gap-7 px-5 md:px-14 py-5 max-w-[1320px] mx-auto border-b border-paper/10">
-  <a href="#top" class="flex items-center gap-3 mr-auto">
+<header class="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2.5rem)] max-w-[1320px] grid grid-cols-3 items-center gap-4 px-6 py-3.5 rounded-xl bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 border border-paper/25 shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
+  <a href="#top" class="flex items-center gap-3">
     <img src="./images/logo.png" alt="Fresh Fadez Studios" class="w-11 h-11 rounded object-cover">
     <span class="text-[10px] tracking-[3px] text-paper/55">LELYSTAD</span>
   </a>
-  <nav class="hidden md:flex gap-8">
-    <a href="#top" class="nav-link text-[13px] font-semibold tracking-wide">Home</a>
-    <a href="#diensten" class="nav-link text-[13px] font-semibold tracking-wide">Diensten</a>
-    <a href="#gallery" class="nav-link text-[13px] font-semibold tracking-wide">Gallery</a>
-    <a href="#reviews" class="nav-link text-[13px] font-semibold tracking-wide">Reviews</a>
-    <a href="#contact" class="nav-link text-[13px] font-semibold tracking-wide">Contact</a>
+  <nav class="hidden md:flex gap-8 justify-self-center">
+    <a href="#top" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_home">Home</a>
+    <a href="#diensten" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_diensten">Diensten</a>
+    <a href="#gallery" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_gallery">Gallery</a>
+    <a href="#reviews" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_reviews">Reviews</a>
+    <a href="#contact" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_contact">Contact</a>
   </nav>
-  <button onclick="openBooking()" class="cta-secondary px-4 sm:px-5 py-2.5 border border-paper rounded text-[13px] font-bold">Boek nu</button>
-  <button onclick="toggleMobileNav()" aria-label="Menu openen" class="md:hidden flex flex-col justify-center gap-[5px] w-9 h-9 -mr-1.5 flex-none">
-    <span class="block w-5 h-[1.5px] bg-paper mx-auto"></span>
-    <span class="block w-5 h-[1.5px] bg-paper mx-auto"></span>
-  </button>
+  <div class="flex items-center gap-2.5 justify-self-end">
+    <div class="relative hidden md:block">
+      <button id="lang-toggle-btn" onclick="toggleLangMenu()" class="flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg bg-paper/[0.08] border border-paper/20 text-[11.5px] font-bold tracking-wide">
+        <span aria-hidden="true">🌐</span><span id="lang-toggle-label">NEDERLANDS</span><span aria-hidden="true" class="text-[9px] opacity-70">▾</span>
+      </button>
+      <div id="lang-menu" class="hidden absolute right-0 top-[calc(100%+8px)] w-40 rounded-lg bg-surface2 border border-paper/20 shadow-[0_8px_24px_rgba(0,0,0,0.35)] overflow-hidden">
+        <button onclick="setLanguage('nl')" data-lang-option="nl" class="lang-option w-full text-left px-4 py-2.5 text-[13px] font-semibold hover:bg-paper/10">Nederlands</button>
+        <button onclick="setLanguage('en')" data-lang-option="en" class="lang-option w-full text-left px-4 py-2.5 text-[13px] font-semibold hover:bg-paper/10">English</button>
+      </div>
+    </div>
+    <button onclick="openBooking()" class="cta-secondary px-5 py-2.5 border border-paper rounded text-[13px] font-bold" data-i18n="nav_book">Boek nu</button>
+    <button onclick="toggleMobileNav()" aria-label="Menu openen" class="md:hidden flex flex-col justify-center gap-[5px] w-9 h-9 flex-none">
+      <span class="block w-5 h-[1.5px] bg-paper mx-auto"></span>
+      <span class="block w-5 h-[1.5px] bg-paper mx-auto"></span>
+    </button>
+  </div>
+  <nav id="mobile-nav" class="hidden col-span-3 flex-col mt-3 pt-3 border-t border-paper/15">
+    <a href="#top" onclick="closeMobileNav()" class="nav-link text-[14px] font-semibold py-2.5" data-i18n="nav_home">Home</a>
+    <a href="#diensten" onclick="closeMobileNav()" class="nav-link text-[14px] font-semibold py-2.5" data-i18n="nav_diensten">Diensten</a>
+    <a href="#gallery" onclick="closeMobileNav()" class="nav-link text-[14px] font-semibold py-2.5" data-i18n="nav_gallery">Gallery</a>
+    <a href="#reviews" onclick="closeMobileNav()" class="nav-link text-[14px] font-semibold py-2.5" data-i18n="nav_reviews">Reviews</a>
+    <a href="#contact" onclick="closeMobileNav()" class="nav-link text-[14px] font-semibold py-2.5" data-i18n="nav_contact">Contact</a>
+    <div class="flex items-center gap-2 pt-3 mt-1 border-t border-paper/10">
+      <button onclick="setLanguage('nl')" data-lang-option-mobile="nl" class="lang-option-mobile flex-1 py-2 rounded-lg border border-paper/20 text-[12.5px] font-bold">NL</button>
+      <button onclick="setLanguage('en')" data-lang-option-mobile="en" class="lang-option-mobile flex-1 py-2 rounded-lg border border-paper/20 text-[12.5px] font-bold">EN</button>
+    </div>
+  </nav>
 </header>
-<nav id="mobile-nav" class="hidden md:hidden flex-col px-5 pb-4 max-w-[1320px] mx-auto border-b border-paper/10">
-  <a href="#top" onclick="closeMobileNav()" class="nav-link text-[14.5px] font-semibold py-3 border-b border-paper/8">Home</a>
-  <a href="#diensten" onclick="closeMobileNav()" class="nav-link text-[14.5px] font-semibold py-3 border-b border-paper/8">Diensten</a>
-  <a href="#gallery" onclick="closeMobileNav()" class="nav-link text-[14.5px] font-semibold py-3 border-b border-paper/8">Gallery</a>
-  <a href="#reviews" onclick="closeMobileNav()" class="nav-link text-[14.5px] font-semibold py-3 border-b border-paper/8">Reviews</a>
-  <a href="#contact" onclick="closeMobileNav()" class="nav-link text-[14.5px] font-semibold py-3">Contact</a>
-</nav>
+<div class="h-24"></div>
 
 <!-- HERO -->
 <section id="top" class="relative h-[88vh] min-h-[620px] flex items-end overflow-hidden">
-  <img src="./images/Hero_image.png" alt="Barbers aan het werk" class="absolute inset-0 w-full h-full object-cover" style="filter:saturate(.55) contrast(1.05) brightness(1)">
-  <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(180deg, rgba(13,13,12,.15) 0%, rgba(13,13,12,.35) 45%, rgba(13,13,12,.92) 100%)"></div>
-  <div class="relative z-10 max-w-[1320px] w-full mx-auto px-5 md:px-14 pb-[72px]">
-    <div class="inline-flex items-center text-[11px] font-bold tracking-[1.5px] uppercase px-3.5 py-1.5 rounded border border-paper mb-6">Lelystad's Finest</div>
-    <h1 class="font-display text-[38px] md:text-[68px] leading-[1.05] max-w-[640px] mb-6">More than a cut. It's a lifestyle.</h1>
-    <p class="text-[17px] leading-relaxed text-paper/80 max-w-[460px] mb-9">Bij Fresh Fadez draait het niet alleen om een frisse fade, maar om zelfvertrouwen, stijl en kwaliteit — in een studio waar je welkom bent zoals je bent.</p>
+  <img src="./images/Hero_image.png" alt="Barbers aan het werk" class="absolute inset-0 w-full h-full object-cover">
+  <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(180deg, rgba(13,13,12,0) 55%, rgba(13,13,12,.85) 100%)"></div>
+  <div class="relative z-10 max-w-[1320px] w-full mx-auto px-14 pb-[72px]">
+    <div class="inline-flex items-center text-[11px] font-bold tracking-[1.5px] uppercase px-3.5 py-1.5 rounded border border-paper mb-6" data-i18n="hero_badge">Lelystad's Finest</div>
+    <h1 class="font-display text-[38px] md:text-[68px] leading-[1.05] max-w-[640px] mb-6" data-i18n="hero_title">More than a cut. It's a lifestyle.</h1>
+    <p class="text-[17px] leading-relaxed text-paper/80 max-w-[460px] mb-9" data-i18n="hero_desc">Bij Fresh Fadez draait het niet alleen om een frisse fade, maar om zelfvertrouwen, stijl en kwaliteit — in een studio waar je welkom bent zoals je bent.</p>
     <div class="flex gap-3.5 flex-wrap">
-      <button onclick="openBooking()" class="cta-primary px-7 py-4 bg-paper text-ink font-bold text-sm rounded-md">Afspraak maken</button>
-      <a href="#diensten" class="ghost px-7 py-4 border border-paper/30 rounded-md font-bold text-sm flex items-center gap-1.5">Bekijk diensten →</a>
+      <button onclick="openBooking()" class="cta-primary px-7 py-4 bg-paper text-ink font-bold text-sm rounded-md" data-i18n="hero_cta">Afspraak maken</button>
+      <a href="#diensten" class="ghost px-7 py-4 border border-paper/30 rounded-md font-bold text-sm flex items-center gap-1.5"><span data-i18n="hero_link">Bekijk diensten</span> →</a>
     </div>
   </div>
 </section>
 
 <!-- SERVICES & PRICING -->
-<section id="diensten" class="max-w-[1320px] mx-auto px-5 md:px-14 py-[70px] grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-10 lg:gap-16">
+<section id="diensten" class="max-w-[1320px] mx-auto px-14 py-[70px] grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-16">
   <div>
-    <div class="text-[11px] font-bold tracking-[1.5px] uppercase mb-3.5">Diensten &amp; prijzen</div>
-    <h2 class="font-display text-[28px] md:text-[38px] mb-4">Wat wij doen</h2>
-    <p class="text-[15px] leading-relaxed text-paper/68 max-w-[360px] mb-6">Elke fade begint met een goed gesprek. Onze barbers nemen de tijd voor precisie en advies op maat.</p>
-    <button onclick="openBooking()" class="ghost inline-flex items-center gap-1.5 px-6 py-3 border border-paper rounded text-[13.5px] font-bold">Volledige prijslijst →</button>
+    <div class="text-[11px] font-bold tracking-[1.5px] uppercase mb-3.5" data-i18n="svc_eyebrow">Diensten &amp; prijzen</div>
+    <h2 class="font-display text-[28px] md:text-[38px] mb-4" data-i18n="svc_title">Wat wij doen</h2>
+    <p class="text-[15px] leading-relaxed text-paper/68 max-w-[360px] mb-6" data-i18n="svc_desc">Elke fade begint met een goed gesprek. Onze barbers nemen de tijd voor precisie en advies op maat.</p>
+    <button onclick="openBooking()" class="ghost inline-flex items-center gap-1.5 px-6 py-3 border border-paper rounded text-[13.5px] font-bold"><span data-i18n="svc_cta">Volledige prijslijst</span> →</button>
   </div>
-  <div class="rounded-lg border border-paper/12 bg-surface px-7 py-2">
+  <div data-parallax class="rounded-lg border border-paper/25 bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 px-7 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
     <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
-      <div><div class="font-display text-[17px] mb-1">Fade &amp; Style</div><div class="text-[13px] text-paper/55">Precisiefade met styling · 45 min</div></div>
+      <div><div class="font-display text-[17px] mb-1" data-i18n="svc_row1_name">Fade &amp; Style</div><div class="text-[13px] text-paper/55" data-i18n="svc_row1_desc">Precisiefade met styling · 45 min</div></div>
       <div class="font-display text-[19px]">€35</div>
     </div>
     <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
-      <div><div class="font-display text-[17px] mb-1">Baard Trim</div><div class="text-[13px] text-paper/55">Vorm &amp; lijnen bijwerken · 20 min</div></div>
+      <div><div class="font-display text-[17px] mb-1" data-i18n="svc_row2_name">Baard Trim</div><div class="text-[13px] text-paper/55" data-i18n="svc_row2_desc">Vorm &amp; lijnen bijwerken · 20 min</div></div>
       <div class="font-display text-[19px]">€20</div>
     </div>
     <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
-      <div><div class="font-display text-[17px] mb-1">Fade + Baard</div><div class="text-[13px] text-paper/55">De volledige treatment · 60 min</div></div>
+      <div><div class="font-display text-[17px] mb-1" data-i18n="svc_row3_name">Fade + Baard</div><div class="text-[13px] text-paper/55" data-i18n="svc_row3_desc">De volledige treatment · 60 min</div></div>
       <div class="font-display text-[19px]">€50</div>
     </div>
     <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
-      <div><div class="font-display text-[17px] mb-1">Kids Cut</div><div class="text-[13px] text-paper/55">T/m 12 jaar · 30 min</div></div>
+      <div><div class="font-display text-[17px] mb-1" data-i18n="svc_row4_name">Kids Cut</div><div class="text-[13px] text-paper/55" data-i18n="svc_row4_desc">T/m 12 jaar · 30 min</div></div>
       <div class="font-display text-[19px]">€25</div>
     </div>
     <div class="flex justify-between items-center gap-4 py-5">
-      <div><div class="font-display text-[17px] mb-1">Skin Fade</div><div class="text-[13px] text-paper/55">Strak tot op de huid · 45 min</div></div>
+      <div><div class="font-display text-[17px] mb-1" data-i18n="svc_row5_name">Skin Fade</div><div class="text-[13px] text-paper/55" data-i18n="svc_row5_desc">Strak tot op de huid · 45 min</div></div>
       <div class="font-display text-[19px]">€38</div>
     </div>
   </div>
 </section>
 
 <!-- GALLERY -->
-<section id="gallery" class="max-w-[1320px] mx-auto px-5 md:px-14 pb-[90px]">
+<section id="gallery" class="max-w-[1320px] mx-auto px-14 pb-[90px]">
   <div class="mb-9">
-    <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5">Ons werk</div>
-    <h2 class="font-display text-[28px] md:text-[38px]">Fresh cuts</h2>
+    <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5" data-i18n="gallery_eyebrow">Ons werk</div>
+    <h2 class="font-display text-[28px] md:text-[38px]" data-i18n="gallery_title">Fresh cuts</h2>
   </div>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 auto-rows-[150px] sm:auto-rows-[190px] md:auto-rows-[220px]">
-    <div class="col-span-2 rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40">Foto: skin fade close-up</div>
-    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2">Foto: studio interieur</div>
-    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2">Foto: baard styling</div>
-    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2">Foto: klant portret</div>
-    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2">Foto: barber aan het werk</div>
-    <div class="col-span-2 rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40">Foto: voor &amp; na fade</div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4.5" style="grid-auto-rows:220px">
+    <div class="col-span-2 rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40" data-i18n="gallery_1">Skin fade close-up</div>
+    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2" data-i18n="gallery_2">Studio interieur</div>
+    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2" data-i18n="gallery_3">Baard styling</div>
+    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2" data-i18n="gallery_4">Klant portret</div>
+    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2" data-i18n="gallery_5">Barber aan het werk</div>
+    <div class="col-span-2 rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40" data-i18n="gallery_6">Voor &amp; na fade</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="max-w-[1320px] mx-auto px-14 pb-[90px] grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+  <img src="./images/about-photo.png" alt="Fresh Fadez Studios team" class="w-full rounded-lg object-cover" style="max-height:560px">
+  <div>
+    <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5" data-i18n="about_eyebrow">Over ons</div>
+    <h2 class="font-display text-[28px] md:text-[38px] mb-5" data-i18n="about_title">[Jouw titel hier]</h2>
+    <p class="text-[15px] leading-relaxed text-paper/70 mb-4" data-i18n="about_p1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+    <p class="text-[15px] leading-relaxed text-paper/70" data-i18n="about_p2">Nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. [Vervang dit met jouw eigen verhaal]</p>
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
-<section id="reviews" class="max-w-[1320px] mx-auto px-5 md:px-14 pb-[90px]">
+<section id="reviews" class="max-w-[1320px] mx-auto px-14 pb-[90px]">
   <div class="mb-9">
-    <div class="text-[11px] font-bold tracking-[1.5px] uppercase mb-3.5">Klanten aan het woord</div>
-    <h2 class="font-display text-[28px] md:text-[38px]">Wat ze zeggen</h2>
+    <div class="text-[11px] font-bold tracking-[1.5px] uppercase mb-3.5" data-i18n="reviews_eyebrow">Klanten aan het woord</div>
+    <h2 class="font-display text-[28px] md:text-[38px]" data-i18n="reviews_title">Wat ze zeggen</h2>
   </div>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-    <div class="bg-surface border border-paper/10 rounded-lg p-7 flex flex-col gap-4">
+    <div data-parallax class="bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 border border-paper/25 rounded-lg p-7 flex flex-col gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
       <div class="text-xl tracking-[2px]">★★★★★</div>
-      <p class="text-[14.5px] leading-relaxed flex-1">"Beste barber van Lelystad. Elke keer weer een perfecte fade."</p>
+      <p class="text-[14.5px] leading-relaxed flex-1" data-i18n="review_1">"Beste barber van Lelystad. Elke keer weer een perfecte fade."</p>
       <div class="flex items-center gap-2.5">
         <div class="w-8.5 h-8.5 rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">Y</div>
         <div class="text-[13px] font-semibold">Youssef K.</div>
       </div>
     </div>
-    <div class="bg-surface border border-paper/10 rounded-lg p-7 flex flex-col gap-4">
+    <div data-parallax class="bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 border border-paper/25 rounded-lg p-7 flex flex-col gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
       <div class="text-xl tracking-[2px]">★★★★★</div>
-      <p class="text-[14.5px] leading-relaxed flex-1">"Chille sfeer, strakke studio en ze nemen echt de tijd voor je."</p>
+      <p class="text-[14.5px] leading-relaxed flex-1" data-i18n="review_2">"Chille sfeer, strakke studio en ze nemen echt de tijd voor je."</p>
       <div class="flex items-center gap-2.5">
         <div class="w-8.5 h-8.5 rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">D</div>
         <div class="text-[13px] font-semibold">Daan v.d. Berg</div>
       </div>
     </div>
-    <div class="bg-surface border border-paper/10 rounded-lg p-7 flex flex-col gap-4">
+    <div data-parallax class="bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 border border-paper/25 rounded-lg p-7 flex flex-col gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
       <div class="text-xl tracking-[2px]">★★★★★</div>
-      <p class="text-[14.5px] leading-relaxed flex-1">"Kwam voor een fade, kwam terug voor de service. Top team."</p>
+      <p class="text-[14.5px] leading-relaxed flex-1" data-i18n="review_3">"Kwam voor een fade, kwam terug voor de service. Top team."</p>
       <div class="flex items-center gap-2.5">
         <div class="w-8.5 h-8.5 rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">M</div>
         <div class="text-[13px] font-semibold">Marco R.</div>
@@ -154,66 +194,69 @@
 </section>
 
 <!-- LOCATION & HOURS -->
-<section id="contact" class="max-w-[1320px] mx-auto px-5 md:px-14 pb-[100px] grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
+<section id="contact" class="max-w-[1320px] mx-auto px-14 pb-[100px] grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
   <div>
-    <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5">Bezoek ons</div>
-    <h2 class="font-display text-[28px] md:text-[38px] mb-6">Locatie &amp; openingstijden</h2>
+    <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5" data-i18n="contact_eyebrow">Bezoek ons</div>
+    <h2 class="font-display text-[28px] md:text-[38px] mb-6" data-i18n="contact_title">Locatie &amp; openingstijden</h2>
     <div class="flex flex-col gap-2 mb-7 text-[15px] text-paper/75">
       <div class="font-bold text-paper">Fresh Fadez Studios</div>
-      <div>Stationsplein 12, 8232 CV Lelystad</div>
+      <div>De Waag 8, 8232 DG Lelystad</div>
       <div>hallo@freshfadez.nl · 06 12 34 56 78</div>
     </div>
-    <div class="rounded-lg border border-paper/12 bg-surface p-6 flex flex-col gap-2.5 max-w-[380px]">
-      <div class="flex justify-between text-sm"><span class="font-semibold">Ma – Vr</span><span class="text-paper/60">12:00 – 20:00</span></div>
-      <div class="flex justify-between text-sm"><span class="font-semibold">Zaterdag</span><span class="text-paper/60">10:00 – 18:00</span></div>
-      <div class="flex justify-between text-sm"><span class="font-semibold">Zondag</span><span class="text-paper/60">Gesloten</span></div>
+    <div data-parallax class="rounded-lg border border-paper/25 bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 p-6 flex flex-col gap-2.5 max-w-[380px] shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
+      <div class="flex justify-between text-sm"><span class="font-semibold" data-i18n="hours_weekdays">Ma – Vr</span><span class="text-paper/60">12:00 – 20:00</span></div>
+      <div class="flex justify-between text-sm"><span class="font-semibold" data-i18n="hours_saturday">Zaterdag</span><span class="text-paper/60">10:00 – 18:00</span></div>
+      <div class="flex justify-between text-sm"><span class="font-semibold" data-i18n="hours_sunday">Zondag</span><span class="text-paper/60" data-i18n="hours_closed">Gesloten</span></div>
     </div>
   </div>
-  <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 h-[400px] w-full">Kaart: locatie in Lelystad</div>
+  <iframe class="rounded-md h-[400px] w-full border-0 grayscale-[10%] contrast-[1.05] brightness-[.92]" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=De+Waag+8,+8232+DG+Lelystad&z=15&output=embed"></iframe>
 </section>
 
 <!-- FOOTER -->
-<footer class="bg-surface2 border-t border-paper/10 px-5 md:px-14 pt-12 pb-7">
+<footer class="bg-surface2/70 backdrop-blur-md border-t border-paper/10 px-14 pt-12 pb-7">
   <div class="max-w-[1320px] mx-auto flex justify-between items-start gap-10 flex-wrap">
     <div>
       <div class="font-display text-[19px] mb-1.5">Fresh Fadez Studios</div>
-      <div class="text-[13px] text-paper/60">Lelystad's finest barbershop.</div>
+      <div class="text-[13px] text-paper/60" data-i18n="footer_tagline">Lelystad's finest barbershop.</div>
     </div>
     <div class="flex gap-11 flex-wrap">
       <div class="flex flex-col gap-2.5">
-        <span class="text-[11px] tracking-[1.5px] uppercase text-paper/50 mb-1">Studio</span>
-        <a href="#diensten" class="text-[13px]">Diensten</a>
-        <a href="#gallery" class="text-[13px]">Gallery</a>
-        <a href="#contact" class="text-[13px]">Contact</a>
+        <span class="text-[11px] tracking-[1.5px] uppercase text-paper/50 mb-1" data-i18n="footer_studio">Studio</span>
+        <a href="#diensten" class="text-[13px]" data-i18n="nav_diensten">Diensten</a>
+        <a href="#gallery" class="text-[13px]" data-i18n="nav_gallery">Gallery</a>
+        <a href="#contact" class="text-[13px]" data-i18n="nav_contact">Contact</a>
       </div>
       <div class="flex flex-col gap-2.5">
-        <span class="text-[11px] tracking-[1.5px] uppercase text-paper/50 mb-1">Volg ons</span>
+        <span class="text-[11px] tracking-[1.5px] uppercase text-paper/50 mb-1" data-i18n="footer_follow">Volg ons</span>
         <a href="#" class="text-[13px]">Instagram</a>
         <a href="#" class="text-[13px]">TikTok</a>
       </div>
     </div>
   </div>
-  <div class="max-w-[1320px] mx-auto mt-9 pt-5 border-t border-paper/15 text-xs text-paper/45">© 2026 Fresh Fadez Studios. Alle rechten voorbehouden.</div>
+  <div class="max-w-[1320px] mx-auto mt-9 pt-5 border-t border-paper/15 text-xs text-paper/45 flex justify-between items-center flex-wrap gap-2">
+    <span data-i18n="footer_copyright">© 2026 Fresh Fadez Studios. Alle rechten voorbehouden.</span>
+    <span class="flex items-center gap-1.5"><span data-i18n="footer_powered">Powered by</span> <img src="./images/branch-logo-icon.png" alt="Branch.nu" class="w-[16px] h-[16px] object-contain"> <a href="https://branch.nu" class="text-paper/60 hover:text-paper transition-colors">Branch.nu</a></span>
+  </div>
 </footer>
 
 <!-- BOOKING MODAL -->
 <div id="booking-backdrop" x-cloak class="hidden fixed inset-0 z-[100] bg-black/70 items-center justify-center p-6">
-  <div class="w-[460px] max-w-full max-h-[88vh] overflow-y-auto bg-surface2 border border-paper/12 rounded-[10px] flex flex-col">
+  <div class="w-[460px] max-w-full max-h-[88vh] overflow-y-auto bg-surface2 border border-paper/12 rounded-2xl flex flex-col">
 
     <!-- STEP 1 -->
     <div id="step-1">
       <div class="flex items-center justify-center relative px-5 pt-5 pb-4 border-b border-paper/10">
-        <div class="font-display text-base tracking-wide">KIES DIENSTEN</div>
+        <div class="font-display text-base tracking-wide" data-i18n="modal_step1_title">KIES DIENSTEN</div>
         <button onclick="closeBooking()" class="absolute right-5 top-4.5 text-paper/55 text-lg">✕</button>
       </div>
       <div id="category-pills" class="flex gap-2.5 px-5 py-4 overflow-x-auto"></div>
       <div id="service-groups" class="px-5"></div>
       <div class="flex items-center justify-between gap-4 px-5 py-4.5 border-t border-paper/10 sticky bottom-0 bg-surface2">
         <div>
-          <div class="text-[11px] text-paper/55">Totaal</div>
+          <div class="text-[11px] text-paper/55" data-i18n="modal_total">Totaal</div>
           <div id="total-price" class="font-display text-lg">€ 0,00</div>
         </div>
-        <button id="go-time-btn" onclick="goStep(2)" class="px-6.5 py-3.5 bg-paper text-ink font-bold text-[13.5px] rounded-md opacity-40 pointer-events-none">Kies een tijd</button>
+        <button id="go-time-btn" onclick="goStep(2)" class="px-6.5 py-3.5 bg-accent text-paper font-bold text-[13.5px] rounded-lg opacity-40 pointer-events-none" data-i18n="modal_choose_time">Kies een tijd</button>
       </div>
     </div>
 
@@ -221,7 +264,7 @@
     <div id="step-2" class="hidden">
       <div class="flex items-center justify-center relative px-5 pt-5 pb-4 border-b border-paper/10">
         <button onclick="goStep(1)" class="absolute left-5 top-4.5 text-paper/60">←</button>
-        <div class="font-display text-base tracking-wide">KIES DATUM EN TIJD</div>
+        <div class="font-display text-base tracking-wide" data-i18n="modal_step2_title">KIES DATUM EN TIJD</div>
         <button onclick="closeBooking()" class="absolute right-5 top-4.5 text-paper/55 text-lg">✕</button>
       </div>
       <div class="flex items-center gap-3 mx-5 my-4.5 p-3.5 border border-paper/10 rounded-lg">
@@ -243,47 +286,48 @@
     <div id="step-3" class="hidden">
       <div class="flex items-center justify-center relative px-5 pt-5 pb-4 border-b border-paper/10">
         <button onclick="goStep(2)" class="absolute left-5 top-4.5 text-paper/60">←</button>
-        <div class="font-display text-base tracking-wide">JOUW GEGEVENS</div>
+        <div class="font-display text-base tracking-wide" data-i18n="modal_step3_title">JOUW GEGEVENS</div>
         <button onclick="closeBooking()" class="absolute right-5 top-4.5 text-paper/55 text-lg">✕</button>
       </div>
+      <div class="text-right text-[11px] text-paper/45 px-5 pt-3" data-i18n="modal_required">*Verplicht</div>
       <div class="flex flex-col gap-3 p-5">
         <div class="flex gap-3">
-          <input id="f-first" oninput="checkForm()" placeholder="Voornaam*" class="flex-1 min-w-0 bg-transparent border border-paper/20 rounded-md px-3.5 py-3 text-sm">
-          <input id="f-last" oninput="checkForm()" placeholder="Achternaam*" class="flex-1 min-w-0 bg-transparent border border-paper/20 rounded-md px-3.5 py-3 text-sm">
+          <input id="f-first" oninput="checkForm()" placeholder="Voornaam*" data-i18n-ph="ph_first" class="flex-1 min-w-0 bg-paper/[0.05] border border-paper/25 rounded-lg px-3.5 py-3 text-sm">
+          <input id="f-last" oninput="checkForm()" placeholder="Achternaam*" data-i18n-ph="ph_last" class="flex-1 min-w-0 bg-paper/[0.05] border border-paper/25 rounded-lg px-3.5 py-3 text-sm">
         </div>
-        <input id="f-email" oninput="checkForm()" placeholder="E-mailadres*" class="bg-transparent border border-paper/20 rounded-md px-3.5 py-3 text-sm">
-        <input id="f-phone" oninput="checkForm()" placeholder="Telefoonnummer*" class="bg-transparent border border-paper/20 rounded-md px-3.5 py-3 text-sm">
-        <input id="f-notes" placeholder="Opmerkingen" class="bg-transparent border border-paper/20 rounded-md px-3.5 py-3 text-sm">
+        <input id="f-email" oninput="checkForm()" placeholder="E-mailadres*" data-i18n-ph="ph_email" class="bg-paper/[0.05] border border-paper/25 rounded-lg px-3.5 py-3 text-sm">
+        <input id="f-phone" oninput="checkForm()" placeholder="Telefoonnummer*" data-i18n-ph="ph_phone" class="bg-paper/[0.05] border border-paper/25 rounded-lg px-3.5 py-3 text-sm">
+        <input id="f-notes" placeholder="Opmerkingen" data-i18n-ph="ph_notes" class="bg-paper/[0.05] border border-paper/25 rounded-lg px-3.5 py-3 text-sm">
 
         <div class="border border-paper/12 rounded-lg p-4 mt-1.5">
           <div id="summary-line" class="font-bold text-[14.5px]"></div>
-          <div id="summary-duration" class="text-xs text-paper/55 my-1 mb-3"></div>
+          <div id="summary-duration" class="flex items-center gap-3 text-xs text-paper/55 my-1 mb-3"></div>
           <div id="summary-items"></div>
           <div class="flex justify-between font-bold text-[14.5px] pt-2.5 border-t border-paper/14 mt-1.5">
-            <span>Totaal</span><span id="summary-total"></span>
+            <span data-i18n="modal_total">Totaal</span><span id="summary-total"></span>
           </div>
         </div>
 
         <label class="flex items-center gap-2.5 text-[13px] text-paper/75 mt-2 cursor-pointer">
-          <input id="f-save" type="checkbox" checked class="w-4.5 h-4.5 accent-paper">
-          Bewaar mijn gegevens voor de volgende keer
+          <input id="f-save" type="checkbox" checked class="w-4.5 h-4.5 accent-[#e0332b]">
+          <span data-i18n="modal_save_details">Bewaar mijn gegevens voor de volgende keer</span>
         </label>
         <label class="flex items-center gap-2.5 text-[13px] text-paper/75 cursor-pointer">
-          <input id="f-newsletter" type="checkbox" class="w-4.5 h-4.5 accent-paper">
-          Ja, ik meld me aan voor de nieuwsbrief
+          <input id="f-newsletter" type="checkbox" class="w-4.5 h-4.5 accent-[#e0332b]">
+          <span data-i18n="modal_newsletter">Ja, ik meld me aan voor de nieuwsbrief</span>
         </label>
 
-        <button id="confirm-btn" onclick="confirmBooking()" class="mt-2 text-center opacity-40 pointer-events-none py-4 bg-paper text-ink font-bold text-sm rounded-md">Afspraak bevestigen</button>
+        <button id="confirm-btn" onclick="confirmBooking()" class="mt-2 text-center opacity-40 pointer-events-none py-4 bg-accent text-paper font-bold text-sm rounded-lg" data-i18n="modal_confirm">Afspraak bevestigen</button>
       </div>
     </div>
 
     <!-- STEP 4 -->
     <div id="step-4" class="hidden flex-col items-center text-center px-8 py-12">
-      <div class="w-14 h-14 rounded-full bg-paper text-ink flex items-center justify-center text-2xl mb-5">✓</div>
-      <div class="font-display text-lg mb-2.5">Afspraak bevestigd</div>
+      <div class="w-14 h-14 rounded-full bg-accent text-paper flex items-center justify-center text-2xl mb-5">✓</div>
+      <div class="font-display text-lg mb-2.5" data-i18n="modal_step4_title">Afspraak bevestigd</div>
       <div id="confirm-line" class="text-[14.5px] text-paper/70 mb-1.5"></div>
       <div id="confirm-total" class="text-[13px] text-paper/55 mb-7"></div>
-      <button onclick="closeBooking()" class="px-7 py-3 border border-paper font-bold text-[13.5px] rounded-md">Sluiten</button>
+      <button onclick="closeBooking()" class="px-7 py-3 border border-paper font-bold text-[13.5px] rounded-md" data-i18n="modal_close">Sluiten</button>
     </div>
 
   </div>
@@ -291,24 +335,104 @@
 
 <script>
 const SERVICES = [
-  { id: 'contour', category: 'Contour (alleen)', name: 'Contour', duration: 30, price: 20 },
-  { id: 'skin-fade', category: 'Contour (alleen)', name: 'Skin Fade', duration: 45, price: 38 },
-  { id: 'baard', category: 'Baard', name: 'Baard trimmen', duration: 20, price: 20 },
-  { id: 'knippen-baard', category: 'Knippen (inclusief baard)', name: 'Knippen (inclusief baard)', duration: 60, price: 50 },
-  { id: 'fade-style', category: 'Knippen (inclusief baard)', name: 'Fade & Style', duration: 45, price: 35 },
-  { id: 'kids', category: 'Knipbeurt kinderen (tot 11 jaar)', name: 'Kids Cut', duration: 30, price: 25 },
+  { id: 'contour', category: 'contour', duration: 30, price: 20 },
+  { id: 'skin-fade', category: 'contour', duration: 45, price: 38 },
+  { id: 'baard', category: 'baard', duration: 20, price: 20 },
+  { id: 'knippen-baard', category: 'knippen', duration: 60, price: 50 },
+  { id: 'fade-style', category: 'knippen', duration: 45, price: 35 },
+  { id: 'kids', category: 'kids', duration: 30, price: 25 },
 ];
-const DAYS = ['Zo','Ma','Di','Wo','Do','Vr','Za'];
-const MONTHS = ['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'];
-const DAY_NAMES_FULL = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
 
+const I18N = {
+  nl: {
+    nav_home: 'Home', nav_diensten: 'Diensten', nav_gallery: 'Gallery', nav_reviews: 'Reviews', nav_contact: 'Contact', nav_book: 'Boek nu',
+    hero_badge: "Lelystad's Finest", hero_title: "More than a cut. It's a lifestyle.",
+    hero_desc: 'Bij Fresh Fadez draait het niet alleen om een frisse fade, maar om zelfvertrouwen, stijl en kwaliteit — in een studio waar je welkom bent zoals je bent.',
+    hero_cta: 'Afspraak maken', hero_link: 'Bekijk diensten',
+    svc_eyebrow: 'Diensten & prijzen', svc_title: 'Wat wij doen',
+    svc_desc: 'Elke fade begint met een goed gesprek. Onze barbers nemen de tijd voor precisie en advies op maat.',
+    svc_cta: 'Volledige prijslijst',
+    svc_row1_name: 'Fade & Style', svc_row1_desc: 'Precisiefade met styling · 45 min',
+    svc_row2_name: 'Baard Trim', svc_row2_desc: 'Vorm & lijnen bijwerken · 20 min',
+    svc_row3_name: 'Fade + Baard', svc_row3_desc: 'De volledige treatment · 60 min',
+    svc_row4_name: 'Kids Cut', svc_row4_desc: 'T/m 12 jaar · 30 min',
+    svc_row5_name: 'Skin Fade', svc_row5_desc: 'Strak tot op de huid · 45 min',
+    gallery_eyebrow: 'Ons werk', gallery_title: 'Fresh cuts',
+    gallery_1: 'Skin fade close-up', gallery_2: 'Studio interieur', gallery_3: 'Baard styling',
+    gallery_4: 'Klant portret', gallery_5: 'Barber aan het werk', gallery_6: 'Voor & na fade',
+    about_eyebrow: 'Over ons', about_title: '[Jouw titel hier]',
+    about_p1: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
+    about_p2: 'Nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. [Vervang dit met jouw eigen verhaal]',
+    reviews_eyebrow: 'Klanten aan het woord', reviews_title: 'Wat ze zeggen',
+    review_1: '"Beste barber van Lelystad. Elke keer weer een perfecte fade."',
+    review_2: '"Chille sfeer, strakke studio en ze nemen echt de tijd voor je."',
+    review_3: '"Kwam voor een fade, kwam terug voor de service. Top team."',
+    contact_eyebrow: 'Bezoek ons', contact_title: 'Locatie & openingstijden',
+    hours_weekdays: 'Ma – Vr', hours_saturday: 'Zaterdag', hours_sunday: 'Zondag', hours_closed: 'Gesloten',
+    footer_tagline: "Lelystad's finest barbershop.", footer_studio: 'Studio', footer_follow: 'Volg ons',
+    footer_copyright: '© 2026 Fresh Fadez Studios. Alle rechten voorbehouden.', footer_powered: 'Powered by',
+    modal_step1_title: 'KIES DIENSTEN', modal_step2_title: 'KIES DATUM EN TIJD', modal_step3_title: 'JOUW GEGEVENS', modal_step4_title: 'Afspraak bevestigd',
+    modal_required: '*Verplicht', modal_total: 'Totaal', modal_choose_time: 'Kies een tijd',
+    ph_first: 'Voornaam*', ph_last: 'Achternaam*', ph_email: 'E-mailadres*', ph_phone: 'Telefoonnummer*', ph_notes: 'Opmerkingen',
+    modal_save_details: 'Bewaar mijn gegevens voor de volgende keer', modal_newsletter: 'Ja, ik meld me aan voor de nieuwsbrief',
+    modal_confirm: 'Afspraak bevestigen', modal_close: 'Sluiten',
+    ui_minutes: 'minuten', ui_available_times_on: 'Beschikbare tijden op', ui_at: 'om',
+    cat_contour: 'Contour (alleen)', cat_baard: 'Baard', cat_knippen: 'Knippen (inclusief baard)', cat_kids: 'Knipbeurt kinderen (tot 11 jaar)',
+    svc_contour: 'Contour', 'svc_skin-fade': 'Skin Fade', svc_baard: 'Baard trimmen', 'svc_knippen-baard': 'Knippen (inclusief baard)', 'svc_fade-style': 'Fade & Style', svc_kids: 'Kids Cut',
+    days: ['Zo','Ma','Di','Wo','Do','Vr','Za'],
+    months: ['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'],
+    dayNamesFull: ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag']
+  },
+  en: {
+    nav_home: 'Home', nav_diensten: 'Services', nav_gallery: 'Gallery', nav_reviews: 'Reviews', nav_contact: 'Contact', nav_book: 'Book now',
+    hero_badge: "Lelystad's Finest", hero_title: "More than a cut. It's a lifestyle.",
+    hero_desc: "At Fresh Fadez it's not just about a fresh fade, but about confidence, style and quality — in a studio where you're welcome exactly as you are.",
+    hero_cta: 'Book an appointment', hero_link: 'View services',
+    svc_eyebrow: 'Services & pricing', svc_title: 'What we do',
+    svc_desc: 'Every fade starts with a good conversation. Our barbers take the time for precision and tailored advice.',
+    svc_cta: 'Full price list',
+    svc_row1_name: 'Fade & Style', svc_row1_desc: 'Precision fade with styling · 45 min',
+    svc_row2_name: 'Beard Trim', svc_row2_desc: 'Shape & line-up · 20 min',
+    svc_row3_name: 'Fade + Beard', svc_row3_desc: 'The full treatment · 60 min',
+    svc_row4_name: 'Kids Cut', svc_row4_desc: 'Up to 12 years · 30 min',
+    svc_row5_name: 'Skin Fade', svc_row5_desc: 'Tight down to the skin · 45 min',
+    gallery_eyebrow: 'Our work', gallery_title: 'Fresh cuts',
+    gallery_1: 'Skin fade close-up', gallery_2: 'Studio interior', gallery_3: 'Beard styling',
+    gallery_4: 'Client portrait', gallery_5: 'Barber at work', gallery_6: 'Before & after fade',
+    about_eyebrow: 'About us', about_title: '[Your title here]',
+    about_p1: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
+    about_p2: 'Nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. [Replace this with your own story]',
+    reviews_eyebrow: 'Customer voices', reviews_title: 'What they say',
+    review_1: '"Best barber in Lelystad. A perfect fade every single time."',
+    review_2: '"Relaxed vibe, sharp studio, and they really take their time with you."',
+    review_3: '"Came for a fade, came back for the service. Top team."',
+    contact_eyebrow: 'Visit us', contact_title: 'Location & hours',
+    hours_weekdays: 'Mon – Fri', hours_saturday: 'Saturday', hours_sunday: 'Sunday', hours_closed: 'Closed',
+    footer_tagline: "Lelystad's finest barbershop.", footer_studio: 'Studio', footer_follow: 'Follow us',
+    footer_copyright: '© 2026 Fresh Fadez Studios. All rights reserved.', footer_powered: 'Powered by',
+    modal_step1_title: 'CHOOSE SERVICES', modal_step2_title: 'CHOOSE DATE AND TIME', modal_step3_title: 'YOUR DETAILS', modal_step4_title: 'Appointment confirmed',
+    modal_required: '*Required', modal_total: 'Total', modal_choose_time: 'Choose a time',
+    ph_first: 'First name*', ph_last: 'Last name*', ph_email: 'Email address*', ph_phone: 'Phone number*', ph_notes: 'Notes',
+    modal_save_details: 'Save my details for next time', modal_newsletter: 'Yes, sign me up for the newsletter',
+    modal_confirm: 'Confirm appointment', modal_close: 'Close',
+    ui_minutes: 'minutes', ui_available_times_on: 'Available times on', ui_at: 'at',
+    cat_contour: 'Contour (only)', cat_baard: 'Beard', cat_knippen: 'Haircut (incl. beard)', cat_kids: 'Kids haircut (up to 11 years)',
+    svc_contour: 'Contour', 'svc_skin-fade': 'Skin Fade', svc_baard: 'Beard trim', 'svc_knippen-baard': 'Haircut (incl. beard)', 'svc_fade-style': 'Fade & Style', svc_kids: 'Kids Cut',
+    days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
+    months: ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
+    dayNamesFull: ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
+  }
+};
+
+let currentLang = localStorage.getItem('ff-lang') || 'nl';
 let selected = {};
 let activeCategory = null;
 let dateOffset = 0;
 let selectedDateIdx = null;
 let selectedTime = null;
 
-function euro(n){ return `€ ${n.toFixed(2).replace('.', ',')}`; }
+function t(key){ return I18N[currentLang][key]; }
+function euro(n){ return currentLang === 'en' ? `€ ${n.toFixed(2)}` : `€ ${n.toFixed(2).replace('.', ',')}`; }
 
 function toggleMobileNav(){
   document.getElementById('mobile-nav').classList.toggle('hidden');
@@ -317,6 +441,36 @@ function toggleMobileNav(){
 function closeMobileNav(){
   document.getElementById('mobile-nav').classList.add('hidden');
   document.getElementById('mobile-nav').classList.remove('flex');
+}
+
+function toggleLangMenu(){ document.getElementById('lang-menu').classList.toggle('hidden'); }
+document.addEventListener('click', e => {
+  const menu = document.getElementById('lang-menu');
+  const btn = document.getElementById('lang-toggle-btn');
+  if (!menu.contains(e.target) && !btn.contains(e.target)) menu.classList.add('hidden');
+});
+function setLanguage(lang){
+  currentLang = lang;
+  localStorage.setItem('ff-lang', lang);
+  applyLanguage();
+  document.getElementById('lang-menu').classList.add('hidden');
+}
+function applyLanguage(){
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (I18N[currentLang][key] !== undefined) el.textContent = I18N[currentLang][key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    if (I18N[currentLang][key] !== undefined) el.placeholder = I18N[currentLang][key];
+  });
+  document.getElementById('lang-toggle-label').textContent = currentLang === 'en' ? 'ENGLISH' : 'NEDERLANDS';
+  document.querySelectorAll('[data-lang-option]').forEach(el => el.classList.toggle('active', el.dataset.langOption === currentLang));
+  document.querySelectorAll('[data-lang-option-mobile]').forEach(el => el.classList.toggle('active', el.dataset.langOptionMobile === currentLang));
+  renderServices();
+  renderDates();
+  if (selectedTime) renderSummary();
 }
 
 function openBooking(){
@@ -347,7 +501,7 @@ function renderServices(){
   const pills = document.getElementById('category-pills');
   pills.innerHTML = categories().map(c => {
     const active = c === activeCategory;
-    return `<button onclick="setCategory('${c}')" class="flex-none px-4 py-2.5 rounded-full text-[12.5px] font-semibold whitespace-nowrap border ${active ? 'bg-paper text-ink border-paper' : 'border-paper/20 text-[#e8e4dc]'}">${c}</button>`;
+    return `<button onclick="setCategory('${c}')" class="flex-none px-4 py-2.5 rounded-full text-[12.5px] font-semibold whitespace-nowrap border ${active ? 'bg-accent text-paper border-accent' : 'border-paper/20 text-[#e8e4dc]'}">${t('cat_' + c)}</button>`;
   }).join('');
 
   const groups = document.getElementById('service-groups');
@@ -355,12 +509,12 @@ function renderServices(){
     const items = SERVICES.filter(s => s.category === cat).map(s => {
       const sel = !!selected[s.id];
       return `<a href="javascript:void(0)" onclick="toggleService('${s.id}')" class="flex items-center gap-3.5 py-3.5 border-b border-paper/8">
-        <div class="w-5.5 h-5.5 flex-none rounded-full border-[1.5px] flex items-center justify-center text-ink text-xs ${sel ? 'bg-paper border-paper' : 'border-paper/30'}">${sel ? '✓' : ''}</div>
-        <div class="flex-1"><div class="font-bold text-[14.5px]">${s.name}</div><div class="text-[12.5px] text-paper/55 mt-0.5">${s.duration} minuten</div></div>
+        <div class="w-5.5 h-5.5 flex-none rounded-full border-[1.5px] flex items-center justify-center text-paper text-xs ${sel ? 'bg-accent border-accent' : 'border-paper/30'}">${sel ? '✓' : ''}</div>
+        <div class="flex-1"><div class="font-bold text-[14.5px]">${t('svc_' + s.id)}</div><div class="text-[12.5px] text-paper/55 mt-0.5">${s.duration} ${t('ui_minutes')}</div></div>
         <div class="text-[14.5px] whitespace-nowrap">${euro(s.price)}</div>
       </a>`;
     }).join('');
-    return `<div><div class="text-[11px] tracking-wide text-paper/50 mt-4.5 mb-2.5 uppercase">${cat}</div>${items}</div>`;
+    return `<div><div class="text-[11px] tracking-wide text-paper/50 mt-4.5 mb-2.5 uppercase">${t('cat_' + cat)}</div>${items}</div>`;
   }).join('');
 
   const totalItems = SERVICES.filter(s => selected[s.id]);
@@ -376,7 +530,7 @@ function bookingDates(){
   const out = []; const today = new Date();
   for (let i = 0; i < 14; i++){
     const d = new Date(today); d.setDate(today.getDate() + i);
-    out.push({ day: DAYS[d.getDay()], date: d.getDate(), month: MONTHS[d.getMonth()], weekdayIdx: d.getDay() });
+    out.push({ day: I18N[currentLang].days[d.getDay()], date: d.getDate(), month: I18N[currentLang].months[d.getMonth()], weekdayIdx: d.getDay() });
   }
   return out;
 }
@@ -386,7 +540,15 @@ function renderDates(){
   strip.innerHTML = dates.slice(dateOffset, dateOffset + 7).map((d, i) => {
     const idx = dateOffset + i;
     const active = idx === selectedDateIdx;
-    return `<button onclick="pickDate(${idx})" class="flex-none w-[58px] py-2.5 rounded-md text-center border ${active ? 'bg-paper text-ink border-paper' : 'border-paper/12'}">
+    const closed = d.weekdayIdx === 0;
+    if (closed){
+      return `<div class="flex-none w-[58px] py-2.5 rounded-md text-center border border-paper/10 opacity-40 bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_6px,#242220_6px,#242220_12px)]">
+        <div class="text-[10.5px] opacity-75">${d.day}</div>
+        <div class="font-display text-[17px] my-0.5">${d.date}</div>
+        <div class="text-[9px] opacity-70">${d.month}</div>
+      </div>`;
+    }
+    return `<button onclick="pickDate(${idx})" class="flex-none w-[58px] py-2.5 rounded-md text-center border ${active ? 'bg-accent text-paper border-accent' : 'border-paper/12'}">
       <div class="text-[10.5px] opacity-75">${d.day}</div>
       <div class="font-display text-[17px] my-0.5">${d.date}</div>
       <div class="text-[9px] opacity-70">${d.month}</div>
@@ -401,29 +563,29 @@ function renderTimes(){
   if (selectedDateIdx == null){ section.classList.add('hidden'); return; }
   section.classList.remove('hidden');
   const d = bookingDates()[selectedDateIdx];
-  document.getElementById('time-label').textContent = `Beschikbare tijden op ${DAY_NAMES_FULL[d.weekdayIdx]} ${d.date} ${d.month.toLowerCase()}`;
+  document.getElementById('time-label').textContent = `${t('ui_available_times_on')} ${I18N[currentLang].dayNamesFull[d.weekdayIdx]} ${d.date} ${d.month.toLowerCase()}`;
   const slots = ['12:00','13:00','14:00','15:00','18:00','19:00','20:00'];
-  document.getElementById('time-slots').innerHTML = slots.map(t => {
-    const active = t === selectedTime;
-    return `<button onclick="pickTime('${t}')" class="py-3 text-center rounded-md border font-semibold text-[13.5px] ${active ? 'bg-paper text-ink border-paper' : 'border-paper/15'}">${t}</button>`;
+  document.getElementById('time-slots').innerHTML = slots.map(time => {
+    const active = time === selectedTime;
+    return `<button onclick="pickTime('${time}')" class="py-3 text-center rounded-md border font-semibold text-[13.5px] ${active ? 'bg-accent text-paper border-accent' : 'border-paper/15 text-accent'}">${time}</button>`;
   }).join('');
 }
-function pickTime(t){ selectedTime = t; renderSummary(); goStep(3); }
+function pickTime(time){ selectedTime = time; renderSummary(); goStep(3); }
 
 function renderSummary(){
   const d = bookingDates()[selectedDateIdx];
-  const label = `${DAY_NAMES_FULL[d.weekdayIdx]} ${d.date} ${d.month.toLowerCase()} om ${selectedTime}`;
+  const label = `${I18N[currentLang].dayNamesFull[d.weekdayIdx]} ${d.date} ${d.month.toLowerCase()} ${t('ui_at')} ${selectedTime}`;
   document.getElementById('summary-line').textContent = label;
   const items = SERVICES.filter(s => selected[s.id]);
   const duration = items.reduce((sum, s) => sum + s.duration, 0);
-  document.getElementById('summary-duration').textContent = `${duration} minuten · Fresh Fadez Studios`;
+  document.getElementById('summary-duration').innerHTML = `<span>🕐</span><span>${duration} ${t('ui_minutes')}</span><img src="./images/logo.png" class="w-4 h-4 rounded-full object-cover ml-1.5"><span>Fresh Fadez Studios</span>`;
   document.getElementById('summary-items').innerHTML = items.map(s =>
-    `<div class="flex justify-between text-[13.5px] text-paper/80 py-1.5 border-t border-paper/8"><span>${s.name}</span><span>${euro(s.price)}</span></div>`
+    `<div class="flex justify-between text-[13.5px] text-paper/80 py-1.5 border-t border-paper/8"><span>${t('svc_' + s.id)}</span><span>${euro(s.price)}</span></div>`
   ).join('');
   const total = items.reduce((sum, s) => sum + s.price, 0);
   document.getElementById('summary-total').textContent = euro(total);
   document.getElementById('confirm-line').textContent = label;
-  document.getElementById('confirm-total').textContent = `Totaal ${euro(total)} · Fresh Fadez Studios`;
+  document.getElementById('confirm-total').textContent = `${t('modal_total')} ${euro(total)} · Fresh Fadez Studios`;
 }
 function checkForm(){
   const ok = document.getElementById('f-first').value && document.getElementById('f-last').value &&
@@ -433,7 +595,47 @@ function checkForm(){
 }
 function confirmBooking(){ goStep(4); }
 
-renderServices();
+applyLanguage();
+
+const parallaxEls = [...document.querySelectorAll('[data-parallax]')];
+function onScrollParallax(){
+  const vh = window.innerHeight;
+  parallaxEls.forEach(el=>{
+    const r = el.getBoundingClientRect();
+    const progress = (vh/2 - (r.top + r.height/2)) / vh;
+    const shift = Math.max(-1, Math.min(1, progress)) * 14;
+    let inner = el.querySelector('[data-parallax-inner]');
+    if (!inner){
+      inner = document.createElement('div');
+      inner.dataset.parallaxInner = '';
+      inner.style.willChange = 'transform';
+      while (el.firstChild) inner.appendChild(el.firstChild);
+      el.appendChild(inner);
+    }
+    inner.style.transform = `translateY(${shift}px)`;
+  });
+}
+window.addEventListener('scroll', onScrollParallax, { passive: true });
+onScrollParallax();
+
+parallaxEls.forEach(el=>{
+  el.style.position = 'relative';
+  el.style.overflow = 'hidden';
+  const spot = document.createElement('div');
+  spot.style.position = 'absolute';
+  spot.style.inset = '0';
+  spot.style.opacity = '0';
+  spot.style.transition = 'opacity .25s';
+  spot.style.pointerEvents = 'none';
+  spot.style.background = 'radial-gradient(600px circle at 50% 50%, rgba(242,240,236,.18), transparent 100%)';
+  el.appendChild(spot);
+  el.addEventListener('mousemove', e=>{
+    const r = el.getBoundingClientRect();
+    spot.style.background = `radial-gradient(${Math.max(r.width,r.height)}px circle at ${e.clientX-r.left}px ${e.clientY-r.top}px, rgba(242,240,236,.18), transparent 100%)`;
+    spot.style.opacity = '1';
+  });
+  el.addEventListener('mouseleave', ()=>{ spot.style.opacity = '0'; });
+});
 </script>
 </body>
 </html>
