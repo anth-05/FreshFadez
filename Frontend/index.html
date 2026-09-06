@@ -317,6 +317,7 @@
           <span data-i18n="modal_newsletter">Ja, ik meld me aan voor de nieuwsbrief</span>
         </label>
 
+        <div id="booking-error" class="hidden text-[13px] text-accent text-center -mb-1"></div>
         <button id="confirm-btn" onclick="confirmBooking()" class="mt-2 text-center opacity-40 pointer-events-none py-4 bg-accent text-paper font-bold text-sm rounded-lg" data-i18n="modal_confirm">Afspraak bevestigen</button>
       </div>
     </div>
@@ -334,14 +335,28 @@
 </div>
 
 <script>
-const SERVICES = [
-  { id: 'contour', category: 'contour', duration: 30, price: 20 },
-  { id: 'skin-fade', category: 'contour', duration: 45, price: 38 },
-  { id: 'baard', category: 'baard', duration: 20, price: 20 },
-  { id: 'knippen-baard', category: 'knippen', duration: 60, price: 50 },
-  { id: 'fade-style', category: 'knippen', duration: 45, price: 35 },
-  { id: 'kids', category: 'kids', duration: 30, price: 25 },
-];
+const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000/api'
+  : 'https://freshfadez.onrender.com/api';
+
+let SERVICES = [];
+let servicesLoaded = false;
+let servicesLoadFailed = false;
+
+async function loadServices(){
+  try {
+    const res = await fetch(`${API_BASE}/services`);
+    if (!res.ok) throw new Error('Failed to load services');
+    const data = await res.json();
+    SERVICES = data.map(s => ({ id: s.slug, category: s.category, duration: s.duration, price: s.price }));
+    servicesLoaded = true;
+    servicesLoadFailed = false;
+  } catch (err) {
+    console.error(err);
+    servicesLoadFailed = true;
+  }
+  renderServices();
+}
 
 const I18N = {
   nl: {
@@ -377,6 +392,9 @@ const I18N = {
     modal_save_details: 'Bewaar mijn gegevens voor de volgende keer', modal_newsletter: 'Ja, ik meld me aan voor de nieuwsbrief',
     modal_confirm: 'Afspraak bevestigen', modal_close: 'Sluiten',
     ui_minutes: 'minuten', ui_available_times_on: 'Beschikbare tijden op', ui_at: 'om',
+    ui_loading: 'Laden…', ui_load_error: 'Kon diensten niet laden. Probeer het opnieuw.', ui_retry: 'Opnieuw proberen',
+    ui_booking_error: 'Er ging iets mis. Probeer het opnieuw.', ui_slot_taken: 'Dit tijdstip is net geboekt. Kies een andere tijd.',
+    ui_submitting: 'Bezig…',
     cat_contour: 'Contour (alleen)', cat_baard: 'Baard', cat_knippen: 'Knippen (inclusief baard)', cat_kids: 'Knipbeurt kinderen (tot 11 jaar)',
     svc_contour: 'Contour', 'svc_skin-fade': 'Skin Fade', svc_baard: 'Baard trimmen', 'svc_knippen-baard': 'Knippen (inclusief baard)', 'svc_fade-style': 'Fade & Style', svc_kids: 'Kids Cut',
     days: ['Zo','Ma','Di','Wo','Do','Vr','Za'],
@@ -416,6 +434,9 @@ const I18N = {
     modal_save_details: 'Save my details for next time', modal_newsletter: 'Yes, sign me up for the newsletter',
     modal_confirm: 'Confirm appointment', modal_close: 'Close',
     ui_minutes: 'minutes', ui_available_times_on: 'Available times on', ui_at: 'at',
+    ui_loading: 'Loading…', ui_load_error: 'Could not load services. Please try again.', ui_retry: 'Try again',
+    ui_booking_error: 'Something went wrong. Please try again.', ui_slot_taken: 'That time slot was just booked. Please choose another.',
+    ui_submitting: 'Submitting…',
     cat_contour: 'Contour (only)', cat_baard: 'Beard', cat_knippen: 'Haircut (incl. beard)', cat_kids: 'Kids haircut (up to 11 years)',
     svc_contour: 'Contour', 'svc_skin-fade': 'Skin Fade', svc_baard: 'Beard trim', 'svc_knippen-baard': 'Haircut (incl. beard)', 'svc_fade-style': 'Fade & Style', svc_kids: 'Kids Cut',
     days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
@@ -485,6 +506,7 @@ function closeBooking(){
   ['f-first','f-last','f-email','f-phone','f-notes'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-save').checked = true;
   document.getElementById('f-newsletter').checked = false;
+  document.getElementById('booking-error').classList.add('hidden');
   renderServices();
 }
 function goStep(n){
@@ -499,12 +521,31 @@ function categories(){ return [...new Set(SERVICES.map(s => s.category))]; }
 
 function renderServices(){
   const pills = document.getElementById('category-pills');
+  const groups = document.getElementById('service-groups');
+
+  if (!servicesLoaded && !servicesLoadFailed){
+    pills.innerHTML = '';
+    groups.innerHTML = `<div class="text-center text-[13.5px] text-paper/55 py-8">${t('ui_loading')}</div>`;
+    document.getElementById('total-price').textContent = euro(0);
+    document.getElementById('go-time-btn').classList.add('opacity-40','pointer-events-none');
+    return;
+  }
+  if (servicesLoadFailed){
+    pills.innerHTML = '';
+    groups.innerHTML = `<div class="text-center py-8">
+      <div class="text-[13.5px] text-paper/55 mb-3">${t('ui_load_error')}</div>
+      <button onclick="loadServices()" class="px-5 py-2.5 border border-paper/30 rounded-md text-[12.5px] font-bold">${t('ui_retry')}</button>
+    </div>`;
+    document.getElementById('total-price').textContent = euro(0);
+    document.getElementById('go-time-btn').classList.add('opacity-40','pointer-events-none');
+    return;
+  }
+
   pills.innerHTML = categories().map(c => {
     const active = c === activeCategory;
     return `<button onclick="setCategory('${c}')" class="flex-none px-4 py-2.5 rounded-full text-[12.5px] font-semibold whitespace-nowrap border ${active ? 'bg-accent text-paper border-accent' : 'border-paper/20 text-[#e8e4dc]'}">${t('cat_' + c)}</button>`;
   }).join('');
 
-  const groups = document.getElementById('service-groups');
   groups.innerHTML = categories().map(cat => {
     const items = SERVICES.filter(s => s.category === cat).map(s => {
       const sel = !!selected[s.id];
@@ -526,11 +567,14 @@ function renderServices(){
 function setCategory(c){ activeCategory = c; renderServices(); }
 function toggleService(id){ selected[id] = !selected[id]; renderServices(); }
 
+function toISODate(d){
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
 function bookingDates(){
   const out = []; const today = new Date();
   for (let i = 0; i < 14; i++){
     const d = new Date(today); d.setDate(today.getDate() + i);
-    out.push({ day: I18N[currentLang].days[d.getDay()], date: d.getDate(), month: I18N[currentLang].months[d.getMonth()], weekdayIdx: d.getDay() });
+    out.push({ day: I18N[currentLang].days[d.getDay()], date: d.getDate(), month: I18N[currentLang].months[d.getMonth()], weekdayIdx: d.getDay(), iso: toISODate(d) });
   }
   return out;
 }
@@ -556,17 +600,43 @@ function renderDates(){
   }).join('');
   renderTimes();
 }
+let availabilityRequestId = 0;
+
 function shiftDate(dir){ dateOffset = Math.max(0, Math.min(7, dateOffset + dir)); renderDates(); }
 function pickDate(idx){ selectedDateIdx = idx; selectedTime = null; renderDates(); }
-function renderTimes(){
+
+async function renderTimes(){
   const section = document.getElementById('time-section');
   if (selectedDateIdx == null){ section.classList.add('hidden'); return; }
   section.classList.remove('hidden');
   const d = bookingDates()[selectedDateIdx];
   document.getElementById('time-label').textContent = `${t('ui_available_times_on')} ${I18N[currentLang].dayNamesFull[d.weekdayIdx]} ${d.date} ${d.month.toLowerCase()}`;
-  const slots = ['12:00','13:00','14:00','15:00','18:00','19:00','20:00'];
-  document.getElementById('time-slots').innerHTML = slots.map(time => {
+
+  const requestId = ++availabilityRequestId;
+  document.getElementById('time-slots').innerHTML = `<div class="col-span-4 text-center text-[13px] text-paper/55 py-4">${t('ui_loading')}</div>`;
+
+  let slots;
+  try {
+    const res = await fetch(`${API_BASE}/availability?date=${d.iso}`);
+    if (!res.ok) throw new Error('Failed to load availability');
+    const data = await res.json();
+    slots = data.slots;
+  } catch (err) {
+    console.error(err);
+    if (requestId !== availabilityRequestId) return;
+    document.getElementById('time-slots').innerHTML = `<div class="col-span-4 text-center py-4">
+      <div class="text-[13px] text-paper/55 mb-2.5">${t('ui_load_error')}</div>
+      <button onclick="renderTimes()" class="px-4 py-2 border border-paper/30 rounded-md text-[12px] font-bold">${t('ui_retry')}</button>
+    </div>`;
+    return;
+  }
+  if (requestId !== availabilityRequestId) return;
+
+  document.getElementById('time-slots').innerHTML = slots.map(({ time, available }) => {
     const active = time === selectedTime;
+    if (!available){
+      return `<button disabled class="py-3 text-center rounded-md border font-semibold text-[13.5px] border-paper/10 text-paper/30 opacity-50 cursor-not-allowed">${time}</button>`;
+    }
     return `<button onclick="pickTime('${time}')" class="py-3 text-center rounded-md border font-semibold text-[13.5px] ${active ? 'bg-accent text-paper border-accent' : 'border-paper/15 text-accent'}">${time}</button>`;
   }).join('');
 }
@@ -593,9 +663,55 @@ function checkForm(){
   const btn = document.getElementById('confirm-btn');
   if (ok){ btn.classList.remove('opacity-40','pointer-events-none'); } else { btn.classList.add('opacity-40','pointer-events-none'); }
 }
-function confirmBooking(){ goStep(4); }
+async function confirmBooking(){
+  const btn = document.getElementById('confirm-btn');
+  const errorEl = document.getElementById('booking-error');
+  errorEl.classList.add('hidden');
+  btn.classList.add('opacity-40','pointer-events-none');
+  const originalLabel = btn.textContent;
+  btn.textContent = t('ui_submitting');
+
+  const d = bookingDates()[selectedDateIdx];
+  const payload = {
+    firstName: document.getElementById('f-first').value.trim(),
+    lastName: document.getElementById('f-last').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    phone: document.getElementById('f-phone').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+    saveInfo: document.getElementById('f-save').checked,
+    newsletter: document.getElementById('f-newsletter').checked,
+    serviceSlugs: Object.keys(selected).filter(id => selected[id]),
+    date: d.iso,
+    time: selectedTime,
+  };
+
+  try {
+    const res = await fetch(`${API_BASE}/bookings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const body = await res.json();
+    if (!res.ok) {
+      errorEl.textContent = res.status === 409 ? t('ui_slot_taken') : (body.error || t('ui_booking_error'));
+      errorEl.classList.remove('hidden');
+      btn.textContent = originalLabel;
+      btn.classList.remove('opacity-40','pointer-events-none');
+      if (res.status === 409) { selectedTime = null; goStep(2); }
+      return;
+    }
+    goStep(4);
+  } catch (err) {
+    console.error(err);
+    errorEl.textContent = t('ui_booking_error');
+    errorEl.classList.remove('hidden');
+    btn.textContent = originalLabel;
+    btn.classList.remove('opacity-40','pointer-events-none');
+  }
+}
 
 applyLanguage();
+loadServices();
 
 const parallaxEls = [...document.querySelectorAll('[data-parallax]')];
 function onScrollParallax(){
