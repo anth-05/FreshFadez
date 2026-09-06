@@ -28,9 +28,35 @@
   .cta-secondary:hover{background:rgba(242,240,236,.08)}
   .cta-primary:hover{background:#cfc9bd}
   .ghost:hover{background:rgba(242,240,236,.14)}
-  [x-cloak]{display:none!important}
   .lang-option.active{background:rgba(242,240,236,.10);color:#f2f0ec}
   .lang-option-mobile.active{border-color:#e0332b;color:#f2f0ec}
+
+  #booking-backdrop{opacity:0;transition:opacity .25s ease}
+  #booking-backdrop.open{opacity:1}
+  #booking-panel{transform:translateY(18px) scale(.97);opacity:0;transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .25s ease}
+  #booking-backdrop.open #booking-panel{transform:translateY(0) scale(1);opacity:1}
+  .step-pane{animation:step-in .28s cubic-bezier(.22,1,.36,1)}
+  @keyframes step-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+  #service-groups > div:first-child .cat-label{margin-top:14px}
+  .service-row{transition:background-color .15s ease}
+  .service-row:hover{background:rgba(242,240,236,.05)}
+  .modal-input{transition:border-color .15s ease,background-color .15s ease}
+  .modal-input:focus{outline:none;border-color:#e0332b;background:rgba(242,240,236,.08)}
+  .date-chip{transition:transform .15s ease,background-color .15s ease,border-color .15s ease}
+  .date-chip:hover:not(:disabled){transform:translateY(-2px)}
+  .time-chip{transition:transform .12s ease,background-color .15s ease,border-color .15s ease}
+  .time-chip:hover:not(:disabled){transform:translateY(-1px)}
+  .modal-cta{transition:transform .15s ease,background-color .15s ease,opacity .2s ease}
+  .modal-cta:not(:disabled):not(.opacity-40):hover{transform:translateY(-1px)}
+  .cat-scroll{scrollbar-width:none}
+  .cat-scroll::-webkit-scrollbar{display:none}
+  .progress-dot{width:6px;height:6px;border-radius:999px;background:rgba(242,240,236,.2);transition:background-color .25s ease,width .25s ease}
+  .progress-dot.active{background:#e0332b;width:18px}
+  .progress-dot.done{background:rgba(224,51,43,.5)}
+  .spin{animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .check-pop{animation:check-pop .4s cubic-bezier(.22,1.4,.36,1)}
+  @keyframes check-pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body class="bg-ink text-paper relative">
@@ -138,7 +164,7 @@
     <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5" data-i18n="gallery_eyebrow">Ons werk</div>
     <h2 class="font-display text-[28px] md:text-[38px]" data-i18n="gallery_title">Fresh cuts</h2>
   </div>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4.5" style="grid-auto-rows:220px">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-[18px]" style="grid-auto-rows:220px">
     <div class="col-span-2 rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40" data-i18n="gallery_1">Skin fade close-up</div>
     <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2" data-i18n="gallery_2">Studio interieur</div>
     <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2" data-i18n="gallery_3">Baard styling</div>
@@ -170,7 +196,7 @@
       <div class="text-xl tracking-[2px]">★★★★★</div>
       <p class="text-[14.5px] leading-relaxed flex-1" data-i18n="review_1">"Beste barber van Lelystad. Elke keer weer een perfecte fade."</p>
       <div class="flex items-center gap-2.5">
-        <div class="w-8.5 h-8.5 rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">Y</div>
+        <div class="w-[34px] h-[34px] rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">Y</div>
         <div class="text-[13px] font-semibold">Youssef K.</div>
       </div>
     </div>
@@ -178,7 +204,7 @@
       <div class="text-xl tracking-[2px]">★★★★★</div>
       <p class="text-[14.5px] leading-relaxed flex-1" data-i18n="review_2">"Chille sfeer, strakke studio en ze nemen echt de tijd voor je."</p>
       <div class="flex items-center gap-2.5">
-        <div class="w-8.5 h-8.5 rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">D</div>
+        <div class="w-[34px] h-[34px] rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">D</div>
         <div class="text-[13px] font-semibold">Daan v.d. Berg</div>
       </div>
     </div>
@@ -186,7 +212,7 @@
       <div class="text-xl tracking-[2px]">★★★★★</div>
       <p class="text-[14.5px] leading-relaxed flex-1" data-i18n="review_3">"Kwam voor een fade, kwam terug voor de service. Top team."</p>
       <div class="flex items-center gap-2.5">
-        <div class="w-8.5 h-8.5 rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">M</div>
+        <div class="w-[34px] h-[34px] rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">M</div>
         <div class="text-[13px] font-semibold">Marco R.</div>
       </div>
     </div>
@@ -240,41 +266,46 @@
 </footer>
 
 <!-- BOOKING MODAL -->
-<div id="booking-backdrop" x-cloak class="hidden fixed inset-0 z-[100] bg-black/70 items-center justify-center p-6">
-  <div class="w-[460px] max-w-full max-h-[88vh] overflow-y-auto bg-surface2 border border-paper/12 rounded-2xl flex flex-col">
+<div id="booking-backdrop" onmousedown="if(event.target===this) closeBooking()" class="hidden fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm items-center justify-center p-6">
+  <div id="booking-panel" role="dialog" aria-modal="true" class="w-[480px] max-w-full max-h-[88vh] overflow-y-auto bg-black border border-paper/8 rounded-2xl flex flex-col shadow-[0_24px_70px_rgba(0,0,0,0.55)]">
+
+    <div id="progress-row" class="flex items-center justify-center gap-2 pt-4">
+      <span class="progress-dot" data-progress-dot="1"></span>
+      <span class="progress-dot" data-progress-dot="2"></span>
+      <span class="progress-dot" data-progress-dot="3"></span>
+    </div>
 
     <!-- STEP 1 -->
-    <div id="step-1">
-      <div class="flex items-center justify-center relative px-5 pt-5 pb-4 border-b border-paper/10">
+    <div id="step-1" class="step-pane">
+      <div class="flex items-center justify-center relative px-5 pt-3 pb-4 border-b border-paper/10">
         <div class="font-display text-base tracking-wide" data-i18n="modal_step1_title">KIES DIENSTEN</div>
-        <button onclick="closeBooking()" class="absolute right-5 top-4.5 text-paper/55 text-lg">✕</button>
+        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 text-lg hover:bg-paper/10 hover:text-paper transition-colors">✕</button>
       </div>
-      <div id="category-pills" class="flex gap-2.5 px-5 py-4 overflow-x-auto"></div>
       <div id="service-groups" class="px-5"></div>
-      <div class="flex items-center justify-between gap-4 px-5 py-4.5 border-t border-paper/10 sticky bottom-0 bg-surface2">
+      <div class="flex items-center justify-between gap-4 px-5 py-[18px] border-t border-paper/10 sticky bottom-0 bg-black/95 backdrop-blur">
         <div>
           <div class="text-[11px] text-paper/55" data-i18n="modal_total">Totaal</div>
           <div id="total-price" class="font-display text-lg">€ 0,00</div>
         </div>
-        <button id="go-time-btn" onclick="goStep(2)" class="px-6.5 py-3.5 bg-accent text-paper font-bold text-[13.5px] rounded-lg opacity-40 pointer-events-none" data-i18n="modal_choose_time">Kies een tijd</button>
+        <button id="go-time-btn" onclick="goStep(2)" class="modal-cta px-[26px] py-3.5 bg-accent text-paper font-bold text-[13.5px] rounded-lg opacity-40 pointer-events-none" data-i18n="modal_choose_time">Kies een tijd</button>
       </div>
     </div>
 
     <!-- STEP 2 -->
     <div id="step-2" class="hidden">
-      <div class="flex items-center justify-center relative px-5 pt-5 pb-4 border-b border-paper/10">
-        <button onclick="goStep(1)" class="absolute left-5 top-4.5 text-paper/60">←</button>
+      <div class="flex items-center justify-center relative px-5 pt-3 pb-4 border-b border-paper/10">
+        <button onclick="goStep(1)" aria-label="Terug" class="absolute left-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors">←</button>
         <div class="font-display text-base tracking-wide" data-i18n="modal_step2_title">KIES DATUM EN TIJD</div>
-        <button onclick="closeBooking()" class="absolute right-5 top-4.5 text-paper/55 text-lg">✕</button>
+        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 text-lg hover:bg-paper/10 hover:text-paper transition-colors">✕</button>
       </div>
-      <div class="flex items-center gap-3 mx-5 my-4.5 p-3.5 border border-paper/10 rounded-lg">
+      <div class="flex items-center gap-3 mx-5 my-[18px] p-3.5 border border-paper/10 rounded-lg bg-paper/[0.03]">
         <img src="./images/logo.png" alt="Fresh Fadez Studios" class="w-10 h-10 rounded-full object-cover">
         <div><div class="font-bold text-sm">Fresh Fadez Studios</div><div class="text-xs text-paper/55">Lelystad</div></div>
       </div>
-      <div class="flex items-center gap-2 px-4">
-        <button onclick="shiftDate(-1)" class="text-paper/60 px-2 py-2">←</button>
-        <div id="date-strip" class="flex gap-2 overflow-x-auto flex-1"></div>
-        <button onclick="shiftDate(1)" class="text-paper/60 px-2 py-2">→</button>
+      <div class="flex items-center gap-1 px-3">
+        <button id="date-prev-btn" onclick="shiftDate(-1)" aria-label="Vorige week" class="flex-none w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors disabled:opacity-25 disabled:pointer-events-none">←</button>
+        <div id="date-strip" class="cat-scroll flex gap-2 overflow-x-auto flex-1 py-1"></div>
+        <button id="date-next-btn" onclick="shiftDate(1)" aria-label="Volgende week" class="flex-none w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors disabled:opacity-25 disabled:pointer-events-none">→</button>
       </div>
       <div id="time-section" class="hidden px-5 pt-6 pb-7">
         <div id="time-label" class="text-[13.5px] text-paper/65 mb-3.5 text-center"></div>
@@ -284,51 +315,51 @@
 
     <!-- STEP 3 -->
     <div id="step-3" class="hidden">
-      <div class="flex items-center justify-center relative px-5 pt-5 pb-4 border-b border-paper/10">
-        <button onclick="goStep(2)" class="absolute left-5 top-4.5 text-paper/60">←</button>
+      <div class="flex items-center justify-center relative px-5 pt-3 pb-4 border-b border-paper/10">
+        <button onclick="goStep(2)" aria-label="Terug" class="absolute left-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors">←</button>
         <div class="font-display text-base tracking-wide" data-i18n="modal_step3_title">JOUW GEGEVENS</div>
-        <button onclick="closeBooking()" class="absolute right-5 top-4.5 text-paper/55 text-lg">✕</button>
+        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 text-lg hover:bg-paper/10 hover:text-paper transition-colors">✕</button>
       </div>
       <div class="text-right text-[11px] text-paper/45 px-5 pt-3" data-i18n="modal_required">*Verplicht</div>
       <div class="flex flex-col gap-3 p-5">
         <div class="flex gap-3">
-          <input id="f-first" oninput="checkForm()" placeholder="Voornaam*" data-i18n-ph="ph_first" class="flex-1 min-w-0 bg-paper/[0.05] border border-paper/25 rounded-lg px-3.5 py-3 text-sm">
-          <input id="f-last" oninput="checkForm()" placeholder="Achternaam*" data-i18n-ph="ph_last" class="flex-1 min-w-0 bg-paper/[0.05] border border-paper/25 rounded-lg px-3.5 py-3 text-sm">
+          <input id="f-first" oninput="checkForm()" placeholder="Voornaam*" data-i18n-ph="ph_first" class="modal-input flex-1 min-w-0 bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
+          <input id="f-last" oninput="checkForm()" placeholder="Achternaam*" data-i18n-ph="ph_last" class="modal-input flex-1 min-w-0 bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
         </div>
-        <input id="f-email" oninput="checkForm()" placeholder="E-mailadres*" data-i18n-ph="ph_email" class="bg-paper/[0.05] border border-paper/25 rounded-lg px-3.5 py-3 text-sm">
-        <input id="f-phone" oninput="checkForm()" placeholder="Telefoonnummer*" data-i18n-ph="ph_phone" class="bg-paper/[0.05] border border-paper/25 rounded-lg px-3.5 py-3 text-sm">
-        <input id="f-notes" placeholder="Opmerkingen" data-i18n-ph="ph_notes" class="bg-paper/[0.05] border border-paper/25 rounded-lg px-3.5 py-3 text-sm">
+        <input id="f-email" oninput="checkForm()" placeholder="E-mailadres*" data-i18n-ph="ph_email" class="modal-input bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
+        <input id="f-phone" oninput="checkForm()" placeholder="Telefoonnummer*" data-i18n-ph="ph_phone" class="modal-input bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
+        <input id="f-notes" placeholder="Opmerkingen" data-i18n-ph="ph_notes" class="modal-input bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
 
-        <div class="border border-paper/12 rounded-lg p-4 mt-1.5">
+        <div class="border border-paper/12 rounded-lg p-4 mt-1.5 bg-paper/[0.02]">
           <div id="summary-line" class="font-bold text-[14.5px]"></div>
           <div id="summary-duration" class="flex items-center gap-3 text-xs text-paper/55 my-1 mb-3"></div>
           <div id="summary-items"></div>
-          <div class="flex justify-between font-bold text-[14.5px] pt-2.5 border-t border-paper/14 mt-1.5">
+          <div class="flex justify-between font-bold text-[14.5px] pt-2.5 border-t border-paper/10 mt-1.5">
             <span data-i18n="modal_total">Totaal</span><span id="summary-total"></span>
           </div>
         </div>
 
         <label class="flex items-center gap-2.5 text-[13px] text-paper/75 mt-2 cursor-pointer">
-          <input id="f-save" type="checkbox" checked class="w-4.5 h-4.5 accent-[#e0332b]">
+          <input id="f-save" type="checkbox" checked class="w-[18px] h-[18px] accent-[#e0332b]">
           <span data-i18n="modal_save_details">Bewaar mijn gegevens voor de volgende keer</span>
         </label>
         <label class="flex items-center gap-2.5 text-[13px] text-paper/75 cursor-pointer">
-          <input id="f-newsletter" type="checkbox" class="w-4.5 h-4.5 accent-[#e0332b]">
+          <input id="f-newsletter" type="checkbox" class="w-[18px] h-[18px] accent-[#e0332b]">
           <span data-i18n="modal_newsletter">Ja, ik meld me aan voor de nieuwsbrief</span>
         </label>
 
         <div id="booking-error" class="hidden text-[13px] text-accent text-center -mb-1"></div>
-        <button id="confirm-btn" onclick="confirmBooking()" class="mt-2 text-center opacity-40 pointer-events-none py-4 bg-accent text-paper font-bold text-sm rounded-lg" data-i18n="modal_confirm">Afspraak bevestigen</button>
+        <button id="confirm-btn" onclick="confirmBooking()" class="modal-cta mt-2 text-center opacity-40 pointer-events-none py-4 bg-accent text-paper font-bold text-sm rounded-lg" data-i18n="modal_confirm">Afspraak bevestigen</button>
       </div>
     </div>
 
     <!-- STEP 4 -->
-    <div id="step-4" class="hidden flex-col items-center text-center px-8 py-12">
-      <div class="w-14 h-14 rounded-full bg-accent text-paper flex items-center justify-center text-2xl mb-5">✓</div>
+    <div id="step-4" class="hidden flex-col items-center text-center px-8 py-14">
+      <div class="check-pop w-14 h-14 rounded-full bg-accent text-paper flex items-center justify-center text-2xl mb-5">✓</div>
       <div class="font-display text-lg mb-2.5" data-i18n="modal_step4_title">Afspraak bevestigd</div>
       <div id="confirm-line" class="text-[14.5px] text-paper/70 mb-1.5"></div>
       <div id="confirm-total" class="text-[13px] text-paper/55 mb-7"></div>
-      <button onclick="closeBooking()" class="px-7 py-3 border border-paper font-bold text-[13.5px] rounded-md" data-i18n="modal_close">Sluiten</button>
+      <button onclick="closeBooking()" class="modal-cta px-7 py-3 border border-paper font-bold text-[13.5px] rounded-md" data-i18n="modal_close">Sluiten</button>
     </div>
 
   </div>
@@ -447,13 +478,15 @@ const I18N = {
 
 let currentLang = localStorage.getItem('ff-lang') || 'nl';
 let selected = {};
-let activeCategory = null;
 let dateOffset = 0;
 let selectedDateIdx = null;
 let selectedTime = null;
 
 function t(key){ return I18N[currentLang][key]; }
 function euro(n){ return currentLang === 'en' ? `€ ${n.toFixed(2)}` : `€ ${n.toFixed(2).replace('.', ',')}`; }
+function spinnerSvg(){
+  return `<svg class="spin w-5 h-5 text-paper/40" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-opacity=".25"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+}
 
 function toggleMobileNav(){
   document.getElementById('mobile-nav').classList.toggle('hidden');
@@ -495,67 +528,96 @@ function applyLanguage(){
 }
 
 function openBooking(){
-  document.getElementById('booking-backdrop').classList.remove('hidden');
-  document.getElementById('booking-backdrop').classList.add('flex');
+  const backdrop = document.getElementById('booking-backdrop');
+  backdrop.classList.remove('hidden');
+  backdrop.classList.add('flex');
+  requestAnimationFrame(() => backdrop.classList.add('open'));
+  document.addEventListener('keydown', onBookingKeydown);
   goStep(1);
 }
 function closeBooking(){
-  document.getElementById('booking-backdrop').classList.add('hidden');
-  document.getElementById('booking-backdrop').classList.remove('flex');
-  selected = {}; activeCategory = null; dateOffset = 0; selectedDateIdx = null; selectedTime = null;
+  const backdrop = document.getElementById('booking-backdrop');
+  backdrop.classList.remove('open');
+  document.removeEventListener('keydown', onBookingKeydown);
+  setTimeout(() => {
+    backdrop.classList.add('hidden');
+    backdrop.classList.remove('flex');
+  }, 250);
+  selected = {}; dateOffset = 0; selectedDateIdx = null; selectedTime = null;
   ['f-first','f-last','f-email','f-phone','f-notes'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-save').checked = true;
   document.getElementById('f-newsletter').checked = false;
   document.getElementById('booking-error').classList.add('hidden');
   renderServices();
 }
+function onBookingKeydown(e){
+  if (e.key === 'Escape'){ closeBooking(); return; }
+  if (e.key !== 'Tab') return;
+  const panel = document.getElementById('booking-panel');
+  const focusable = [...panel.querySelectorAll('button, input, [href]')].filter(el => !el.disabled && el.offsetParent !== null);
+  if (!focusable.length) return;
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+}
 function goStep(n){
   [1,2,3,4].forEach(i => document.getElementById('step-'+i).classList.add('hidden'));
   const el = document.getElementById('step-'+n);
   el.classList.remove('hidden');
   if (n === 4) el.classList.add('flex'); else el.classList.remove('flex');
+
+  el.classList.remove('step-pane');
+  void el.offsetWidth;
+  el.classList.add('step-pane');
+
+  const progressRow = document.getElementById('progress-row');
+  if (n === 4){
+    progressRow.classList.add('hidden');
+  } else {
+    progressRow.classList.remove('hidden');
+    [1,2,3].forEach(i => {
+      const dot = document.querySelector(`[data-progress-dot="${i}"]`);
+      dot.classList.toggle('active', i === n);
+      dot.classList.toggle('done', i < n);
+    });
+  }
+
+  document.getElementById('booking-panel').scrollTop = 0;
   if (n === 2) renderDates();
+  if (n === 3) setTimeout(() => document.getElementById('f-first').focus(), 300);
 }
 
 function categories(){ return [...new Set(SERVICES.map(s => s.category))]; }
 
 function renderServices(){
-  const pills = document.getElementById('category-pills');
   const groups = document.getElementById('service-groups');
 
   if (!servicesLoaded && !servicesLoadFailed){
-    pills.innerHTML = '';
-    groups.innerHTML = `<div class="text-center text-[13.5px] text-paper/55 py-8">${t('ui_loading')}</div>`;
+    groups.innerHTML = `<div class="flex flex-col items-center gap-3 text-[13.5px] text-paper/55 py-10">${spinnerSvg()}<span>${t('ui_loading')}</span></div>`;
     document.getElementById('total-price').textContent = euro(0);
     document.getElementById('go-time-btn').classList.add('opacity-40','pointer-events-none');
     return;
   }
   if (servicesLoadFailed){
-    pills.innerHTML = '';
     groups.innerHTML = `<div class="text-center py-8">
       <div class="text-[13.5px] text-paper/55 mb-3">${t('ui_load_error')}</div>
-      <button onclick="loadServices()" class="px-5 py-2.5 border border-paper/30 rounded-md text-[12.5px] font-bold">${t('ui_retry')}</button>
+      <button onclick="loadServices()" class="px-5 py-2.5 border border-paper/15 rounded-md text-[12.5px] font-bold hover:border-paper/25">${t('ui_retry')}</button>
     </div>`;
     document.getElementById('total-price').textContent = euro(0);
     document.getElementById('go-time-btn').classList.add('opacity-40','pointer-events-none');
     return;
   }
 
-  pills.innerHTML = categories().map(c => {
-    const active = c === activeCategory;
-    return `<button onclick="setCategory('${c}')" class="flex-none px-4 py-2.5 rounded-full text-[12.5px] font-semibold whitespace-nowrap border ${active ? 'bg-accent text-paper border-accent' : 'border-paper/20 text-[#e8e4dc]'}">${t('cat_' + c)}</button>`;
-  }).join('');
-
   groups.innerHTML = categories().map(cat => {
     const items = SERVICES.filter(s => s.category === cat).map(s => {
       const sel = !!selected[s.id];
-      return `<a href="javascript:void(0)" onclick="toggleService('${s.id}')" class="flex items-center gap-3.5 py-3.5 border-b border-paper/8">
-        <div class="w-5.5 h-5.5 flex-none rounded-full border-[1.5px] flex items-center justify-center text-paper text-xs ${sel ? 'bg-accent border-accent' : 'border-paper/30'}">${sel ? '✓' : ''}</div>
+      return `<a href="javascript:void(0)" onclick="toggleService('${s.id}')" class="service-row flex items-center gap-3.5 py-3.5 px-2 -mx-2 rounded-lg">
+        <div class="w-[22px] h-[22px] flex-none rounded-full border-[1.5px] flex items-center justify-center text-paper text-xs ${sel ? 'bg-accent border-accent check-pop' : 'border-paper/20'}">${sel ? '✓' : ''}</div>
         <div class="flex-1"><div class="font-bold text-[14.5px]">${t('svc_' + s.id)}</div><div class="text-[12.5px] text-paper/55 mt-0.5">${s.duration} ${t('ui_minutes')}</div></div>
         <div class="text-[14.5px] whitespace-nowrap">${euro(s.price)}</div>
       </a>`;
     }).join('');
-    return `<div><div class="text-[11px] tracking-wide text-paper/50 mt-4.5 mb-2.5 uppercase">${t('cat_' + cat)}</div>${items}</div>`;
+    return `<div><div class="cat-label text-[11px] tracking-wide text-paper/50 mt-[18px] mb-2.5 uppercase">${t('cat_' + cat)}</div>${items}</div>`;
   }).join('');
 
   const totalItems = SERVICES.filter(s => selected[s.id]);
@@ -564,7 +626,6 @@ function renderServices(){
   const btn = document.getElementById('go-time-btn');
   if (totalItems.length > 0){ btn.classList.remove('opacity-40','pointer-events-none'); } else { btn.classList.add('opacity-40','pointer-events-none'); }
 }
-function setCategory(c){ activeCategory = c; renderServices(); }
 function toggleService(id){ selected[id] = !selected[id]; renderServices(); }
 
 function toISODate(d){
@@ -586,18 +647,20 @@ function renderDates(){
     const active = idx === selectedDateIdx;
     const closed = d.weekdayIdx === 0;
     if (closed){
-      return `<div class="flex-none w-[58px] py-2.5 rounded-md text-center border border-paper/10 opacity-40 bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_6px,#242220_6px,#242220_12px)]">
+      return `<div class="flex-none w-[58px] py-2.5 rounded-md text-center border border-paper/10 opacity-40 bg-[repeating-linear-gradient(135deg,#000,#000_6px,#141414_6px,#141414_12px)]">
         <div class="text-[10.5px] opacity-75">${d.day}</div>
         <div class="font-display text-[17px] my-0.5">${d.date}</div>
         <div class="text-[9px] opacity-70">${d.month}</div>
       </div>`;
     }
-    return `<button onclick="pickDate(${idx})" class="flex-none w-[58px] py-2.5 rounded-md text-center border ${active ? 'bg-accent text-paper border-accent' : 'border-paper/12'}">
+    return `<button onclick="pickDate(${idx})" class="date-chip flex-none w-[58px] py-2.5 rounded-md text-center border ${active ? 'bg-accent text-paper border-accent' : 'border-paper/12 hover:border-paper/25'}">
       <div class="text-[10.5px] opacity-75">${d.day}</div>
       <div class="font-display text-[17px] my-0.5">${d.date}</div>
       <div class="text-[9px] opacity-70">${d.month}</div>
     </button>`;
   }).join('');
+  document.getElementById('date-prev-btn').disabled = dateOffset === 0;
+  document.getElementById('date-next-btn').disabled = dateOffset >= 7;
   renderTimes();
 }
 let availabilityRequestId = 0;
@@ -613,7 +676,7 @@ async function renderTimes(){
   document.getElementById('time-label').textContent = `${t('ui_available_times_on')} ${I18N[currentLang].dayNamesFull[d.weekdayIdx]} ${d.date} ${d.month.toLowerCase()}`;
 
   const requestId = ++availabilityRequestId;
-  document.getElementById('time-slots').innerHTML = `<div class="col-span-4 text-center text-[13px] text-paper/55 py-4">${t('ui_loading')}</div>`;
+  document.getElementById('time-slots').innerHTML = `<div class="col-span-4 flex flex-col items-center gap-2.5 text-[13px] text-paper/55 py-4">${spinnerSvg()}<span>${t('ui_loading')}</span></div>`;
 
   let slots;
   try {
@@ -626,7 +689,7 @@ async function renderTimes(){
     if (requestId !== availabilityRequestId) return;
     document.getElementById('time-slots').innerHTML = `<div class="col-span-4 text-center py-4">
       <div class="text-[13px] text-paper/55 mb-2.5">${t('ui_load_error')}</div>
-      <button onclick="renderTimes()" class="px-4 py-2 border border-paper/30 rounded-md text-[12px] font-bold">${t('ui_retry')}</button>
+      <button onclick="renderTimes()" class="px-4 py-2 border border-paper/15 rounded-md text-[12px] font-bold hover:border-paper/25">${t('ui_retry')}</button>
     </div>`;
     return;
   }
@@ -635,9 +698,9 @@ async function renderTimes(){
   document.getElementById('time-slots').innerHTML = slots.map(({ time, available }) => {
     const active = time === selectedTime;
     if (!available){
-      return `<button disabled class="py-3 text-center rounded-md border font-semibold text-[13.5px] border-paper/10 text-paper/30 opacity-50 cursor-not-allowed">${time}</button>`;
+      return `<button disabled class="time-chip py-3 text-center rounded-md border font-semibold text-[13.5px] border-paper/10 text-paper/30 opacity-50 cursor-not-allowed">${time}</button>`;
     }
-    return `<button onclick="pickTime('${time}')" class="py-3 text-center rounded-md border font-semibold text-[13.5px] ${active ? 'bg-accent text-paper border-accent' : 'border-paper/15 text-accent'}">${time}</button>`;
+    return `<button onclick="pickTime('${time}')" class="time-chip py-3 text-center rounded-md border font-semibold text-[13.5px] ${active ? 'bg-accent text-paper border-accent' : 'border-paper/12 text-accent hover:border-accent/60'}">${time}</button>`;
   }).join('');
 }
 function pickTime(time){ selectedTime = time; renderSummary(); goStep(3); }
@@ -650,16 +713,17 @@ function renderSummary(){
   const duration = items.reduce((sum, s) => sum + s.duration, 0);
   document.getElementById('summary-duration').innerHTML = `<span>🕐</span><span>${duration} ${t('ui_minutes')}</span><img src="./images/logo.png" class="w-4 h-4 rounded-full object-cover ml-1.5"><span>Fresh Fadez Studios</span>`;
   document.getElementById('summary-items').innerHTML = items.map(s =>
-    `<div class="flex justify-between text-[13.5px] text-paper/80 py-1.5 border-t border-paper/8"><span>${t('svc_' + s.id)}</span><span>${euro(s.price)}</span></div>`
+    `<div class="flex justify-between text-[13.5px] text-paper/80 py-1"><span>${t('svc_' + s.id)}</span><span>${euro(s.price)}</span></div>`
   ).join('');
   const total = items.reduce((sum, s) => sum + s.price, 0);
   document.getElementById('summary-total').textContent = euro(total);
   document.getElementById('confirm-line').textContent = label;
   document.getElementById('confirm-total').textContent = `${t('modal_total')} ${euro(total)} · Fresh Fadez Studios`;
 }
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function checkForm(){
-  const ok = document.getElementById('f-first').value && document.getElementById('f-last').value &&
-             document.getElementById('f-email').value && document.getElementById('f-phone').value;
+  const ok = document.getElementById('f-first').value.trim() && document.getElementById('f-last').value.trim() &&
+             EMAIL_RE.test(document.getElementById('f-email').value.trim()) && document.getElementById('f-phone').value.trim();
   const btn = document.getElementById('confirm-btn');
   if (ok){ btn.classList.remove('opacity-40','pointer-events-none'); } else { btn.classList.add('opacity-40','pointer-events-none'); }
 }
