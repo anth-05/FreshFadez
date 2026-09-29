@@ -31,6 +31,12 @@
   .lang-option.active{background:rgba(242,240,236,.10);color:#f2f0ec}
   .lang-option-mobile.active{border-color:#e0332b;color:#f2f0ec}
 
+  #booking-panel{scrollbar-width:thin;scrollbar-color:rgba(242,240,236,.18) transparent}
+  #booking-panel::-webkit-scrollbar{width:8px}
+  #booking-panel::-webkit-scrollbar-track{background:transparent}
+  #booking-panel::-webkit-scrollbar-thumb{background:rgba(242,240,236,.18);border-radius:999px}
+  #booking-panel::-webkit-scrollbar-thumb:hover{background:rgba(242,240,236,.3)}
+  #booking-panel button:focus-visible,#booking-panel input:focus-visible{outline:2px solid #e0332b;outline-offset:2px}
   #booking-backdrop{opacity:0;transition:opacity .25s ease}
   #booking-backdrop.open{opacity:1}
   #booking-panel{transform:translateY(18px) scale(.97);opacity:0;transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .25s ease}
@@ -40,7 +46,7 @@
   #service-groups > div:first-child .cat-label{margin-top:14px}
   .service-row{transition:background-color .15s ease}
   .service-row:hover{background:rgba(242,240,236,.05)}
-  .modal-input{transition:border-color .15s ease,background-color .15s ease}
+  .modal-input{transition:border-color .15s ease,background-color .15s ease;caret-color:#e0332b}
   .modal-input:focus{outline:none;border-color:#e0332b;background:rgba(242,240,236,.08)}
   .date-chip{transition:transform .15s ease,background-color .15s ease,border-color .15s ease}
   .date-chip:hover:not(:disabled){transform:translateY(-2px)}
@@ -55,8 +61,8 @@
   .progress-dot.done{background:rgba(224,51,43,.5)}
   .spin{animation:spin .8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .check-pop{animation:check-pop .4s cubic-bezier(.22,1.4,.36,1)}
-  @keyframes check-pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+  .check-pop{animation:check-pop .35s cubic-bezier(.16,1,.3,1)}
+  @keyframes check-pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body class="bg-ink text-paper relative">
@@ -279,7 +285,7 @@
     <div id="step-1" class="step-pane">
       <div class="flex items-center justify-center relative px-5 pt-3 pb-4 border-b border-paper/10">
         <div class="font-display text-base tracking-wide" data-i18n="modal_step1_title">KIES DIENSTEN</div>
-        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 text-lg hover:bg-paper/10 hover:text-paper transition-colors">✕</button>
+        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 hover:bg-paper/10 hover:text-paper transition-colors"><svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       </div>
       <div id="service-groups" class="px-5"></div>
       <div class="flex items-center justify-between gap-4 px-5 py-[18px] border-t border-paper/10 sticky bottom-0 bg-black/95 backdrop-blur">
@@ -294,18 +300,18 @@
     <!-- STEP 2 -->
     <div id="step-2" class="hidden">
       <div class="flex items-center justify-center relative px-5 pt-3 pb-4 border-b border-paper/10">
-        <button onclick="goStep(1)" aria-label="Terug" class="absolute left-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors">←</button>
+        <button onclick="goStep(1)" aria-label="Terug" class="absolute left-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors"><svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="font-display text-base tracking-wide" data-i18n="modal_step2_title">KIES DATUM EN TIJD</div>
-        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 text-lg hover:bg-paper/10 hover:text-paper transition-colors">✕</button>
+        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 hover:bg-paper/10 hover:text-paper transition-colors"><svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       </div>
-      <div class="flex items-center gap-3 mx-5 my-[18px] p-3.5 border border-paper/10 rounded-lg bg-paper/[0.03]">
+      <div class="flex items-center gap-3 mx-5 my-[18px] pb-[18px] border-b border-paper/10">
         <img src="./images/logo.png" alt="Fresh Fadez Studios" class="w-10 h-10 rounded-full object-cover">
         <div><div class="font-bold text-sm">Fresh Fadez Studios</div><div class="text-xs text-paper/55">Lelystad</div></div>
       </div>
       <div class="flex items-center gap-1 px-3">
-        <button id="date-prev-btn" onclick="shiftDate(-1)" aria-label="Vorige week" class="flex-none w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors disabled:opacity-25 disabled:pointer-events-none">←</button>
+        <button id="date-prev-btn" onclick="shiftDate(-1)" aria-label="Vorige week" class="flex-none w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors disabled:opacity-25 disabled:pointer-events-none"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div id="date-strip" class="cat-scroll flex gap-2 overflow-x-auto flex-1 py-1"></div>
-        <button id="date-next-btn" onclick="shiftDate(1)" aria-label="Volgende week" class="flex-none w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors disabled:opacity-25 disabled:pointer-events-none">→</button>
+        <button id="date-next-btn" onclick="shiftDate(1)" aria-label="Volgende week" class="flex-none w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors disabled:opacity-25 disabled:pointer-events-none"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
       <div id="time-section" class="hidden px-5 pt-6 pb-7">
         <div id="time-label" class="text-[13.5px] text-paper/65 mb-3.5 text-center"></div>
@@ -316,9 +322,9 @@
     <!-- STEP 3 -->
     <div id="step-3" class="hidden">
       <div class="flex items-center justify-center relative px-5 pt-3 pb-4 border-b border-paper/10">
-        <button onclick="goStep(2)" aria-label="Terug" class="absolute left-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors">←</button>
+        <button onclick="goStep(2)" aria-label="Terug" class="absolute left-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors"><svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="font-display text-base tracking-wide" data-i18n="modal_step3_title">JOUW GEGEVENS</div>
-        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 text-lg hover:bg-paper/10 hover:text-paper transition-colors">✕</button>
+        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 hover:bg-paper/10 hover:text-paper transition-colors"><svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       </div>
       <div class="text-right text-[11px] text-paper/45 px-5 pt-3" data-i18n="modal_required">*Verplicht</div>
       <div class="flex flex-col gap-3 p-5">
@@ -330,7 +336,7 @@
         <input id="f-phone" oninput="checkForm()" placeholder="Telefoonnummer*" data-i18n-ph="ph_phone" class="modal-input bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
         <input id="f-notes" placeholder="Opmerkingen" data-i18n-ph="ph_notes" class="modal-input bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
 
-        <div class="border border-paper/12 rounded-lg p-4 mt-1.5 bg-paper/[0.02]">
+        <div class="border-t border-paper/10 pt-4 mt-1.5">
           <div id="summary-line" class="font-bold text-[14.5px]"></div>
           <div id="summary-duration" class="flex items-center gap-3 text-xs text-paper/55 my-1 mb-3"></div>
           <div id="summary-items"></div>
@@ -354,12 +360,17 @@
     </div>
 
     <!-- STEP 4 -->
-    <div id="step-4" class="hidden flex-col items-center text-center px-8 py-14">
-      <div class="check-pop w-14 h-14 rounded-full bg-accent text-paper flex items-center justify-center text-2xl mb-5">✓</div>
-      <div class="font-display text-lg mb-2.5" data-i18n="modal_step4_title">Afspraak bevestigd</div>
-      <div id="confirm-line" class="text-[14.5px] text-paper/70 mb-1.5"></div>
-      <div id="confirm-total" class="text-[13px] text-paper/55 mb-7"></div>
-      <button onclick="closeBooking()" class="modal-cta px-7 py-3 border border-paper font-bold text-[13.5px] rounded-md" data-i18n="modal_close">Sluiten</button>
+    <div id="step-4" class="hidden flex-col items-center text-center px-8 pt-16 pb-12 relative overflow-hidden">
+      <div class="absolute w-[220px] h-[220px] rounded-full bg-accent/25 blur-[70px] pointer-events-none" style="top:-60px"></div>
+      <div class="check-pop relative w-[72px] h-[72px] rounded-full bg-accent text-paper flex items-center justify-center mb-6">
+        <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8"><path d="M5 12.5 10 17.5 19 7.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="relative font-display text-2xl mb-7" data-i18n="modal_step4_title">Afspraak bevestigd</div>
+      <div class="relative w-full border-t border-b border-paper/10 py-4 text-left mb-7">
+        <div id="confirm-line" class="font-bold text-[14.5px] mb-1"></div>
+        <div id="confirm-total" class="text-[13px] text-paper/55"></div>
+      </div>
+      <button onclick="closeBooking()" class="modal-cta relative px-7 py-3 border border-paper font-bold text-[13.5px] rounded-md" data-i18n="modal_close">Sluiten</button>
     </div>
 
   </div>
@@ -425,7 +436,7 @@ const I18N = {
     ui_minutes: 'minuten', ui_available_times_on: 'Beschikbare tijden op', ui_at: 'om',
     ui_loading: 'Laden…', ui_load_error: 'Kon diensten niet laden. Probeer het opnieuw.', ui_retry: 'Opnieuw proberen',
     ui_booking_error: 'Er ging iets mis. Probeer het opnieuw.', ui_slot_taken: 'Dit tijdstip is net geboekt. Kies een andere tijd.',
-    ui_submitting: 'Bezig…',
+    ui_submitting: 'Bezig…', ui_no_services: 'Er zijn momenteel geen diensten beschikbaar.',
     cat_contour: 'Contour (alleen)', cat_baard: 'Baard', cat_knippen: 'Knippen (inclusief baard)', cat_kids: 'Knipbeurt kinderen (tot 11 jaar)',
     svc_contour: 'Contour', 'svc_skin-fade': 'Skin Fade', svc_baard: 'Baard trimmen', 'svc_knippen-baard': 'Knippen (inclusief baard)', 'svc_fade-style': 'Fade & Style', svc_kids: 'Kids Cut',
     days: ['Zo','Ma','Di','Wo','Do','Vr','Za'],
@@ -467,7 +478,7 @@ const I18N = {
     ui_minutes: 'minutes', ui_available_times_on: 'Available times on', ui_at: 'at',
     ui_loading: 'Loading…', ui_load_error: 'Could not load services. Please try again.', ui_retry: 'Try again',
     ui_booking_error: 'Something went wrong. Please try again.', ui_slot_taken: 'That time slot was just booked. Please choose another.',
-    ui_submitting: 'Submitting…',
+    ui_submitting: 'Submitting…', ui_no_services: 'No services are currently available.',
     cat_contour: 'Contour (only)', cat_baard: 'Beard', cat_knippen: 'Haircut (incl. beard)', cat_kids: 'Kids haircut (up to 11 years)',
     svc_contour: 'Contour', 'svc_skin-fade': 'Skin Fade', svc_baard: 'Beard trim', 'svc_knippen-baard': 'Haircut (incl. beard)', 'svc_fade-style': 'Fade & Style', svc_kids: 'Kids Cut',
     days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
@@ -486,6 +497,12 @@ function t(key){ return I18N[currentLang][key]; }
 function euro(n){ return currentLang === 'en' ? `€ ${n.toFixed(2)}` : `€ ${n.toFixed(2).replace('.', ',')}`; }
 function spinnerSvg(){
   return `<svg class="spin w-5 h-5 text-paper/40" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-opacity=".25"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+}
+function checkIconSvg(cls){
+  return `<svg class="${cls}" viewBox="0 0 24 24" fill="none"><path d="M5 12.5 10 17.5 19 7.5" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+function clockIconSvg(cls){
+  return `<svg class="${cls}" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.75"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
 function toggleMobileNav(){
@@ -607,12 +624,18 @@ function renderServices(){
     document.getElementById('go-time-btn').classList.add('opacity-40','pointer-events-none');
     return;
   }
+  if (SERVICES.length === 0){
+    groups.innerHTML = `<div class="text-center text-[13.5px] text-paper/55 py-10">${t('ui_no_services')}</div>`;
+    document.getElementById('total-price').textContent = euro(0);
+    document.getElementById('go-time-btn').classList.add('opacity-40','pointer-events-none');
+    return;
+  }
 
   groups.innerHTML = categories().map(cat => {
     const items = SERVICES.filter(s => s.category === cat).map(s => {
       const sel = !!selected[s.id];
       return `<a href="javascript:void(0)" onclick="toggleService('${s.id}')" class="service-row flex items-center gap-3.5 py-3.5 px-2 -mx-2 rounded-lg">
-        <div class="w-[22px] h-[22px] flex-none rounded-full border-[1.5px] flex items-center justify-center text-paper text-xs ${sel ? 'bg-accent border-accent check-pop' : 'border-paper/20'}">${sel ? '✓' : ''}</div>
+        <div class="w-[22px] h-[22px] flex-none rounded-full border-[1.5px] flex items-center justify-center text-paper ${sel ? 'bg-accent border-accent check-pop' : 'border-paper/20'}">${sel ? checkIconSvg('w-[13px] h-[13px]') : ''}</div>
         <div class="flex-1"><div class="font-bold text-[14.5px]">${t('svc_' + s.id)}</div><div class="text-[12.5px] text-paper/55 mt-0.5">${s.duration} ${t('ui_minutes')}</div></div>
         <div class="text-[14.5px] whitespace-nowrap">${euro(s.price)}</div>
       </a>`;
@@ -711,7 +734,7 @@ function renderSummary(){
   document.getElementById('summary-line').textContent = label;
   const items = SERVICES.filter(s => selected[s.id]);
   const duration = items.reduce((sum, s) => sum + s.duration, 0);
-  document.getElementById('summary-duration').innerHTML = `<span>🕐</span><span>${duration} ${t('ui_minutes')}</span><img src="./images/logo.png" class="w-4 h-4 rounded-full object-cover ml-1.5"><span>Fresh Fadez Studios</span>`;
+  document.getElementById('summary-duration').innerHTML = `${clockIconSvg('w-[15px] h-[15px] flex-none')}<span>${duration} ${t('ui_minutes')}</span><img src="./images/logo.png" class="w-4 h-4 rounded-full object-cover ml-1.5"><span>Fresh Fadez Studios</span>`;
   document.getElementById('summary-items').innerHTML = items.map(s =>
     `<div class="flex justify-between text-[13.5px] text-paper/80 py-1"><span>${t('svc_' + s.id)}</span><span>${euro(s.price)}</span></div>`
   ).join('');
