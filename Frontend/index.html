@@ -2,843 +2,1298 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Fresh Fadez Studios — Lelystad's Finest</title>
+<meta name="description" content="Fresh Fadez Studios: premium barbershop voor knipbeurten, skin fades en baardverzorging. Boek direct online.">
+<meta name="theme-color" content="#121417">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        fontFamily: { display: ['"Archivo Black"', 'sans-serif'], body: ['Inter', 'system-ui', 'sans-serif'] },
-        colors: { ink: '#0d0d0c', paper: '#f2f0ec', surface: '#1e1c19', surface2: '#151312', accent: '#e0332b' }
-      }
-    }
-  }
-</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&display=swap">
 <style>
-  body{font-family:'Inter',system-ui,sans-serif;position:relative}
-  body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 20% 10%,rgba(90,120,160,.14),transparent 55%),radial-gradient(circle at 85% 60%,rgba(160,140,90,.10),transparent 55%),#0d0d0c}
-  ::selection{background:rgba(242,240,236,.35)}
-  .nav-link{position:relative;padding:6px 10px;border-radius:8px;transition:color .25s}
-  .nav-link:hover{color:#f2f0ec}
-  .nav-link::before{content:'';position:absolute;inset:0;border-radius:8px;background:radial-gradient(circle at 50% 50%,rgba(242,240,236,.16),rgba(242,240,236,0) 70%);opacity:0;transform:scale(.6);transition:opacity .3s,transform .3s;pointer-events:none}
-  .nav-link:hover::before{opacity:1;transform:scale(1)}
-  .cta-secondary:hover{background:rgba(242,240,236,.08)}
-  .cta-primary:hover{background:#cfc9bd}
-  .ghost:hover{background:rgba(242,240,236,.14)}
-  .lang-option.active{background:rgba(242,240,236,.10);color:#f2f0ec}
-  .lang-option-mobile.active{border-color:#e0332b;color:#f2f0ec}
+/* Layout: booking widget is the homepage, then alternating light/dark marketing sections in a 1200px column below it. */
+:root{
+  --ink:#121417;
+  --ink-2:#1E2226;
+  --paper:#F2F3F1;
+  --line:#D4D8DB;
+  --muted:#5B6168;
+  --muted-2:#7A8087;
+  --mist:#C4C9CE;
+  --ice:#D7D9DB;
+  --ice-ink:#121417;
+  --link:#5B6168;
+  --white:#FFFFFF;
+  --danger:#F2A399;
+  --font:'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+:root{--ease-out:cubic-bezier(.23,1,.32,1);--ease-in-out:cubic-bezier(.77,0,.175,1);--ease-drawer:cubic-bezier(.32,.72,0,1);--spring:cubic-bezier(.34,1.56,.64,1)}
+section[id],header[id]{scroll-margin-top:72px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--link)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ice);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:1200px;margin:0 auto;padding-inline:24px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.h2{font-size:clamp(34px,4vw,44px);line-height:1.05;font-weight:650;font-stretch:114%;letter-spacing:-0.02em}
+.lede{font-size:17px;line-height:1.65;color:var(--muted);max-width:44ch}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 30px;border-radius:999px;font:600 16px/1 var(--font);text-decoration:none;border:0;cursor:pointer;transition:transform 160ms var(--ease-out),background-color 200ms ease,box-shadow 200ms var(--ease-out)}
+@media (hover:hover) and (pointer:fine){
+  a:hover{color:var(--ink)}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -12px rgba(0,0,0,.45)}
+  .btn-white:hover{background:#E6EAED;color:var(--ink)}
+  .btn-ice:hover{background:#C7CACD;color:var(--ice-ink)}
+  .brand:hover{color:var(--white)}
+  .nav-links a:hover{color:var(--ice)}
+  .nav-cta:hover{background:rgba(255,255,255,.1);color:var(--white)}
+  .svc-tab:hover{color:var(--ink)}
+  .powered a:hover,.footer-links a:hover{color:var(--ink)}
+  .book-link:hover{color:var(--ice)}
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 
-  #booking-panel{scrollbar-width:thin;scrollbar-color:rgba(242,240,236,.18) transparent}
-  #booking-panel::-webkit-scrollbar{width:8px}
-  #booking-panel::-webkit-scrollbar-track{background:transparent}
-  #booking-panel::-webkit-scrollbar-thumb{background:rgba(242,240,236,.18);border-radius:999px}
-  #booking-panel::-webkit-scrollbar-thumb:hover{background:rgba(242,240,236,.3)}
-  #booking-panel button:focus-visible,#booking-panel input:focus-visible{outline:2px solid #e0332b;outline-offset:2px}
-  #booking-backdrop{opacity:0;transition:opacity .25s ease}
-  #booking-backdrop.open{opacity:1}
-  #booking-panel{transform:translateY(18px) scale(.97);opacity:0;transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .25s ease}
-  #booking-backdrop.open #booking-panel{transform:translateY(0) scale(1);opacity:1}
-  .step-pane{animation:step-in .28s cubic-bezier(.22,1,.36,1)}
-  @keyframes step-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
-  #service-groups > div:first-child .cat-label{margin-top:14px}
-  .service-row{transition:background-color .15s ease}
-  .service-row:hover{background:rgba(242,240,236,.05)}
-  .modal-input{transition:border-color .15s ease,background-color .15s ease;caret-color:#e0332b}
-  .modal-input:focus{outline:none;border-color:#e0332b;background:rgba(242,240,236,.08)}
-  .date-chip{transition:transform .15s ease,background-color .15s ease,border-color .15s ease}
-  .date-chip:hover:not(:disabled){transform:translateY(-2px)}
-  .time-chip{transition:transform .12s ease,background-color .15s ease,border-color .15s ease}
-  .time-chip:hover:not(:disabled){transform:translateY(-1px)}
-  .modal-cta{transition:transform .15s ease,background-color .15s ease,opacity .2s ease}
-  .modal-cta:not(:disabled):not(.opacity-40):hover{transform:translateY(-1px)}
-  .cat-scroll{scrollbar-width:none}
-  .cat-scroll::-webkit-scrollbar{display:none}
-  .progress-dot{width:6px;height:6px;border-radius:999px;background:rgba(242,240,236,.2);transition:background-color .25s ease,width .25s ease}
-  .progress-dot.active{background:#e0332b;width:18px}
-  .progress-dot.done{background:rgba(224,51,43,.5)}
-  .spin{animation:spin .8s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .check-pop{animation:check-pop .35s cubic-bezier(.16,1,.3,1)}
-  @keyframes check-pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+/* Mobile menu */
+.menu-btn{display:none;align-items:center;justify-content:center;width:44px;height:44px;margin-right:-10px;border:0;background:none;color:var(--white);cursor:pointer;border-radius:12px}
+.menu-btn .bar{display:block;width:20px;height:1.5px;background:currentColor;border-radius:2px;transition:transform 250ms var(--ease-out)}
+.menu-btn .bars{display:flex;flex-direction:column;gap:6px}
+.menu-btn[aria-expanded="true"] .bar:first-child{transform:translateY(3.75px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] .bar:last-child{transform:translateY(-3.75px) rotate(-45deg)}
+.menu-sheet{background:rgba(18,20,23,.94);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);padding:8px 24px 28px;animation:sheetIn 280ms var(--ease-out);transform-origin:top center}
+.menu-sheet a{display:block;padding:14px 0;color:var(--white);text-decoration:none;font-size:28px;font-weight:600;font-stretch:112%;letter-spacing:-.01em;border-bottom:1px solid rgba(255,255,255,.1)}
+.menu-sheet a:last-child{border-bottom:0}
+.menu-sheet .btn{margin-top:20px;width:100%;font-size:16px;letter-spacing:0;padding:0}
+@keyframes sheetIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+.topbar.open{background:rgba(18,20,23,.94)}
+
+/* Back to top */
+.to-top{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:45;width:48px;height:48px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(18,20,23,.78);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);color:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 10px 30px -12px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(12px) scale(.9);transition:opacity .4s var(--ease-out),transform .45s var(--spring),visibility 0s linear .4s,background-color .2s}
+.to-top.show{opacity:1;visibility:visible;transform:none;transition:opacity .4s var(--ease-out),transform .45s var(--spring),visibility 0s,background-color .2s}
+.to-top:active{transform:scale(.92)}
+@media (hover:hover) and (pointer:fine){.to-top:hover{background:rgba(18,20,23,.92)}}
+@media (max-width:760px){.to-top{right:16px;bottom:calc(88px + env(safe-area-inset-bottom,0px));width:44px;height:44px}}
+@media (prefers-reduced-motion: reduce){.to-top,.to-top.show{transition:none}}
+
+/* Mobile sticky booking bar */
+.mobile-cta{display:none}
+@media (max-width:760px){
+  .mobile-cta{display:block;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:rgba(242,243,241,.82);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:1px solid rgba(18,20,23,.08);transform:translateY(100%);transition:transform 400ms var(--ease-drawer)}
+  .mobile-cta.show{transform:none}
+  .mobile-cta .btn{width:100%;background:var(--ink);color:var(--white)}
+}
+.btn:active,.nav-cta:active,.menu-btn:active{transform:scale(.97);transition-duration:100ms}
+.svc-tab:active span:first-child{transform:scale(.98)}
+.svc-tab span:first-child{display:inline-block;transition:transform 160ms var(--ease-out)}
+
+/* Frosted top bar */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top,0px);transition:background-color 250ms ease,box-shadow 250ms ease}
+.topbar .nav{transition:transform 250ms var(--ease-out),padding-block 250ms var(--ease-out)}
+.topbar.scrolled{background:rgba(18,20,23,.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);box-shadow:0 1px 0 rgba(255,255,255,.08)}
+.topbar.scrolled{margin-top:0}
+.topbar .mark{transition:transform 250ms var(--ease-out);transform-origin:left center}
+.topbar.scrolled .mark{transform:scale(.86)}
+
+@media (prefers-reduced-transparency: reduce){
+  .topbar.scrolled,.menu-sheet,.to-top,.bk-panel{background:#16191C;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .mobile-cta{background:var(--paper);-webkit-backdrop-filter:none;backdrop-filter:none}
+}
+@media (prefers-contrast: more){.bk-panel{background:#16191C;border-color:rgba(255,255,255,.6)}}
+
+/* Scroll reveal (only applied by script to content below the first screen) */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 700ms var(--ease-out),transform 700ms var(--ease-out);transition-delay:var(--d,0ms)}
+.reveal.in{opacity:1;transform:none}
+
+/* Service switch */
+@keyframes svcIn{from{opacity:.4;filter:blur(3px);transform:translateY(4px)}to{opacity:1;filter:none;transform:none}}
+.svc-anim{animation:svcIn 260ms var(--ease-out)}
+
+@keyframes riseIn{from{opacity:.001;transform:translateY(18px)}to{opacity:1;transform:none}}
+.book-copy > *{animation:riseIn 800ms var(--ease-out) both}
+.book-copy > *:nth-child(2){animation-delay:.08s}
+.book-copy > *:nth-child(3){animation-delay:.16s}
+.book-copy > *:nth-child(4){animation-delay:.24s}
+@media (prefers-reduced-motion: reduce){
+  .book-copy > *,.svc-anim,.svc-blob.squish{animation:none}
+  .svc-indicator.ready{transition:none}
+  .reveal{transform:none;transition:opacity 300ms ease}
+  .menu-sheet{animation:none}
+  .btn,.nav-cta,.topbar,.topbar .nav{transition:none}
+  .bk-check-badge,.bk-panel,.bk-step{animation:none!important;transition:none!important}
+}
+.btn-white{background:var(--white);color:var(--ink)}
+.btn-ice{background:var(--ice);color:var(--ice-ink)}
+.mark{display:block;flex:0 0 auto}
+
+/* NAV */
+.nav{position:relative;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-block:18px}
+.topbar.scrolled .nav{padding-block:14px}
+.brand{display:flex;align-items:center;gap:14px;color:var(--white);text-decoration:none;line-height:1}
+.brand-words{display:flex;flex-direction:column;gap:6px}
+.brand-name{font-size:18px;font-weight:700;font-stretch:112%;letter-spacing:.02em}
+.brand-sub{font-size:11px;font-weight:500;letter-spacing:.4em;color:var(--mist)}
+.nav-links{display:flex;gap:36px;font-size:15px}
+.nav-links a{color:var(--white);text-decoration:none}
+.nav-cta{display:inline-flex;align-items:center;min-height:44px;padding:0 22px;border-radius:999px;border:1px solid rgba(255,255,255,.5);color:var(--white);background:none;font-family:var(--font);text-decoration:none;font-size:15px;font-weight:500;cursor:pointer;transition:transform 160ms var(--ease-out),background-color 200ms ease}
+
+/* BOOK HERO (homepage) */
+.book-hero{position:relative;background:var(--ink);color:var(--white)}
+.book-hero-inner{display:flex;flex-wrap:wrap;gap:56px;align-items:center;padding-block:140px 80px}
+.book-copy{flex:1 1 380px;max-width:460px;min-width:0}
+.kicker{margin:0 0 20px;font-size:16px;color:var(--mist)}
+.book-hero h1{margin:0;font-size:clamp(36px,4.6vw,56px);line-height:1.03;font-weight:650;font-stretch:116%;letter-spacing:-.025em}
+.book-lede{margin:24px 0 0;max-width:40ch;font-size:17px;line-height:1.6;color:#DDE1E4}
+.book-link{display:inline-block;margin-top:32px;color:var(--white);font-size:15px;font-weight:500;text-underline-offset:6px;text-decoration:underline}
+
+/* TICKER */
+.ticker{background:var(--ice);color:var(--ice-ink);overflow:hidden;padding-block:9px}
+.ticker-track{display:flex;width:max-content;animation:marquee 28s linear infinite;will-change:transform}
+.ticker-item{display:inline-flex;align-items:center;gap:20px;padding-right:20px;white-space:nowrap;font-size:16px;font-weight:600;font-stretch:116%;letter-spacing:-.01em}
+.ticker-item svg{width:16px;height:16px}
+@keyframes marquee{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+@media (prefers-reduced-motion: reduce){.ticker-track{animation:none}}
+
+/* SERVICES */
+.services{display:flex;flex-wrap:wrap;align-items:center;gap:64px;padding-block:96px}
+.svc-left{flex:999 1 420px;min-width:0}
+.svc-left .lede{margin:18px 0 40px}
+.svc-tabs{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.svc-tab{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:18px 0;background:none;border:0;border-bottom:1px solid var(--line);font-family:var(--font);text-align:left;cursor:pointer;font-size:clamp(28px,3.4vw,42px);font-weight:600;font-stretch:114%;letter-spacing:-.02em;color:var(--muted-2);transition:color 160ms ease}
+.svc-tab[aria-selected="true"]{color:var(--ink)}
+.svc-short{display:none}
+.svc-tabs{position:relative}
+.svc-indicator{display:none}
+.svc-time{font-size:15px;font-weight:500;font-stretch:100%;letter-spacing:0;color:var(--muted)}
+.svc-card{flex:1 1 340px;max-width:400px;min-width:0;background:var(--ink);color:var(--white);border-radius:24px;overflow:hidden;display:flex;flex-direction:column}
+.ph{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:16px}
+.ph-dark{background-color:var(--ink-2);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 2px,transparent 2px 18px);color:rgba(255,255,255,.5)}
+.ph-light{background-color:#E3E6E4;background-image:repeating-linear-gradient(135deg,rgba(18,20,23,.07) 0 2px,transparent 2px 16px);color:var(--muted)}
+.ph-label{font-size:15px;font-weight:600}
+.ph-size{font-size:13px}
+.svc-card .ph{aspect-ratio:1/1;max-width:100%}
+.svc-card .ph .mark{position:absolute;top:22px;left:24px;opacity:.55}
+.svc-body{padding:28px 30px 30px;display:flex;flex-direction:column;gap:18px}
+.svc-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px}
+.svc-head h3{font-size:28px;font-weight:650;font-stretch:114%;letter-spacing:-.015em}
+.svc-price{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.svc-desc{margin:0;font-size:16px;line-height:1.6;color:var(--mist)}
+.svc-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding-top:6px}
+.svc-foot span{font-size:15px;color:var(--mist)}
+.svc-foot .btn{min-height:50px;padding:0 26px;border:0;cursor:pointer}
+
+/* ABOUT */
+.about{background:var(--ink);color:var(--white)}
+.about-inner{display:flex;flex-wrap:wrap;align-items:center;gap:72px;padding-block:96px}
+.about-img{flex:1 1 340px;max-width:460px;min-width:0;width:100%;aspect-ratio:975/1039;object-fit:cover;border-radius:20px}
+.about-copy{flex:999 1 420px;min-width:0;max-width:560px}
+.about-copy .eyebrow{margin:0 0 16px;font-size:16px;color:var(--ice)}
+.about-copy p.body{margin:20px 0 0;font-size:17px;line-height:1.7;color:var(--mist);max-width:62ch}
+.about-sign{margin:32px 0 0;font-size:18px;font-weight:600;font-stretch:110%}
+.about-copy .text-link{display:inline-block;margin-top:28px;color:var(--ice);font-size:16px;font-weight:500;text-underline-offset:6px}
+
+/* WORK */
+.work{padding-block:96px}
+.work-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px}
+.work-head .lede{margin:16px 0 0}
+.work-head a{font-size:16px;font-weight:500;text-underline-offset:6px}
+.gallery{margin-top:48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px}
+.gallery .ph{aspect-ratio:4/5;border-radius:14px;max-width:100%}
+.gallery .ph-label{color:#3F454B}
+
+/* VISIT */
+.visit{padding-bottom:96px}
+.visit-card{position:relative;overflow:hidden;background:var(--ink);color:var(--white);border-radius:28px;padding:64px 56px;display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start;justify-content:space-between}
+.visit-card .watermark{position:absolute;right:-60px;bottom:-70px;opacity:.05;pointer-events:none;width:420px;height:auto}
+.visit-copy{position:relative;flex:1 1 340px;max-width:440px;min-width:0}
+.visit-copy p{margin:18px 0 32px;font-size:17px;line-height:1.6;color:var(--mist)}
+.facts{position:relative;flex:1 1 360px;max-width:460px;min-width:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+.facts dt{font-size:14px;color:var(--ice);margin-bottom:10px}
+.facts dd{margin:0;font-size:16px;line-height:1.6;user-select:text}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--line)}
+.footer-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;padding-block:32px 40px;font-size:14px;color:var(--muted)}
+.footer-brand{display:flex;align-items:center;gap:16px}
+.footer-brand .bw{display:flex;flex-direction:column;gap:5px;line-height:1}
+.footer-brand .bn{color:var(--ink);font-size:15px;font-weight:700;font-stretch:112%;letter-spacing:.02em}
+.footer-brand .bs{font-size:10px;letter-spacing:.4em}
+.footer-links{display:flex;flex-wrap:wrap;gap:28px}
+.footer-links a{color:var(--muted)}
+.powered{margin:0;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.powered a{color:var(--ink);font-weight:600;text-underline-offset:4px;display:inline-flex;align-items:center;gap:6px}
+.powered img{width:16px;height:16px;object-fit:contain}
+
+/* LANGUAGE TOGGLE */
+.lang-toggle{position:relative}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.32);background:transparent;color:var(--white);font:600 13px/1 var(--font);letter-spacing:.04em;cursor:pointer}
+.lang-menu{position:absolute;right:0;top:calc(100% + 8px);width:150px;border-radius:12px;background:rgba(18,20,23,.96);border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);overflow:hidden;box-shadow:0 14px 30px -10px rgba(0,0,0,.5)}
+.lang-opt{display:block;width:100%;text-align:left;padding:10px 14px;background:none;border:0;color:var(--white);font:500 14px/1 var(--font);cursor:pointer}
+.lang-opt:hover{background:rgba(255,255,255,.08)}
+.lang-opt[aria-pressed="true"]{color:var(--ice)}
+.menu-sheet .lang-row{display:flex;gap:10px;padding:16px 0 4px}
+.menu-sheet .lang-row button{flex:1;min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:none;color:var(--white);font:600 14px/1 var(--font);cursor:pointer}
+.menu-sheet .lang-row button[aria-pressed="true"]{border-color:var(--ice);color:var(--ice)}
+
+@media (max-width: 760px){
+  .wrap{padding-inline:20px}
+  .nav-links{display:none}
+  .menu-btn{display:inline-flex}
+  .nav{padding-block:16px}
+  .topbar .mark{width:46px;height:29px}
+  .book-hero-inner{padding-block:104px 48px;gap:32px}
+  .book-hero h1{font-size:clamp(32px,10vw,44px)}
+  .book-lede{font-size:16px}
+  .ticker{padding-block:7px}
+  .ticker-item{font-size:13px;gap:16px;padding-right:16px}
+  .ticker-item svg{width:13px;height:13px}
+  .services{padding-block:64px;gap:40px}
+  .services{gap:20px}
+  .svc-left .lede{margin:14px 0 24px}
+  .svc-tabs{flex-direction:row;border-top:0;background:#E3E6E4;border-radius:14px;padding:4px;gap:4px}
+  .svc-tab{flex:1 1 0;justify-content:center;min-height:44px;padding:0 8px;border:0;border-radius:10px;font-size:15px;font-weight:600;font-stretch:100%;letter-spacing:0;color:var(--muted);transition:color .25s var(--ease-out),background-color .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+  .svc-tab{position:relative;z-index:1;background:transparent}
+  .svc-tab[aria-selected="true"]{color:var(--ink)}
+  .svc-indicator{display:block;position:absolute;top:4px;bottom:4px;left:0;width:0;z-index:0;pointer-events:none}
+  .svc-indicator.ready{transition:transform 420ms cubic-bezier(.34,1.35,.5,1),width 420ms cubic-bezier(.34,1.35,.5,1)}
+  .svc-blob{display:block;width:100%;height:100%;border-radius:10px;background:var(--white);box-shadow:0 1px 3px rgba(18,20,23,.14),0 6px 14px -8px rgba(18,20,23,.3)}
+  .svc-blob.squish{animation:blobSquish 420ms var(--ease-out)}
+  @keyframes blobSquish{0%{transform:none}35%{transform:scale(1.06,.9)}70%{transform:scale(.99,1.02)}100%{transform:none}}
+  .svc-tab span.svc-time,.svc-tab span.svc-long{display:none}
+  .svc-tab span.svc-short{display:inline}
+  .svc-card .ph{aspect-ratio:16/9}
+  .svc-card .ph .mark{top:16px;left:18px}
+  .svc-body{padding:22px 22px 24px;gap:14px}
+  .svc-head h3{font-size:24px}
+  .svc-card{max-width:none;flex-basis:100%}
+  .svc-foot .btn{flex:1 1 auto}
+  .about-inner{padding-block:64px;gap:36px}
+  .about-img{max-width:none}
+  .work{padding-block:64px}
+  .work-head{align-items:flex-start}
+  .gallery{margin-top:32px;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .gallery .ph{padding:10px}
+  .gallery .ph-label{font-size:13px}
+  .visit{padding-bottom:64px}
+  .visit-card{padding:40px 22px;border-radius:22px;gap:36px}
+  .visit-card .watermark{width:260px;right:-50px;bottom:-40px}
+  .visit-copy .btn{width:100%}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+  .footer-inner{flex-direction:column;align-items:flex-start;gap:16px;padding-block:28px calc(96px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-width: 480px){
+  .nav-cta{display:none}
+}
+@media (max-width: 380px){
+  .facts{grid-template-columns:1fr}
+  .gallery .ph-size{display:none}
+}
+
+/* ============ BOOKING WIDGET (inline, always visible) ============ */
+.bk-panel{flex:1 1 420px;max-width:460px;min-width:0;width:100%;max-height:min(620px,72vh);overflow-y:auto;display:flex;flex-direction:column;background:rgba(255,255,255,.07);color:var(--white);border:1px solid rgba(255,255,255,.18);border-radius:24px;-webkit-backdrop-filter:blur(20px) saturate(140%);backdrop-filter:blur(20px) saturate(140%);box-shadow:0 30px 70px -20px rgba(0,0,0,.5);animation:riseIn 900ms .25s var(--ease-out) both}
+.bk-panel{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
+.bk-panel::-webkit-scrollbar{width:8px}
+.bk-panel::-webkit-scrollbar-track{background:transparent}
+.bk-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:999px}
+.bk-panel::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.32)}
+.bk-panel button:focus-visible,.bk-panel input:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+
+.bk-progress{display:flex;align-items:center;justify-content:center;gap:8px;padding-top:16px}
+.bk-dot{width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.22);transition:background-color .25s ease,width .25s ease}
+.bk-dot.active{background:var(--ice);width:18px}
+.bk-dot.done{background:rgba(255,255,255,.35)}
+
+.bk-step{display:none}
+.bk-step.show{display:block}
+.bk-step.show.in{animation:bkStepIn .28s var(--ease-out)}
+@keyframes bkStepIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
+.bk-step.step4{display:none;flex-direction:column;align-items:center;text-align:center;padding:64px 32px 48px;position:relative;overflow:hidden}
+.bk-step.step4.show{display:flex}
+
+.bk-head{display:flex;align-items:center;justify-content:center;position:relative;padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.bk-head-title{font-family:var(--font);font-size:16px;font-weight:650;font-stretch:114%;letter-spacing:.02em}
+.bk-icon-btn{position:absolute;top:10px;width:32px;height:32px;border-radius:999px;border:0;background:none;color:rgba(255,255,255,.65);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background-color .15s ease,color .15s ease}
+.bk-icon-btn:hover{background:rgba(255,255,255,.1);color:var(--white)}
+.bk-icon-btn.left{left:20px}
+
+.bk-service-groups{padding:0 20px}
+.bk-cat-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);margin:18px 0 10px}
+.bk-service-groups > div:first-child .bk-cat-label{margin-top:14px}
+.bk-service-row{display:flex;align-items:center;gap:14px;padding:14px 8px;margin:0 -8px;border-radius:12px;text-decoration:none;color:inherit;cursor:pointer;background:none;border:0;width:calc(100% + 16px);text-align:left;font-family:var(--font);transition:background-color .15s ease}
+.bk-service-row:hover{background:rgba(255,255,255,.05)}
+.bk-check{width:22px;height:22px;flex:none;border-radius:999px;border:1.5px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;color:var(--ice-ink)}
+.bk-check.on{background:var(--ice);border-color:var(--ice)}
+.bk-check.on svg{animation:bkCheckPop .35s cubic-bezier(.16,1,.3,1)}
+@keyframes bkCheckPop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.bk-svc-name{font-weight:650;font-size:14.5px}
+.bk-svc-meta{font-size:12.5px;color:var(--mist);margin-top:2px}
+.bk-svc-price{font-size:14.5px;white-space:nowrap;margin-left:auto}
+
+.bk-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;border-top:1px solid rgba(255,255,255,.1);position:sticky;bottom:0;background:rgba(18,20,23,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.bk-total-label{font-size:11px;color:var(--mist)}
+.bk-total-price{font-family:var(--font);font-size:18px;font-weight:650;font-stretch:112%}
+.bk-cta{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border-radius:999px;border:0;background:var(--ice);color:var(--ice-ink);font:650 13.5px/1 var(--font);font-stretch:112%;cursor:pointer;transition:transform .15s ease,opacity .2s ease}
+.bk-cta:hover{transform:translateY(-1px)}
+.bk-cta[disabled],.bk-cta.disabled{opacity:.35;pointer-events:none}
+.bk-cta.outline{background:none;border:1px solid rgba(255,255,255,.4);color:var(--white)}
+
+.bk-info-row{display:flex;align-items:center;gap:12px;margin:18px 20px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.1)}
+.bk-info-mark{width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:var(--ice)}
+.bk-info-name{font-weight:700;font-size:14px}
+.bk-info-sub{font-size:12px;color:var(--mist)}
+
+.bk-date-row{display:flex;align-items:center;gap:4px;padding:0 12px}
+.bk-date-strip{display:flex;gap:8px;overflow-x:auto;flex:1;padding:4px 0;scrollbar-width:none}
+.bk-date-strip::-webkit-scrollbar{display:none}
+.bk-date-chip{flex:none;width:58px;padding:10px 0;border-radius:10px;text-align:center;border:1px solid rgba(255,255,255,.12);background:none;color:var(--white);font-family:var(--font);cursor:pointer;transition:transform .15s ease,background-color .15s ease,border-color .15s ease}
+.bk-date-chip:hover:not(:disabled){border-color:rgba(255,255,255,.3);transform:translateY(-2px)}
+.bk-date-chip.on{background:var(--ice);color:var(--ice-ink);border-color:var(--ice)}
+.bk-date-chip .d1{font-size:10.5px;opacity:.75}
+.bk-date-chip .d2{font-family:var(--font);font-size:17px;font-weight:650;margin:2px 0}
+.bk-date-chip .d3{font-size:9px;opacity:.7}
+.bk-date-closed{flex:none;width:58px;padding:10px 0;border-radius:10px;text-align:center;opacity:.4;border:1px solid rgba(255,255,255,.08);background-image:repeating-linear-gradient(135deg,#000 0 6px,#17191c 6px 12px)}
+.bk-date-closed .d1{font-size:10.5px;opacity:.75}
+.bk-date-closed .d2{font-family:var(--font);font-size:17px;font-weight:650;margin:2px 0}
+.bk-date-closed .d3{font-size:9px;opacity:.7}
+.bk-date-nav{flex:none;width:32px;height:32px;border-radius:999px;border:0;background:none;color:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.bk-date-nav:hover{background:rgba(255,255,255,.1);color:var(--white)}
+.bk-date-nav:disabled{opacity:.25;pointer-events:none}
+
+.bk-time-section{padding:24px 20px 28px}
+.bk-time-label{font-size:13.5px;color:var(--mist);text-align:center;margin-bottom:14px}
+.bk-time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.bk-time-chip{padding:12px 0;text-align:center;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:none;color:var(--ice);font:650 13.5px/1 var(--font);cursor:pointer;transition:transform .12s ease,background-color .15s ease,border-color .15s ease}
+.bk-time-chip:hover:not(:disabled){border-color:var(--ice);transform:translateY(-1px)}
+.bk-time-chip.on{background:var(--ice);color:var(--ice-ink);border-color:var(--ice)}
+.bk-time-chip:disabled{color:rgba(255,255,255,.25);border-color:rgba(255,255,255,.08);opacity:.5;cursor:not-allowed}
+
+.bk-form{display:flex;flex-direction:column;gap:12px;padding:20px}
+.bk-required{text-align:right;font-size:11px;color:rgba(255,255,255,.4);padding:0 20px;margin-top:-8px}
+.bk-row{display:flex;gap:12px}
+.bk-field{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:12px 14px;color:var(--white);font:400 14px/1.3 var(--font);caret-color:var(--ice);transition:border-color .15s ease,background-color .15s ease}
+.bk-field::placeholder{color:var(--mist)}
+.bk-field:focus{outline:none;border-color:var(--ice);background:rgba(255,255,255,.09)}
+.bk-summary{border-top:1px solid rgba(255,255,255,.1);padding-top:16px;margin-top:6px}
+.bk-summary-line{font-weight:700;font-size:14.5px}
+.bk-summary-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--mist);margin:4px 0 12px}
+.bk-summary-item{display:flex;justify-content:space-between;font-size:13.5px;color:rgba(255,255,255,.82);padding:4px 0}
+.bk-summary-total{display:flex;justify-content:space-between;font-weight:700;font-size:14.5px;padding-top:10px;margin-top:6px;border-top:1px solid rgba(255,255,255,.12)}
+.bk-checkline{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.78);cursor:pointer}
+.bk-checkline input{width:18px;height:18px;accent-color:var(--ice)}
+.bk-error{color:var(--danger);font-size:13px;text-align:center;display:none}
+.bk-error.show{display:block}
+
+.bk-loading{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--mist);font-size:13.5px;padding:40px 0}
+.bk-spin{animation:bkSpin .8s linear infinite}
+@keyframes bkSpin{to{transform:rotate(360deg)}}
+.bk-retry{padding:9px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:none;color:var(--white);font:600 12.5px/1 var(--font);cursor:pointer}
+.bk-retry:hover{border-color:rgba(255,255,255,.4)}
+
+.bk-glow{position:absolute;top:-60px;width:220px;height:220px;border-radius:999px;background:rgba(255,255,255,.18);filter:blur(70px);pointer-events:none}
+.bk-check-badge{position:relative;width:72px;height:72px;border-radius:999px;background:var(--ice);color:var(--ice-ink);display:flex;align-items:center;justify-content:center;margin-bottom:24px;animation:bkCheckPop .35s cubic-bezier(.16,1,.3,1)}
+.bk-step4-title{position:relative;font-family:var(--font);font-size:24px;font-weight:650;font-stretch:112%;margin-bottom:28px}
+.bk-receipt{position:relative;width:100%;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);padding:16px 0;text-align:left;margin-bottom:28px}
+.bk-receipt-line{font-weight:700;font-size:14.5px;margin-bottom:4px}
+.bk-receipt-sub{font-size:13px;color:var(--mist)}
+
+@media (max-width:760px){
+  .bk-panel{max-height:none;flex-basis:100%}
+}
+@media (max-width:480px){
+  .bk-time-grid{grid-template-columns:repeat(3,1fr)}
+}
 </style>
 </head>
-<body class="bg-ink text-paper relative">
+<body>
 
-<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-  <div class="absolute w-[560px] h-[560px] rounded-full bg-[#8a8074]/45 blur-[90px]" style="top:2%;left:-6%"></div>
-  <div class="absolute w-[520px] h-[520px] rounded-full bg-[#786f62]/40 blur-[100px]" style="top:40%;right:-8%"></div>
-  <div class="absolute w-[480px] h-[480px] rounded-full bg-[#5f5850]/45 blur-[85px]" style="top:78%;left:20%"></div>
-  <div class="absolute w-[440px] h-[440px] rounded-full bg-[#928878]/35 blur-[95px]" style="top:110%;right:10%"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ff-scissors" viewBox="20 2 24 32">
+      <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <path d="M25 5l12 20"/><path d="M39 5L27 25"/>
+        <circle cx="26" cy="29.5" r="3.3"/><circle cx="38" cy="29.5" r="3.3"/>
+      </g>
+    </symbol>
+    <symbol id="ff-camera" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>
+      </g>
+    </symbol>
+    <symbol id="ff-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="ff-chev-l" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="ff-chev-r" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="ff-check" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7.5" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="ff-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.75" fill="none"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  </defs>
+</svg>
+
+<div class="topbar" id="topbar">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="brand" href="#top" aria-label="Fresh Fadez Studios, home">
+      <img class="mark" src="./images/logo-mark-white.png" alt="" width="36" height="34">
+      <span class="brand-words"><span class="brand-name">FRESHFADEZ</span><span class="brand-sub">STUDIOS</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#services" data-i18n="nav_services">Diensten</a>
+      <a href="#about" data-i18n="nav_about">Over ons</a>
+      <a href="#work" data-i18n="nav_work">Ons werk</a>
+      <a href="#visit" data-i18n="nav_visit">Bezoek</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="lang-toggle">
+        <button type="button" class="lang-btn" id="lang-btn" aria-haspopup="true" aria-expanded="false">
+          <span id="lang-btn-label">NL</span>
+        </button>
+        <div class="lang-menu" id="lang-menu" hidden>
+          <button type="button" class="lang-opt" data-lang="nl" aria-pressed="true">Nederlands</button>
+          <button type="button" class="lang-opt" data-lang="en" aria-pressed="false">English</button>
+        </div>
+      </div>
+      <button type="button" class="nav-cta" id="nav-book-btn" data-i18n="nav_book">Boek nu</button>
+      <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu-sheet" aria-label="Menu openen"><span class="bars"><span class="bar"></span><span class="bar"></span></span></button>
+    </div>
+  </nav>
+  <div class="menu-sheet" id="menu-sheet" hidden>
+    <a href="#services" data-i18n="nav_services">Diensten</a>
+    <a href="#about" data-i18n="nav_about">Over ons</a>
+    <a href="#work" data-i18n="nav_work">Ons werk</a>
+    <a href="#visit" data-i18n="nav_visit">Bezoek</a>
+    <button type="button" class="btn btn-ice" id="menu-book-btn" data-i18n="hero_cta" style="width:100%;margin-top:8px">Afspraak maken</button>
+    <div class="lang-row">
+      <button type="button" data-lang="nl" aria-pressed="true">NL</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
 </div>
 
-<!-- NAV -->
-<header class="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2.5rem)] max-w-[1320px] grid grid-cols-3 items-center gap-4 px-6 py-3.5 rounded-xl bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 border border-paper/25 shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
-  <a href="#top" class="flex items-center gap-3">
-    <img src="./images/logo.png" alt="Fresh Fadez Studios" class="w-11 h-11 rounded object-cover">
-    <span class="text-[10px] tracking-[3px] text-paper/55">LELYSTAD</span>
-  </a>
-  <nav class="hidden md:flex gap-8 justify-self-center">
-    <a href="#top" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_home">Home</a>
-    <a href="#diensten" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_diensten">Diensten</a>
-    <a href="#gallery" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_gallery">Gallery</a>
-    <a href="#reviews" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_reviews">Reviews</a>
-    <a href="#contact" class="nav-link text-[13px] font-semibold tracking-wide" data-i18n="nav_contact">Contact</a>
-  </nav>
-  <div class="flex items-center gap-2.5 justify-self-end col-start-3">
-    <div class="relative">
-      <button id="lang-toggle-btn" onclick="toggleLangMenu()" aria-label="Taal wijzigen" class="flex items-center gap-1.5 px-2.5 md:px-3.5 py-2.5 rounded-lg bg-paper/[0.08] border border-paper/20 text-[11.5px] font-bold tracking-wide">
-        <span aria-hidden="true">🌐</span><span id="lang-toggle-label" class="hidden md:inline">NEDERLANDS</span><span aria-hidden="true" class="hidden md:inline text-[9px] opacity-70">▾</span>
-      </button>
-      <div id="lang-menu" class="hidden absolute right-0 top-[calc(100%+8px)] w-40 rounded-lg bg-surface2 border border-paper/20 shadow-[0_8px_24px_rgba(0,0,0,0.35)] overflow-hidden">
-        <button onclick="setLanguage('nl')" data-lang-option="nl" class="lang-option w-full text-left px-4 py-2.5 text-[13px] font-semibold hover:bg-paper/10">Nederlands</button>
-        <button onclick="setLanguage('en')" data-lang-option="en" class="lang-option w-full text-left px-4 py-2.5 text-[13px] font-semibold hover:bg-paper/10">English</button>
+<header class="book-hero" id="top">
+  <div class="wrap book-hero-inner">
+    <div class="book-copy">
+      <p class="kicker" data-i18n="kicker">Premium barbershop &amp; studio</p>
+      <h1 data-i18n="hero_title">Boek je afspraak direct online</h1>
+      <p class="book-lede" data-i18n="hero_desc">Kies je dienst en een tijd die jou uitkomt. Geen account nodig, klaar in een paar klikken.</p>
+      <a class="book-link" href="#services" data-i18n="hero_link">Bekijk diensten</a>
+    </div>
+
+    <!-- BOOKING WIDGET -->
+    <section class="bk-panel" id="bk-panel" aria-label="Boek een afspraak">
+
+      <div class="bk-progress" id="bk-progress">
+        <span class="bk-dot" data-dot="1"></span>
+        <span class="bk-dot" data-dot="2"></span>
+        <span class="bk-dot" data-dot="3"></span>
       </div>
-    </div>
-    <button onclick="openBooking()" class="cta-secondary px-3 md:px-5 py-2.5 border border-paper rounded text-[13px] font-bold whitespace-nowrap" data-i18n="nav_book">Boek nu</button>
-    <button onclick="toggleMobileNav()" aria-label="Menu openen" class="md:hidden flex flex-col justify-center gap-[5px] w-9 h-9 flex-none">
-      <span class="block w-5 h-[1.5px] bg-paper mx-auto"></span>
-      <span class="block w-5 h-[1.5px] bg-paper mx-auto"></span>
-    </button>
+
+      <!-- STEP 1 -->
+      <div class="bk-step" id="bk-step-1" data-step="1">
+        <div class="bk-head">
+          <div class="bk-head-title" data-i18n="modal_step1_title">KIES DIENSTEN</div>
+        </div>
+        <div class="bk-service-groups" id="bk-service-groups"></div>
+        <div class="bk-footer">
+          <div>
+            <div class="bk-total-label" data-i18n="modal_total">Totaal</div>
+            <div class="bk-total-price" id="bk-total-price">€ 0,00</div>
+          </div>
+          <button type="button" class="bk-cta disabled" id="bk-go-time" data-i18n="modal_choose_time">Kies een tijd</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="bk-step" id="bk-step-2" data-step="2">
+        <div class="bk-head">
+          <button type="button" class="bk-icon-btn left" id="bk-back-2" aria-label="Terug"><svg width="18" height="18" aria-hidden="true"><use href="#ff-back"/></svg></button>
+          <div class="bk-head-title" data-i18n="modal_step2_title">KIES DATUM EN TIJD</div>
+        </div>
+        <div class="bk-info-row">
+          <span class="bk-info-mark"><img src="./images/logo-mark-white.png" alt="" width="18" height="17"></span>
+          <div><div class="bk-info-name">Fresh Fadez Studios</div><div class="bk-info-sub">Lelystad</div></div>
+        </div>
+        <div class="bk-date-row">
+          <button type="button" class="bk-date-nav" id="bk-date-prev" aria-label="Vorige week"><svg width="16" height="16" aria-hidden="true"><use href="#ff-chev-l"/></svg></button>
+          <div class="bk-date-strip" id="bk-date-strip"></div>
+          <button type="button" class="bk-date-nav" id="bk-date-next" aria-label="Volgende week"><svg width="16" height="16" aria-hidden="true"><use href="#ff-chev-r"/></svg></button>
+        </div>
+        <div class="bk-time-section" id="bk-time-section" hidden>
+          <div class="bk-time-label" id="bk-time-label"></div>
+          <div class="bk-time-grid" id="bk-time-grid"></div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="bk-step" id="bk-step-3" data-step="3">
+        <div class="bk-head">
+          <button type="button" class="bk-icon-btn left" id="bk-back-3" aria-label="Terug"><svg width="18" height="18" aria-hidden="true"><use href="#ff-back"/></svg></button>
+          <div class="bk-head-title" data-i18n="modal_step3_title">JOUW GEGEVENS</div>
+        </div>
+        <div class="bk-required" data-i18n="modal_required">*Verplicht</div>
+        <div class="bk-form">
+          <div class="bk-row">
+            <input class="bk-field" id="f-first" placeholder="Voornaam*" data-i18n-ph="ph_first">
+            <input class="bk-field" id="f-last" placeholder="Achternaam*" data-i18n-ph="ph_last">
+          </div>
+          <input class="bk-field" id="f-email" placeholder="E-mailadres*" data-i18n-ph="ph_email">
+          <input class="bk-field" id="f-phone" placeholder="Telefoonnummer*" data-i18n-ph="ph_phone">
+          <input class="bk-field" id="f-notes" placeholder="Opmerkingen" data-i18n-ph="ph_notes">
+
+          <div class="bk-summary">
+            <div class="bk-summary-line" id="summary-line"></div>
+            <div class="bk-summary-meta" id="summary-duration"></div>
+            <div id="summary-items"></div>
+            <div class="bk-summary-total"><span data-i18n="modal_total">Totaal</span><span id="summary-total"></span></div>
+          </div>
+
+          <label class="bk-checkline">
+            <input id="f-save" type="checkbox" checked>
+            <span data-i18n="modal_save_details">Bewaar mijn gegevens voor de volgende keer</span>
+          </label>
+          <label class="bk-checkline">
+            <input id="f-newsletter" type="checkbox">
+            <span data-i18n="modal_newsletter">Ja, ik meld me aan voor de nieuwsbrief</span>
+          </label>
+
+          <div class="bk-error" id="booking-error"></div>
+          <button type="button" class="bk-cta disabled" id="confirm-btn" data-i18n="modal_confirm" style="margin-top:4px">Afspraak bevestigen</button>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="bk-step step4" id="bk-step-4" data-step="4">
+        <div class="bk-glow" aria-hidden="true"></div>
+        <div class="bk-check-badge"><svg width="32" height="32" aria-hidden="true"><use href="#ff-check"/></svg></div>
+        <div class="bk-step4-title" data-i18n="modal_step4_title">Afspraak bevestigd</div>
+        <div class="bk-receipt">
+          <div class="bk-receipt-line" id="confirm-line"></div>
+          <div class="bk-receipt-sub" id="confirm-total"></div>
+        </div>
+        <button type="button" class="bk-cta outline" id="bk-restart" data-i18n="modal_restart" style="position:relative">Nog een afspraak boeken</button>
+      </div>
+
+    </section>
   </div>
-  <nav id="mobile-nav" class="hidden col-span-3 flex-col mt-3 pt-3 border-t border-paper/15">
-    <a href="#top" onclick="closeMobileNav()" class="nav-link text-[14px] font-semibold py-2.5" data-i18n="nav_home">Home</a>
-    <a href="#diensten" onclick="closeMobileNav()" class="nav-link text-[14px] font-semibold py-2.5" data-i18n="nav_diensten">Diensten</a>
-    <a href="#gallery" onclick="closeMobileNav()" class="nav-link text-[14px] font-semibold py-2.5" data-i18n="nav_gallery">Gallery</a>
-    <a href="#reviews" onclick="closeMobileNav()" class="nav-link text-[14px] font-semibold py-2.5" data-i18n="nav_reviews">Reviews</a>
-    <a href="#contact" onclick="closeMobileNav()" class="nav-link text-[14px] font-semibold py-2.5" data-i18n="nav_contact">Contact</a>
-    <div class="flex items-center gap-2 pt-3 mt-1 border-t border-paper/10">
-      <button onclick="setLanguage('nl')" data-lang-option-mobile="nl" class="lang-option-mobile flex-1 py-2 rounded-lg border border-paper/20 text-[12.5px] font-bold">NL</button>
-      <button onclick="setLanguage('en')" data-lang-option-mobile="en" class="lang-option-mobile flex-1 py-2 rounded-lg border border-paper/20 text-[12.5px] font-bold">EN</button>
-    </div>
-  </nav>
 </header>
-<div class="h-24"></div>
 
-<!-- HERO -->
-<section id="top" class="relative h-[88vh] min-h-[620px] flex items-end overflow-hidden">
-  <img src="./images/Hero_image.png" alt="Barbers aan het werk" class="absolute inset-0 w-full h-full object-cover">
-  <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(180deg, rgba(13,13,12,0) 55%, rgba(13,13,12,.85) 100%)"></div>
-  <div class="relative z-10 max-w-[1320px] w-full mx-auto px-14 pb-[72px]">
-    <div class="inline-flex items-center text-[11px] font-bold tracking-[1.5px] uppercase px-3.5 py-1.5 rounded border border-paper mb-6" data-i18n="hero_badge">Lelystad's Finest</div>
-    <h1 class="font-display text-[38px] md:text-[68px] leading-[1.05] max-w-[640px] mb-6" data-i18n="hero_title">More than a cut. It's a lifestyle.</h1>
-    <p class="text-[17px] leading-relaxed text-paper/80 max-w-[460px] mb-9" data-i18n="hero_desc">Bij Fresh Fadez draait het niet alleen om een frisse fade, maar om zelfvertrouwen, stijl en kwaliteit — in een studio waar je welkom bent zoals je bent.</p>
-    <div class="flex gap-3.5 flex-wrap">
-      <button onclick="openBooking()" class="cta-primary px-7 py-4 bg-paper text-ink font-bold text-sm rounded-md" data-i18n="hero_cta">Afspraak maken</button>
-      <a href="#diensten" class="ghost px-7 py-4 border border-paper/30 rounded-md font-bold text-sm flex items-center gap-1.5"><span data-i18n="hero_link">Bekijk diensten</span> →</a>
-    </div>
-  </div>
-</section>
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
 
-<!-- SERVICES & PRICING -->
-<section id="diensten" class="max-w-[1320px] mx-auto px-14 py-[70px] grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-16">
-  <div>
-    <div class="text-[11px] font-bold tracking-[1.5px] uppercase mb-3.5" data-i18n="svc_eyebrow">Diensten &amp; prijzen</div>
-    <h2 class="font-display text-[28px] md:text-[38px] mb-4" data-i18n="svc_title">Wat wij doen</h2>
-    <p class="text-[15px] leading-relaxed text-paper/68 max-w-[360px] mb-6" data-i18n="svc_desc">Elke fade begint met een goed gesprek. Onze barbers nemen de tijd voor precisie en advies op maat.</p>
-    <button onclick="openBooking()" class="ghost inline-flex items-center gap-1.5 px-6 py-3 border border-paper rounded text-[13.5px] font-bold"><span data-i18n="svc_cta">Volledige prijslijst</span> →</button>
-  </div>
-  <div data-parallax class="rounded-lg border border-paper/25 bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 px-7 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
-    <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
-      <div><div class="font-display text-[17px] mb-1" data-i18n="svc_row1_name">Fade &amp; Style</div><div class="text-[13px] text-paper/55" data-i18n="svc_row1_desc">Precisiefade met styling · 45 min</div></div>
-      <div class="font-display text-[19px]">€35</div>
-    </div>
-    <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
-      <div><div class="font-display text-[17px] mb-1" data-i18n="svc_row2_name">Baard Trim</div><div class="text-[13px] text-paper/55" data-i18n="svc_row2_desc">Vorm &amp; lijnen bijwerken · 20 min</div></div>
-      <div class="font-display text-[19px]">€20</div>
-    </div>
-    <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
-      <div><div class="font-display text-[17px] mb-1" data-i18n="svc_row3_name">Fade + Baard</div><div class="text-[13px] text-paper/55" data-i18n="svc_row3_desc">De volledige treatment · 60 min</div></div>
-      <div class="font-display text-[19px]">€50</div>
-    </div>
-    <div class="flex justify-between items-center gap-4 py-5 border-b border-paper/10">
-      <div><div class="font-display text-[17px] mb-1" data-i18n="svc_row4_name">Kids Cut</div><div class="text-[13px] text-paper/55" data-i18n="svc_row4_desc">T/m 12 jaar · 30 min</div></div>
-      <div class="font-display text-[19px]">€25</div>
-    </div>
-    <div class="flex justify-between items-center gap-4 py-5">
-      <div><div class="font-display text-[17px] mb-1" data-i18n="svc_row5_name">Skin Fade</div><div class="text-[13px] text-paper/55" data-i18n="svc_row5_desc">Strak tot op de huid · 45 min</div></div>
-      <div class="font-display text-[19px]">€38</div>
-    </div>
-  </div>
-</section>
-
-<!-- GALLERY -->
-<section id="gallery" class="max-w-[1320px] mx-auto px-14 pb-[90px]">
-  <div class="mb-9">
-    <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5" data-i18n="gallery_eyebrow">Ons werk</div>
-    <h2 class="font-display text-[28px] md:text-[38px]" data-i18n="gallery_title">Fresh cuts</h2>
-  </div>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-[18px]" style="grid-auto-rows:220px">
-    <div class="col-span-2 rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40" data-i18n="gallery_1">Skin fade close-up</div>
-    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2" data-i18n="gallery_2">Studio interieur</div>
-    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2" data-i18n="gallery_3">Baard styling</div>
-    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2" data-i18n="gallery_4">Klant portret</div>
-    <div class="rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40 text-center px-2" data-i18n="gallery_5">Barber aan het werk</div>
-    <div class="col-span-2 rounded-md bg-[repeating-linear-gradient(135deg,#1e1c19,#1e1c19_10px,#242220_10px,#242220_20px)] flex items-center justify-center text-[11px] font-mono text-paper/40" data-i18n="gallery_6">Voor &amp; na fade</div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about" class="max-w-[1320px] mx-auto px-14 pb-[90px] grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-  <img src="./images/about-photo.png" alt="Fresh Fadez Studios team" class="w-full rounded-lg object-cover" style="max-height:560px">
-  <div>
-    <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5" data-i18n="about_eyebrow">Over ons</div>
-    <h2 class="font-display text-[28px] md:text-[38px] mb-5" data-i18n="about_title">[Jouw titel hier]</h2>
-    <p class="text-[15px] leading-relaxed text-paper/70 mb-4" data-i18n="about_p1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-    <p class="text-[15px] leading-relaxed text-paper/70" data-i18n="about_p2">Nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. [Vervang dit met jouw eigen verhaal]</p>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section id="reviews" class="max-w-[1320px] mx-auto px-14 pb-[90px]">
-  <div class="mb-9">
-    <div class="text-[11px] font-bold tracking-[1.5px] uppercase mb-3.5" data-i18n="reviews_eyebrow">Klanten aan het woord</div>
-    <h2 class="font-display text-[28px] md:text-[38px]" data-i18n="reviews_title">Wat ze zeggen</h2>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-    <div data-parallax class="bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 border border-paper/25 rounded-lg p-7 flex flex-col gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
-      <div class="text-xl tracking-[2px]">★★★★★</div>
-      <p class="text-[14.5px] leading-relaxed flex-1" data-i18n="review_1">"Beste barber van Lelystad. Elke keer weer een perfecte fade."</p>
-      <div class="flex items-center gap-2.5">
-        <div class="w-[34px] h-[34px] rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">Y</div>
-        <div class="text-[13px] font-semibold">Youssef K.</div>
+<main>
+  <section class="services wrap" id="services">
+    <div class="svc-left">
+      <h2 class="h2" data-i18n="svc_h2">Vind jouw knipbeurt</h2>
+      <p class="lede" data-i18n="svc_lede">Elke dienst begint met een kort gesprek, zodat het resultaat past bij jouw gezicht, haar en routine.</p>
+      <div class="svc-tabs" role="tablist" aria-label="Diensten">
+        <span class="svc-indicator" aria-hidden="true"><span class="svc-blob"></span></span>
+        <button type="button" role="tab" class="svc-tab" id="tab-knippen-baard" data-slug="knippen-baard" aria-selected="true" aria-controls="svc-panel" tabindex="0"><span><span class="svc-long" data-i18n="chip_haircut">Knippen</span></span><span class="svc-time" data-time-for="knippen-baard">···</span></button>
+        <button type="button" role="tab" class="svc-tab" id="tab-skin-fade" data-slug="skin-fade" aria-selected="false" aria-controls="svc-panel" tabindex="-1"><span><span class="svc-long" data-i18n="chip_fade">Fade</span></span><span class="svc-time" data-time-for="skin-fade">···</span></button>
+        <button type="button" role="tab" class="svc-tab" id="tab-baard" data-slug="baard" aria-selected="false" aria-controls="svc-panel" tabindex="-1"><span><span class="svc-long" data-i18n="chip_beard">Baard</span></span><span class="svc-time" data-time-for="baard">···</span></button>
       </div>
     </div>
-    <div data-parallax class="bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 border border-paper/25 rounded-lg p-7 flex flex-col gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
-      <div class="text-xl tracking-[2px]">★★★★★</div>
-      <p class="text-[14.5px] leading-relaxed flex-1" data-i18n="review_2">"Chille sfeer, strakke studio en ze nemen echt de tijd voor je."</p>
-      <div class="flex items-center gap-2.5">
-        <div class="w-[34px] h-[34px] rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">D</div>
-        <div class="text-[13px] font-semibold">Daan v.d. Berg</div>
-      </div>
-    </div>
-    <div data-parallax class="bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 border border-paper/25 rounded-lg p-7 flex flex-col gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
-      <div class="text-xl tracking-[2px]">★★★★★</div>
-      <p class="text-[14.5px] leading-relaxed flex-1" data-i18n="review_3">"Kwam voor een fade, kwam terug voor de service. Top team."</p>
-      <div class="flex items-center gap-2.5">
-        <div class="w-[34px] h-[34px] rounded-md bg-[#2a2825] text-[#e8e4dc] flex items-center justify-center font-display text-[13px]">M</div>
-        <div class="text-[13px] font-semibold">Marco R.</div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- LOCATION & HOURS -->
-<section id="contact" class="max-w-[1320px] mx-auto px-14 pb-[100px] grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
-  <div>
-    <div class="text-[11px] font-bold tracking-[1.5px] uppercase text-paper/60 mb-3.5" data-i18n="contact_eyebrow">Bezoek ons</div>
-    <h2 class="font-display text-[28px] md:text-[38px] mb-6" data-i18n="contact_title">Locatie &amp; openingstijden</h2>
-    <div class="flex flex-col gap-2 mb-7 text-[15px] text-paper/75">
-      <div class="font-bold text-paper">Fresh Fadez Studios</div>
-      <div>De Waag 8, 8232 DG Lelystad</div>
-      <div>hallo@freshfadez.nl · 06 12 34 56 78</div>
-    </div>
-    <div data-parallax class="rounded-lg border border-paper/25 bg-paper/[0.12] backdrop-blur-2xl backdrop-saturate-200 p-6 flex flex-col gap-2.5 max-w-[380px] shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
-      <div class="flex justify-between text-sm"><span class="font-semibold" data-i18n="hours_weekdays">Ma – Vr</span><span class="text-paper/60">12:00 – 20:00</span></div>
-      <div class="flex justify-between text-sm"><span class="font-semibold" data-i18n="hours_saturday">Zaterdag</span><span class="text-paper/60">10:00 – 18:00</span></div>
-      <div class="flex justify-between text-sm"><span class="font-semibold" data-i18n="hours_sunday">Zondag</span><span class="text-paper/60" data-i18n="hours_closed">Gesloten</span></div>
-    </div>
-  </div>
-  <iframe class="rounded-md h-[400px] w-full border-0 grayscale-[10%] contrast-[1.05] brightness-[.92]" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=De+Waag+8,+8232+DG+Lelystad&z=15&output=embed"></iframe>
-</section>
+    <article class="svc-card" id="svc-panel" role="tabpanel" aria-labelledby="tab-knippen-baard">
+      <div class="ph ph-dark">
+        <img class="mark" src="./images/logo-mark-white.png" alt="" width="26" height="25">
+        <svg width="36" height="36" aria-hidden="true"><use href="#ff-camera"/></svg>
+        <span class="ph-label" id="svc-photo">Foto: knipbeurt met baard</span>
+        <span class="ph-size">1200 × 1200</span>
+      </div>
+      <div class="svc-body">
+        <div class="svc-head">
+          <h3 id="svc-name">···</h3>
+          <span class="svc-price" id="svc-price">···</span>
+        </div>
+        <p class="svc-desc" id="svc-desc"></p>
+        <div class="svc-foot">
+          <span data-i18n="svc_takes">Duurt ongeveer <span id="svc-time">···</span></span>
+          <button type="button" class="btn btn-ice" id="svc-book">···</button>
+        </div>
+      </div>
+    </article>
+  </section>
 
-<!-- FOOTER -->
-<footer class="bg-surface2/70 backdrop-blur-md border-t border-paper/10 px-14 pt-12 pb-7">
-  <div class="max-w-[1320px] mx-auto flex justify-between items-start gap-10 flex-wrap">
-    <div>
-      <div class="font-display text-[19px] mb-1.5">Fresh Fadez Studios</div>
-      <div class="text-[13px] text-paper/60" data-i18n="footer_tagline">Lelystad's finest barbershop.</div>
-    </div>
-    <div class="flex gap-11 flex-wrap">
-      <div class="flex flex-col gap-2.5">
-        <span class="text-[11px] tracking-[1.5px] uppercase text-paper/50 mb-1" data-i18n="footer_studio">Studio</span>
-        <a href="#diensten" class="text-[13px]" data-i18n="nav_diensten">Diensten</a>
-        <a href="#gallery" class="text-[13px]" data-i18n="nav_gallery">Gallery</a>
-        <a href="#contact" class="text-[13px]" data-i18n="nav_contact">Contact</a>
-      </div>
-      <div class="flex flex-col gap-2.5">
-        <span class="text-[11px] tracking-[1.5px] uppercase text-paper/50 mb-1" data-i18n="footer_follow">Volg ons</span>
-        <a href="#" class="text-[13px]">Instagram</a>
-        <a href="#" class="text-[13px]">TikTok</a>
+  <section class="about" id="about">
+    <div class="about-inner wrap">
+      <img class="about-img" src="./images/about-redesign.jpg" alt="De oprichter van Fresh Fadez Studios, gezeten voor de logo-wand van de studio">
+      <div class="about-copy">
+        <p class="eyebrow" data-i18n="about_eyebrow">Over mij</p>
+        <h2 class="h2" data-i18n="about_title">[Jouw titel hier]</h2>
+        <p class="body" data-i18n="about_p1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+        <p class="body" data-i18n="about_p2">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p class="about-sign" data-i18n="about_sign">[Jouw naam], oprichter van Fresh Fadez Studios</p>
+        <a class="text-link" href="#" id="about-book-link" data-i18n="about_link">Boek een stoel bij mij</a>
       </div>
     </div>
-  </div>
-  <div class="max-w-[1320px] mx-auto mt-9 pt-5 border-t border-paper/15 text-xs text-paper/45 flex justify-between items-center flex-wrap gap-2">
-    <span data-i18n="footer_copyright">© 2026 Fresh Fadez Studios. Alle rechten voorbehouden.</span>
-    <span class="flex items-center gap-1.5"><span data-i18n="footer_powered">Powered by</span> <img src="./images/branch-logo-icon.png" alt="Branch.nu" class="w-[16px] h-[16px] object-contain"> <a href="https://branch.nu" class="text-paper/60 hover:text-paper transition-colors">Branch.nu</a></span>
+  </section>
+
+  <section class="work wrap" id="work">
+    <div class="work-head">
+      <div>
+        <h2 class="h2" data-i18n="work_title">Echte klanten, echte resultaten</h2>
+        <p class="lede" data-i18n="work_lede">Een paar recente stoelen. Nieuw werk komt elke week op Instagram.</p>
+      </div>
+      <a href="#" data-i18n="work_link">Volg ons op Instagram</a>
+    </div>
+    <div class="gallery">
+      <div class="ph ph-light" role="img" data-i18n-aria="gallery_1"><svg width="30" height="30" aria-hidden="true"><use href="#ff-camera"/></svg><span class="ph-label" data-i18n="gallery_1">Klantfoto: krullen met skin fade</span><span class="ph-size">1080 × 1350</span></div>
+      <div class="ph ph-light" role="img" data-i18n-aria="gallery_2"><svg width="30" height="30" aria-hidden="true"><use href="#ff-camera"/></svg><span class="ph-label" data-i18n="gallery_2">Klantfoto: baard lijnwerk</span><span class="ph-size">1080 × 1350</span></div>
+      <div class="ph ph-light" role="img" data-i18n-aria="gallery_3"><svg width="30" height="30" aria-hidden="true"><use href="#ff-camera"/></svg><span class="ph-label" data-i18n="gallery_3">Klantfoto: taper met lijnwerk</span><span class="ph-size">1080 × 1350</span></div>
+      <div class="ph ph-light" role="img" data-i18n-aria="gallery_4"><svg width="30" height="30" aria-hidden="true"><use href="#ff-camera"/></svg><span class="ph-label" data-i18n="gallery_4">Klantfoto: getextureerde crop</span><span class="ph-size">1080 × 1350</span></div>
+    </div>
+  </section>
+
+  <section class="visit wrap" id="visit">
+    <div class="visit-card">
+      <img class="watermark" src="./images/logo-mark-white.png" alt="" aria-hidden="true">
+      <div class="visit-copy">
+        <h2 class="h2" data-i18n="visit_title">Jouw volgende knipbeurt is een klik verwijderd</h2>
+        <p data-i18n="visit_body">Kies een tijd die jou uitkomt en laat de rest aan ons over.</p>
+        <button type="button" class="btn btn-white" id="visit-book-btn" data-i18n="hero_cta">Afspraak maken</button>
+      </div>
+      <dl class="facts">
+        <div><dt data-i18n="fact_location">Locatie</dt><dd>De Waag 8<br>8232 DG Lelystad</dd></div>
+        <div><dt data-i18n="fact_hours">Openingstijden</dt><dd data-i18n="fact_hours_val">Ma–Za 12:00–20:00<br>Zondag gesloten</dd></div>
+        <div><dt data-i18n="fact_phone">Telefoon</dt><dd>06 12 34 56 78</dd></div>
+        <div><dt data-i18n="fact_bookings">Boekingen</dt><dd data-i18n="fact_bookings_val">Alleen op afspraak</dd></div>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<button type="button" class="to-top" id="to-top" aria-label="Terug naar boven" tabindex="-1"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
+<div class="mobile-cta" id="mobile-cta"><button type="button" class="btn" id="mobile-cta-btn" tabindex="-1" data-i18n="hero_cta">Afspraak maken</button></div>
+
+<footer class="footer">
+  <div class="footer-inner wrap">
+    <div class="footer-brand">
+      <img class="mark" src="./images/logo-mark-dark.png" alt="" width="30" height="29">
+      <span class="bw"><span class="bn">FRESHFADEZ</span><span class="bs">STUDIOS</span></span>
+      <span style="margin-left:8px">© 2026</span>
+    </div>
+    <p class="powered"><span data-i18n="footer_powered">Powered by</span> <a href="https://branch.nu" target="_blank" rel="noopener"><img src="./images/branch-logo-icon.png" alt="">Branch</a></p>
+    <div class="footer-links">
+      <a href="#">Instagram</a>
+      <a href="#">TikTok</a>
+      <a href="#">Facebook</a>
+    </div>
   </div>
 </footer>
 
-<!-- BOOKING MODAL -->
-<div id="booking-backdrop" onmousedown="if(event.target===this) closeBooking()" class="hidden fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm items-center justify-center p-6">
-  <div id="booking-panel" role="dialog" aria-modal="true" class="w-[480px] max-w-full max-h-[88vh] overflow-y-auto bg-black border border-paper/8 rounded-2xl flex flex-col shadow-[0_24px_70px_rgba(0,0,0,0.55)]">
-
-    <div id="progress-row" class="flex items-center justify-center gap-2 pt-4">
-      <span class="progress-dot" data-progress-dot="1"></span>
-      <span class="progress-dot" data-progress-dot="2"></span>
-      <span class="progress-dot" data-progress-dot="3"></span>
-    </div>
-
-    <!-- STEP 1 -->
-    <div id="step-1" class="step-pane">
-      <div class="flex items-center justify-center relative px-5 pt-3 pb-4 border-b border-paper/10">
-        <div class="font-display text-base tracking-wide" data-i18n="modal_step1_title">KIES DIENSTEN</div>
-        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 hover:bg-paper/10 hover:text-paper transition-colors"><svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-      </div>
-      <div id="service-groups" class="px-5"></div>
-      <div class="flex items-center justify-between gap-4 px-5 py-[18px] border-t border-paper/10 sticky bottom-0 bg-black/95 backdrop-blur">
-        <div>
-          <div class="text-[11px] text-paper/55" data-i18n="modal_total">Totaal</div>
-          <div id="total-price" class="font-display text-lg">€ 0,00</div>
-        </div>
-        <button id="go-time-btn" onclick="goStep(2)" class="modal-cta px-[26px] py-3.5 bg-accent text-paper font-bold text-[13.5px] rounded-lg opacity-40 pointer-events-none" data-i18n="modal_choose_time">Kies een tijd</button>
-      </div>
-    </div>
-
-    <!-- STEP 2 -->
-    <div id="step-2" class="hidden">
-      <div class="flex items-center justify-center relative px-5 pt-3 pb-4 border-b border-paper/10">
-        <button onclick="goStep(1)" aria-label="Terug" class="absolute left-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors"><svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <div class="font-display text-base tracking-wide" data-i18n="modal_step2_title">KIES DATUM EN TIJD</div>
-        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 hover:bg-paper/10 hover:text-paper transition-colors"><svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-      </div>
-      <div class="flex items-center gap-3 mx-5 my-[18px] pb-[18px] border-b border-paper/10">
-        <img src="./images/logo.png" alt="Fresh Fadez Studios" class="w-10 h-10 rounded-full object-cover">
-        <div><div class="font-bold text-sm">Fresh Fadez Studios</div><div class="text-xs text-paper/55">Lelystad</div></div>
-      </div>
-      <div class="flex items-center gap-1 px-3">
-        <button id="date-prev-btn" onclick="shiftDate(-1)" aria-label="Vorige week" class="flex-none w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors disabled:opacity-25 disabled:pointer-events-none"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <div id="date-strip" class="cat-scroll flex gap-2 overflow-x-auto flex-1 py-1"></div>
-        <button id="date-next-btn" onclick="shiftDate(1)" aria-label="Volgende week" class="flex-none w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors disabled:opacity-25 disabled:pointer-events-none"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      </div>
-      <div id="time-section" class="hidden px-5 pt-6 pb-7">
-        <div id="time-label" class="text-[13.5px] text-paper/65 mb-3.5 text-center"></div>
-        <div id="time-slots" class="grid grid-cols-4 gap-2.5"></div>
-      </div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div id="step-3" class="hidden">
-      <div class="flex items-center justify-center relative px-5 pt-3 pb-4 border-b border-paper/10">
-        <button onclick="goStep(2)" aria-label="Terug" class="absolute left-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/60 hover:bg-paper/10 hover:text-paper transition-colors"><svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <div class="font-display text-base tracking-wide" data-i18n="modal_step3_title">JOUW GEGEVENS</div>
-        <button onclick="closeBooking()" aria-label="Sluiten" class="absolute right-5 top-2.5 w-8 h-8 flex items-center justify-center rounded-full text-paper/55 hover:bg-paper/10 hover:text-paper transition-colors"><svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-      </div>
-      <div class="text-right text-[11px] text-paper/45 px-5 pt-3" data-i18n="modal_required">*Verplicht</div>
-      <div class="flex flex-col gap-3 p-5">
-        <div class="flex gap-3">
-          <input id="f-first" oninput="checkForm()" placeholder="Voornaam*" data-i18n-ph="ph_first" class="modal-input flex-1 min-w-0 bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
-          <input id="f-last" oninput="checkForm()" placeholder="Achternaam*" data-i18n-ph="ph_last" class="modal-input flex-1 min-w-0 bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
-        </div>
-        <input id="f-email" oninput="checkForm()" placeholder="E-mailadres*" data-i18n-ph="ph_email" class="modal-input bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
-        <input id="f-phone" oninput="checkForm()" placeholder="Telefoonnummer*" data-i18n-ph="ph_phone" class="modal-input bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
-        <input id="f-notes" placeholder="Opmerkingen" data-i18n-ph="ph_notes" class="modal-input bg-paper/[0.05] border border-paper/15 rounded-lg px-3.5 py-3 text-sm">
-
-        <div class="border-t border-paper/10 pt-4 mt-1.5">
-          <div id="summary-line" class="font-bold text-[14.5px]"></div>
-          <div id="summary-duration" class="flex items-center gap-3 text-xs text-paper/55 my-1 mb-3"></div>
-          <div id="summary-items"></div>
-          <div class="flex justify-between font-bold text-[14.5px] pt-2.5 border-t border-paper/10 mt-1.5">
-            <span data-i18n="modal_total">Totaal</span><span id="summary-total"></span>
-          </div>
-        </div>
-
-        <label class="flex items-center gap-2.5 text-[13px] text-paper/75 mt-2 cursor-pointer">
-          <input id="f-save" type="checkbox" checked class="w-[18px] h-[18px] accent-[#e0332b]">
-          <span data-i18n="modal_save_details">Bewaar mijn gegevens voor de volgende keer</span>
-        </label>
-        <label class="flex items-center gap-2.5 text-[13px] text-paper/75 cursor-pointer">
-          <input id="f-newsletter" type="checkbox" class="w-[18px] h-[18px] accent-[#e0332b]">
-          <span data-i18n="modal_newsletter">Ja, ik meld me aan voor de nieuwsbrief</span>
-        </label>
-
-        <div id="booking-error" class="hidden text-[13px] text-accent text-center -mb-1"></div>
-        <button id="confirm-btn" onclick="confirmBooking()" class="modal-cta mt-2 text-center opacity-40 pointer-events-none py-4 bg-accent text-paper font-bold text-sm rounded-lg" data-i18n="modal_confirm">Afspraak bevestigen</button>
-      </div>
-    </div>
-
-    <!-- STEP 4 -->
-    <div id="step-4" class="hidden flex-col items-center text-center px-8 pt-16 pb-12 relative overflow-hidden">
-      <div class="absolute w-[220px] h-[220px] rounded-full bg-accent/25 blur-[70px] pointer-events-none" style="top:-60px"></div>
-      <div class="check-pop relative w-[72px] h-[72px] rounded-full bg-accent text-paper flex items-center justify-center mb-6">
-        <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8"><path d="M5 12.5 10 17.5 19 7.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="relative font-display text-2xl mb-7" data-i18n="modal_step4_title">Afspraak bevestigd</div>
-      <div class="relative w-full border-t border-b border-paper/10 py-4 text-left mb-7">
-        <div id="confirm-line" class="font-bold text-[14.5px] mb-1"></div>
-        <div id="confirm-total" class="text-[13px] text-paper/55"></div>
-      </div>
-      <button onclick="closeBooking()" class="modal-cta relative px-7 py-3 border border-paper font-bold text-[13.5px] rounded-md" data-i18n="modal_close">Sluiten</button>
-    </div>
-
-  </div>
-</div>
-
 <script>
-const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000/api'
-  : 'https://freshfadez.onrender.com/api';
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-let SERVICES = [];
-let servicesLoaded = false;
-let servicesLoadFailed = false;
-
-async function loadServices(){
-  try {
-    const res = await fetch(`${API_BASE}/services`);
-    if (!res.ok) throw new Error('Failed to load services');
-    const data = await res.json();
-    SERVICES = data.map(s => ({ id: s.slug, category: s.category, duration: s.duration, price: s.price }));
-    servicesLoaded = true;
-    servicesLoadFailed = false;
-  } catch (err) {
-    console.error(err);
-    servicesLoadFailed = true;
-  }
-  renderServices();
-}
-
-const I18N = {
-  nl: {
-    nav_home: 'Home', nav_diensten: 'Diensten', nav_gallery: 'Gallery', nav_reviews: 'Reviews', nav_contact: 'Contact', nav_book: 'Boek nu',
-    hero_badge: "Lelystad's Finest", hero_title: "More than a cut. It's a lifestyle.",
-    hero_desc: 'Bij Fresh Fadez draait het niet alleen om een frisse fade, maar om zelfvertrouwen, stijl en kwaliteit — in een studio waar je welkom bent zoals je bent.',
-    hero_cta: 'Afspraak maken', hero_link: 'Bekijk diensten',
-    svc_eyebrow: 'Diensten & prijzen', svc_title: 'Wat wij doen',
-    svc_desc: 'Elke fade begint met een goed gesprek. Onze barbers nemen de tijd voor precisie en advies op maat.',
-    svc_cta: 'Volledige prijslijst',
-    svc_row1_name: 'Fade & Style', svc_row1_desc: 'Precisiefade met styling · 45 min',
-    svc_row2_name: 'Baard Trim', svc_row2_desc: 'Vorm & lijnen bijwerken · 20 min',
-    svc_row3_name: 'Fade + Baard', svc_row3_desc: 'De volledige treatment · 60 min',
-    svc_row4_name: 'Kids Cut', svc_row4_desc: 'T/m 12 jaar · 30 min',
-    svc_row5_name: 'Skin Fade', svc_row5_desc: 'Strak tot op de huid · 45 min',
-    gallery_eyebrow: 'Ons werk', gallery_title: 'Fresh cuts',
-    gallery_1: 'Skin fade close-up', gallery_2: 'Studio interieur', gallery_3: 'Baard styling',
-    gallery_4: 'Klant portret', gallery_5: 'Barber aan het werk', gallery_6: 'Voor & na fade',
-    about_eyebrow: 'Over ons', about_title: '[Jouw titel hier]',
-    about_p1: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
-    about_p2: 'Nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. [Vervang dit met jouw eigen verhaal]',
-    reviews_eyebrow: 'Klanten aan het woord', reviews_title: 'Wat ze zeggen',
-    review_1: '"Beste barber van Lelystad. Elke keer weer een perfecte fade."',
-    review_2: '"Chille sfeer, strakke studio en ze nemen echt de tijd voor je."',
-    review_3: '"Kwam voor een fade, kwam terug voor de service. Top team."',
-    contact_eyebrow: 'Bezoek ons', contact_title: 'Locatie & openingstijden',
-    hours_weekdays: 'Ma – Vr', hours_saturday: 'Zaterdag', hours_sunday: 'Zondag', hours_closed: 'Gesloten',
-    footer_tagline: "Lelystad's finest barbershop.", footer_studio: 'Studio', footer_follow: 'Volg ons',
-    footer_copyright: '© 2026 Fresh Fadez Studios. Alle rechten voorbehouden.', footer_powered: 'Powered by',
-    modal_step1_title: 'KIES DIENSTEN', modal_step2_title: 'KIES DATUM EN TIJD', modal_step3_title: 'JOUW GEGEVENS', modal_step4_title: 'Afspraak bevestigd',
-    modal_required: '*Verplicht', modal_total: 'Totaal', modal_choose_time: 'Kies een tijd',
-    ph_first: 'Voornaam*', ph_last: 'Achternaam*', ph_email: 'E-mailadres*', ph_phone: 'Telefoonnummer*', ph_notes: 'Opmerkingen',
-    modal_save_details: 'Bewaar mijn gegevens voor de volgende keer', modal_newsletter: 'Ja, ik meld me aan voor de nieuwsbrief',
-    modal_confirm: 'Afspraak bevestigen', modal_close: 'Sluiten',
-    ui_minutes: 'minuten', ui_available_times_on: 'Beschikbare tijden op', ui_at: 'om',
-    ui_loading: 'Laden…', ui_load_error: 'Kon diensten niet laden. Probeer het opnieuw.', ui_retry: 'Opnieuw proberen',
-    ui_booking_error: 'Er ging iets mis. Probeer het opnieuw.', ui_slot_taken: 'Dit tijdstip is net geboekt. Kies een andere tijd.',
-    ui_submitting: 'Bezig…', ui_no_services: 'Er zijn momenteel geen diensten beschikbaar.',
-    cat_contour: 'Contour (alleen)', cat_baard: 'Baard', cat_knippen: 'Knippen (inclusief baard)', cat_kids: 'Knipbeurt kinderen (tot 11 jaar)',
-    svc_contour: 'Contour', 'svc_skin-fade': 'Skin Fade', svc_baard: 'Baard trimmen', 'svc_knippen-baard': 'Knippen (inclusief baard)', 'svc_fade-style': 'Fade & Style', svc_kids: 'Kids Cut',
-    days: ['Zo','Ma','Di','Wo','Do','Vr','Za'],
-    months: ['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'],
-    dayNamesFull: ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag']
-  },
-  en: {
-    nav_home: 'Home', nav_diensten: 'Services', nav_gallery: 'Gallery', nav_reviews: 'Reviews', nav_contact: 'Contact', nav_book: 'Book now',
-    hero_badge: "Lelystad's Finest", hero_title: "More than a cut. It's a lifestyle.",
-    hero_desc: "At Fresh Fadez it's not just about a fresh fade, but about confidence, style and quality — in a studio where you're welcome exactly as you are.",
-    hero_cta: 'Book an appointment', hero_link: 'View services',
-    svc_eyebrow: 'Services & pricing', svc_title: 'What we do',
-    svc_desc: 'Every fade starts with a good conversation. Our barbers take the time for precision and tailored advice.',
-    svc_cta: 'Full price list',
-    svc_row1_name: 'Fade & Style', svc_row1_desc: 'Precision fade with styling · 45 min',
-    svc_row2_name: 'Beard Trim', svc_row2_desc: 'Shape & line-up · 20 min',
-    svc_row3_name: 'Fade + Beard', svc_row3_desc: 'The full treatment · 60 min',
-    svc_row4_name: 'Kids Cut', svc_row4_desc: 'Up to 12 years · 30 min',
-    svc_row5_name: 'Skin Fade', svc_row5_desc: 'Tight down to the skin · 45 min',
-    gallery_eyebrow: 'Our work', gallery_title: 'Fresh cuts',
-    gallery_1: 'Skin fade close-up', gallery_2: 'Studio interior', gallery_3: 'Beard styling',
-    gallery_4: 'Client portrait', gallery_5: 'Barber at work', gallery_6: 'Before & after fade',
-    about_eyebrow: 'About us', about_title: '[Your title here]',
-    about_p1: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
-    about_p2: 'Nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. [Replace this with your own story]',
-    reviews_eyebrow: 'Customer voices', reviews_title: 'What they say',
-    review_1: '"Best barber in Lelystad. A perfect fade every single time."',
-    review_2: '"Relaxed vibe, sharp studio, and they really take their time with you."',
-    review_3: '"Came for a fade, came back for the service. Top team."',
-    contact_eyebrow: 'Visit us', contact_title: 'Location & hours',
-    hours_weekdays: 'Mon – Fri', hours_saturday: 'Saturday', hours_sunday: 'Sunday', hours_closed: 'Closed',
-    footer_tagline: "Lelystad's finest barbershop.", footer_studio: 'Studio', footer_follow: 'Follow us',
-    footer_copyright: '© 2026 Fresh Fadez Studios. All rights reserved.', footer_powered: 'Powered by',
-    modal_step1_title: 'CHOOSE SERVICES', modal_step2_title: 'CHOOSE DATE AND TIME', modal_step3_title: 'YOUR DETAILS', modal_step4_title: 'Appointment confirmed',
-    modal_required: '*Required', modal_total: 'Total', modal_choose_time: 'Choose a time',
-    ph_first: 'First name*', ph_last: 'Last name*', ph_email: 'Email address*', ph_phone: 'Phone number*', ph_notes: 'Notes',
-    modal_save_details: 'Save my details for next time', modal_newsletter: 'Yes, sign me up for the newsletter',
-    modal_confirm: 'Confirm appointment', modal_close: 'Close',
-    ui_minutes: 'minutes', ui_available_times_on: 'Available times on', ui_at: 'at',
-    ui_loading: 'Loading…', ui_load_error: 'Could not load services. Please try again.', ui_retry: 'Try again',
-    ui_booking_error: 'Something went wrong. Please try again.', ui_slot_taken: 'That time slot was just booked. Please choose another.',
-    ui_submitting: 'Submitting…', ui_no_services: 'No services are currently available.',
-    cat_contour: 'Contour (only)', cat_baard: 'Beard', cat_knippen: 'Haircut (incl. beard)', cat_kids: 'Kids haircut (up to 11 years)',
-    svc_contour: 'Contour', 'svc_skin-fade': 'Skin Fade', svc_baard: 'Beard trim', 'svc_knippen-baard': 'Haircut (incl. beard)', 'svc_fade-style': 'Fade & Style', svc_kids: 'Kids Cut',
-    days: ['Su','Mo','Tu','We','Th','Fr','Sa'],
-    months: ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
-    dayNamesFull: ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
-  }
-};
-
-let currentLang = localStorage.getItem('ff-lang') || 'nl';
-let selected = {};
-let dateOffset = 0;
-let selectedDateIdx = null;
-let selectedTime = null;
-
-function t(key){ return I18N[currentLang][key]; }
-function euro(n){ return currentLang === 'en' ? `€ ${n.toFixed(2)}` : `€ ${n.toFixed(2).replace('.', ',')}`; }
-function spinnerSvg(){
-  return `<svg class="spin w-5 h-5 text-paper/40" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-opacity=".25"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`;
-}
-function checkIconSvg(cls){
-  return `<svg class="${cls}" viewBox="0 0 24 24" fill="none"><path d="M5 12.5 10 17.5 19 7.5" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-}
-function clockIconSvg(cls){
-  return `<svg class="${cls}" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.75"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-}
-
-function toggleMobileNav(){
-  document.getElementById('mobile-nav').classList.toggle('hidden');
-  document.getElementById('mobile-nav').classList.toggle('flex');
-}
-function closeMobileNav(){
-  document.getElementById('mobile-nav').classList.add('hidden');
-  document.getElementById('mobile-nav').classList.remove('flex');
-}
-
-function toggleLangMenu(){ document.getElementById('lang-menu').classList.toggle('hidden'); }
-document.addEventListener('click', e => {
-  const menu = document.getElementById('lang-menu');
-  const btn = document.getElementById('lang-toggle-btn');
-  if (!menu.contains(e.target) && !btn.contains(e.target)) menu.classList.add('hidden');
-});
-function setLanguage(lang){
-  currentLang = lang;
-  localStorage.setItem('ff-lang', lang);
-  applyLanguage();
-  document.getElementById('lang-menu').classList.add('hidden');
-}
-function applyLanguage(){
-  document.documentElement.lang = currentLang;
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.dataset.i18n;
-    if (I18N[currentLang][key] !== undefined) el.textContent = I18N[currentLang][key];
-  });
-  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-    const key = el.dataset.i18nPh;
-    if (I18N[currentLang][key] !== undefined) el.placeholder = I18N[currentLang][key];
-  });
-  document.getElementById('lang-toggle-label').textContent = currentLang === 'en' ? 'ENGLISH' : 'NEDERLANDS';
-  document.querySelectorAll('[data-lang-option]').forEach(el => el.classList.toggle('active', el.dataset.langOption === currentLang));
-  document.querySelectorAll('[data-lang-option-mobile]').forEach(el => el.classList.toggle('active', el.dataset.langOptionMobile === currentLang));
-  renderServices();
-  renderDates();
-  if (selectedTime) renderSummary();
-}
-
-function openBooking(){
-  const backdrop = document.getElementById('booking-backdrop');
-  backdrop.classList.remove('hidden');
-  backdrop.classList.add('flex');
-  requestAnimationFrame(() => backdrop.classList.add('open'));
-  document.addEventListener('keydown', onBookingKeydown);
-  goStep(1);
-}
-function closeBooking(){
-  const backdrop = document.getElementById('booking-backdrop');
-  backdrop.classList.remove('open');
-  document.removeEventListener('keydown', onBookingKeydown);
-  setTimeout(() => {
-    backdrop.classList.add('hidden');
-    backdrop.classList.remove('flex');
-  }, 250);
-  selected = {}; dateOffset = 0; selectedDateIdx = null; selectedTime = null;
-  ['f-first','f-last','f-email','f-phone','f-notes'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-save').checked = true;
-  document.getElementById('f-newsletter').checked = false;
-  document.getElementById('booking-error').classList.add('hidden');
-  renderServices();
-}
-function onBookingKeydown(e){
-  if (e.key === 'Escape'){ closeBooking(); return; }
-  if (e.key !== 'Tab') return;
-  const panel = document.getElementById('booking-panel');
-  const focusable = [...panel.querySelectorAll('button, input, [href]')].filter(el => !el.disabled && el.offsetParent !== null);
-  if (!focusable.length) return;
-  const first = focusable[0], last = focusable[focusable.length - 1];
-  if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-  else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-}
-function goStep(n){
-  [1,2,3,4].forEach(i => document.getElementById('step-'+i).classList.add('hidden'));
-  const el = document.getElementById('step-'+n);
-  el.classList.remove('hidden');
-  if (n === 4) el.classList.add('flex'); else el.classList.remove('flex');
-
-  el.classList.remove('step-pane');
-  void el.offsetWidth;
-  el.classList.add('step-pane');
-
-  const progressRow = document.getElementById('progress-row');
-  if (n === 4){
-    progressRow.classList.add('hidden');
-  } else {
-    progressRow.classList.remove('hidden');
-    [1,2,3].forEach(i => {
-      const dot = document.querySelector(`[data-progress-dot="${i}"]`);
-      dot.classList.toggle('active', i === n);
-      dot.classList.toggle('done', i < n);
-    });
-  }
-
-  document.getElementById('booking-panel').scrollTop = 0;
-  if (n === 2) renderDates();
-  if (n === 3) setTimeout(() => document.getElementById('f-first').focus(), 300);
-}
-
-function categories(){ return [...new Set(SERVICES.map(s => s.category))]; }
-
-function renderServices(){
-  const groups = document.getElementById('service-groups');
-
-  if (!servicesLoaded && !servicesLoadFailed){
-    groups.innerHTML = `<div class="flex flex-col items-center gap-3 text-[13.5px] text-paper/55 py-10">${spinnerSvg()}<span>${t('ui_loading')}</span></div>`;
-    document.getElementById('total-price').textContent = euro(0);
-    document.getElementById('go-time-btn').classList.add('opacity-40','pointer-events-none');
-    return;
-  }
-  if (servicesLoadFailed){
-    groups.innerHTML = `<div class="text-center py-8">
-      <div class="text-[13.5px] text-paper/55 mb-3">${t('ui_load_error')}</div>
-      <button onclick="loadServices()" class="px-5 py-2.5 border border-paper/15 rounded-md text-[12.5px] font-bold hover:border-paper/25">${t('ui_retry')}</button>
-    </div>`;
-    document.getElementById('total-price').textContent = euro(0);
-    document.getElementById('go-time-btn').classList.add('opacity-40','pointer-events-none');
-    return;
-  }
-  if (SERVICES.length === 0){
-    groups.innerHTML = `<div class="text-center text-[13.5px] text-paper/55 py-10">${t('ui_no_services')}</div>`;
-    document.getElementById('total-price').textContent = euro(0);
-    document.getElementById('go-time-btn').classList.add('opacity-40','pointer-events-none');
-    return;
-  }
-
-  groups.innerHTML = categories().map(cat => {
-    const items = SERVICES.filter(s => s.category === cat).map(s => {
-      const sel = !!selected[s.id];
-      return `<a href="javascript:void(0)" onclick="toggleService('${s.id}')" class="service-row flex items-center gap-3.5 py-3.5 px-2 -mx-2 rounded-lg">
-        <div class="w-[22px] h-[22px] flex-none rounded-full border-[1.5px] flex items-center justify-center text-paper ${sel ? 'bg-accent border-accent check-pop' : 'border-paper/20'}">${sel ? checkIconSvg('w-[13px] h-[13px]') : ''}</div>
-        <div class="flex-1"><div class="font-bold text-[14.5px]">${t('svc_' + s.id)}</div><div class="text-[12.5px] text-paper/55 mt-0.5">${s.duration} ${t('ui_minutes')}</div></div>
-        <div class="text-[14.5px] whitespace-nowrap">${euro(s.price)}</div>
-      </a>`;
-    }).join('');
-    return `<div><div class="cat-label text-[11px] tracking-wide text-paper/50 mt-[18px] mb-2.5 uppercase">${t('cat_' + cat)}</div>${items}</div>`;
-  }).join('');
-
-  const totalItems = SERVICES.filter(s => selected[s.id]);
-  const total = totalItems.reduce((sum, s) => sum + s.price, 0);
-  document.getElementById('total-price').textContent = euro(total);
-  const btn = document.getElementById('go-time-btn');
-  if (totalItems.length > 0){ btn.classList.remove('opacity-40','pointer-events-none'); } else { btn.classList.add('opacity-40','pointer-events-none'); }
-}
-function toggleService(id){ selected[id] = !selected[id]; renderServices(); }
-
-function toISODate(d){
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-function bookingDates(){
-  const out = []; const today = new Date();
-  for (let i = 0; i < 14; i++){
-    const d = new Date(today); d.setDate(today.getDate() + i);
-    out.push({ day: I18N[currentLang].days[d.getDay()], date: d.getDate(), month: I18N[currentLang].months[d.getMonth()], weekdayIdx: d.getDay(), iso: toISODate(d) });
-  }
-  return out;
-}
-function renderDates(){
-  const dates = bookingDates();
-  const strip = document.getElementById('date-strip');
-  strip.innerHTML = dates.slice(dateOffset, dateOffset + 7).map((d, i) => {
-    const idx = dateOffset + i;
-    const active = idx === selectedDateIdx;
-    const closed = d.weekdayIdx === 0;
-    if (closed){
-      return `<div class="flex-none w-[58px] py-2.5 rounded-md text-center border border-paper/10 opacity-40 bg-[repeating-linear-gradient(135deg,#000,#000_6px,#141414_6px,#141414_12px)]">
-        <div class="text-[10.5px] opacity-75">${d.day}</div>
-        <div class="font-display text-[17px] my-0.5">${d.date}</div>
-        <div class="text-[9px] opacity-70">${d.month}</div>
-      </div>`;
+  /* ================= i18n ================= */
+  var I18N = {
+    nl: {
+      nav_services:'Diensten', nav_about:'Over ons', nav_work:'Ons werk', nav_visit:'Bezoek', nav_book:'Boek nu',
+      kicker:'Premium barbershop & studio',
+      hero_title:'Boek je afspraak direct online',
+      hero_desc:'Kies je dienst en een tijd die jou uitkomt. Geen account nodig, klaar in een paar klikken.',
+      hero_cta:'Afspraak maken', hero_link:'Bekijk diensten',
+      ticker_1:'Knipbeurten', ticker_2:'Skin fades', ticker_3:'Baard verzorging', ticker_4:'Alleen op afspraak', ticker_5:'Ma–Za 12:00–20:00',
+      svc_h2:'Vind jouw knipbeurt',
+      svc_lede:'Elke dienst begint met een kort gesprek, zodat het resultaat past bij jouw gezicht, haar en routine.',
+      svc_takes:'Duurt ongeveer ',
+      about_eyebrow:'Over mij', about_title:'[Jouw titel hier]',
+      about_p1:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
+      about_p2:'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      about_sign:'[Jouw naam], oprichter van Fresh Fadez Studios', about_link:'Boek een stoel bij mij',
+      work_title:'Echte klanten, echte resultaten', work_lede:'Een paar recente stoelen. Nieuw werk komt elke week op Instagram.', work_link:'Volg ons op Instagram',
+      gallery_1:'Klantfoto: krullen met skin fade', gallery_2:'Klantfoto: baard lijnwerk', gallery_3:'Klantfoto: taper met lijnwerk', gallery_4:'Klantfoto: getextureerde crop',
+      visit_title:'Jouw volgende knipbeurt is een klik verwijderd', visit_body:'Kies een tijd die jou uitkomt en laat de rest aan ons over.',
+      fact_location:'Locatie', fact_hours:'Openingstijden', fact_hours_val:'Ma–Za 12:00–20:00<br>Zondag gesloten', fact_phone:'Telefoon', fact_bookings:'Boekingen', fact_bookings_val:'Alleen op afspraak',
+      footer_powered:'Powered by',
+      chip_haircut:'Knippen', chip_fade:'Fade', chip_beard:'Baard',
+      modal_step1_title:'KIES DIENSTEN', modal_step2_title:'KIES DATUM EN TIJD', modal_step3_title:'JOUW GEGEVENS', modal_step4_title:'Afspraak bevestigd',
+      modal_required:'*Verplicht', modal_total:'Totaal', modal_choose_time:'Kies een tijd', modal_restart:'Nog een afspraak boeken',
+      ph_first:'Voornaam*', ph_last:'Achternaam*', ph_email:'E-mailadres*', ph_phone:'Telefoonnummer*', ph_notes:'Opmerkingen',
+      modal_save_details:'Bewaar mijn gegevens voor de volgende keer', modal_newsletter:'Ja, ik meld me aan voor de nieuwsbrief',
+      modal_confirm:'Afspraak bevestigen', modal_close:'Sluiten',
+      ui_minutes:'min', ui_available_times_on:'Beschikbare tijden op', ui_at:'om',
+      ui_loading:'Laden…', ui_load_error:'Kon gegevens niet laden. Probeer het opnieuw.', ui_retry:'Opnieuw proberen',
+      ui_booking_error:'Er ging iets mis. Probeer het opnieuw.', ui_slot_taken:'Dit tijdstip is net geboekt. Kies een andere tijd.',
+      ui_submitting:'Bezig…', ui_no_services:'Er zijn momenteel geen diensten beschikbaar.',
+      cat_contour:'Contour (alleen)', cat_baard:'Baard', cat_knippen:'Knippen (inclusief baard)', cat_kids:'Knipbeurt kinderen (tot 11 jaar)',
+      svc_contour:'Contour', 'svc_skin-fade':'Skin Fade', svc_baard:'Baard trimmen', 'svc_knippen-baard':'Knippen (inclusief baard)', 'svc_fade-style':'Fade & Style', svc_kids:'Kids Cut',
+      'desc_knippen-baard':'Een volledige knipbeurt met baardtrim, naadloos op elkaar afgestemd.', 'desc_skin-fade':'Strak tot op de huid. Vloeiend, scherp en zonder harde lijnen.', desc_baard:'Scherpe lijnen en een nette afwerking, passend bij jouw gezicht.',
+      'photo_knippen-baard':'Foto: knipbeurt met baard', 'photo_skin-fade':'Foto: close-up van een skin fade', photo_baard:'Foto: baardtrim met warme handdoek',
+      book_prefix:'Boek ',
+      days:['Zo','Ma','Di','Wo','Do','Vr','Za'],
+      months:['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'],
+      dayNamesFull:['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag']
+    },
+    en: {
+      nav_services:'Services', nav_about:'About', nav_work:'Our work', nav_visit:'Visit', nav_book:'Book now',
+      kicker:'Premium barbershop & studio',
+      hero_title:'Book your appointment, right now',
+      hero_desc:'Pick your service and a time that works. No account needed, done in a few clicks.',
+      hero_cta:'Book an appointment', hero_link:'View services',
+      ticker_1:'Haircuts', ticker_2:'Skin fades', ticker_3:'Beard grooming', ticker_4:'By appointment only', ticker_5:'Mon–Sat 12:00–20:00',
+      svc_h2:'Find your cut',
+      svc_lede:'Every service starts with a quick consultation, so the result fits your face, your hair and your routine.',
+      svc_takes:'Takes about ',
+      about_eyebrow:'About me', about_title:'[Your title here]',
+      about_p1:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      about_p2:'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      about_sign:'[Your name], founder of Fresh Fadez Studios', about_link:'Book a chair with me',
+      work_title:'Real clients, real results', work_lede:'A few recent chairs. New work goes up on Instagram every week.', work_link:'Follow us on Instagram',
+      gallery_1:'Client photo: curly top with skin fade', gallery_2:'Client photo: beard line-up', gallery_3:'Client photo: taper and line-up', gallery_4:'Client photo: textured crop',
+      visit_title:'Your next cut is a click away', visit_body:'Choose a time that works for you and let us take care of the rest.',
+      fact_location:'Location', fact_hours:'Opening hours', fact_hours_val:'Mon–Sat 12:00–20:00<br>Sunday closed', fact_phone:'Phone', fact_bookings:'Bookings', fact_bookings_val:'By appointment only',
+      footer_powered:'Powered by',
+      chip_haircut:'Haircut', chip_fade:'Fade', chip_beard:'Beard',
+      modal_step1_title:'CHOOSE SERVICES', modal_step2_title:'CHOOSE DATE AND TIME', modal_step3_title:'YOUR DETAILS', modal_step4_title:'Appointment confirmed',
+      modal_required:'*Required', modal_total:'Total', modal_choose_time:'Choose a time', modal_restart:'Book another appointment',
+      ph_first:'First name*', ph_last:'Last name*', ph_email:'Email address*', ph_phone:'Phone number*', ph_notes:'Notes',
+      modal_save_details:'Save my details for next time', modal_newsletter:'Yes, sign me up for the newsletter',
+      modal_confirm:'Confirm appointment', modal_close:'Close',
+      ui_minutes:'min', ui_available_times_on:'Available times on', ui_at:'at',
+      ui_loading:'Loading…', ui_load_error:'Could not load data. Please try again.', ui_retry:'Try again',
+      ui_booking_error:'Something went wrong. Please try again.', ui_slot_taken:'That time slot was just booked. Please choose another.',
+      ui_submitting:'Submitting…', ui_no_services:'No services are currently available.',
+      cat_contour:'Contour (only)', cat_baard:'Beard', cat_knippen:'Haircut (incl. beard)', cat_kids:'Kids haircut (up to 11 years)',
+      svc_contour:'Contour', 'svc_skin-fade':'Skin Fade', svc_baard:'Beard trim', 'svc_knippen-baard':'Haircut (incl. beard)', 'svc_fade-style':'Fade & Style', svc_kids:'Kids Cut',
+      'desc_knippen-baard':'A complete haircut with a beard trim, blended seamlessly together.', 'desc_skin-fade':'Tight down to the skin. Smooth, sharp and free of harsh lines.', desc_baard:'Sharp lines and a clean finish, shaped to suit your face.',
+      'photo_knippen-baard':'Photo: haircut with beard trim', 'photo_skin-fade':'Photo: close-up of a skin fade', photo_baard:'Photo: beard trim with hot towel',
+      book_prefix:'Book ',
+      days:['Su','Mo','Tu','We','Th','Fr','Sa'],
+      months:['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
+      dayNamesFull:['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
     }
-    return `<button onclick="pickDate(${idx})" class="date-chip flex-none w-[58px] py-2.5 rounded-md text-center border ${active ? 'bg-accent text-paper border-accent' : 'border-paper/12 hover:border-paper/25'}">
-      <div class="text-[10.5px] opacity-75">${d.day}</div>
-      <div class="font-display text-[17px] my-0.5">${d.date}</div>
-      <div class="text-[9px] opacity-70">${d.month}</div>
-    </button>`;
-  }).join('');
-  document.getElementById('date-prev-btn').disabled = dateOffset === 0;
-  document.getElementById('date-next-btn').disabled = dateOffset >= 7;
-  renderTimes();
-}
-let availabilityRequestId = 0;
-
-function shiftDate(dir){ dateOffset = Math.max(0, Math.min(7, dateOffset + dir)); renderDates(); }
-function pickDate(idx){ selectedDateIdx = idx; selectedTime = null; renderDates(); }
-
-async function renderTimes(){
-  const section = document.getElementById('time-section');
-  if (selectedDateIdx == null){ section.classList.add('hidden'); return; }
-  section.classList.remove('hidden');
-  const d = bookingDates()[selectedDateIdx];
-  document.getElementById('time-label').textContent = `${t('ui_available_times_on')} ${I18N[currentLang].dayNamesFull[d.weekdayIdx]} ${d.date} ${d.month.toLowerCase()}`;
-
-  const requestId = ++availabilityRequestId;
-  document.getElementById('time-slots').innerHTML = `<div class="col-span-4 flex flex-col items-center gap-2.5 text-[13px] text-paper/55 py-4">${spinnerSvg()}<span>${t('ui_loading')}</span></div>`;
-
-  let slots;
-  try {
-    const res = await fetch(`${API_BASE}/availability?date=${d.iso}`);
-    if (!res.ok) throw new Error('Failed to load availability');
-    const data = await res.json();
-    slots = data.slots;
-  } catch (err) {
-    console.error(err);
-    if (requestId !== availabilityRequestId) return;
-    document.getElementById('time-slots').innerHTML = `<div class="col-span-4 text-center py-4">
-      <div class="text-[13px] text-paper/55 mb-2.5">${t('ui_load_error')}</div>
-      <button onclick="renderTimes()" class="px-4 py-2 border border-paper/15 rounded-md text-[12px] font-bold hover:border-paper/25">${t('ui_retry')}</button>
-    </div>`;
-    return;
-  }
-  if (requestId !== availabilityRequestId) return;
-
-  document.getElementById('time-slots').innerHTML = slots.map(({ time, available }) => {
-    const active = time === selectedTime;
-    if (!available){
-      return `<button disabled class="time-chip py-3 text-center rounded-md border font-semibold text-[13.5px] border-paper/10 text-paper/30 opacity-50 cursor-not-allowed">${time}</button>`;
-    }
-    return `<button onclick="pickTime('${time}')" class="time-chip py-3 text-center rounded-md border font-semibold text-[13.5px] ${active ? 'bg-accent text-paper border-accent' : 'border-paper/12 text-accent hover:border-accent/60'}">${time}</button>`;
-  }).join('');
-}
-function pickTime(time){ selectedTime = time; renderSummary(); goStep(3); }
-
-function renderSummary(){
-  const d = bookingDates()[selectedDateIdx];
-  const label = `${I18N[currentLang].dayNamesFull[d.weekdayIdx]} ${d.date} ${d.month.toLowerCase()} ${t('ui_at')} ${selectedTime}`;
-  document.getElementById('summary-line').textContent = label;
-  const items = SERVICES.filter(s => selected[s.id]);
-  const duration = items.reduce((sum, s) => sum + s.duration, 0);
-  document.getElementById('summary-duration').innerHTML = `${clockIconSvg('w-[15px] h-[15px] flex-none')}<span>${duration} ${t('ui_minutes')}</span><img src="./images/logo.png" class="w-4 h-4 rounded-full object-cover ml-1.5"><span>Fresh Fadez Studios</span>`;
-  document.getElementById('summary-items').innerHTML = items.map(s =>
-    `<div class="flex justify-between text-[13.5px] text-paper/80 py-1"><span>${t('svc_' + s.id)}</span><span>${euro(s.price)}</span></div>`
-  ).join('');
-  const total = items.reduce((sum, s) => sum + s.price, 0);
-  document.getElementById('summary-total').textContent = euro(total);
-  document.getElementById('confirm-line').textContent = label;
-  document.getElementById('confirm-total').textContent = `${t('modal_total')} ${euro(total)} · Fresh Fadez Studios`;
-}
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-function checkForm(){
-  const ok = document.getElementById('f-first').value.trim() && document.getElementById('f-last').value.trim() &&
-             EMAIL_RE.test(document.getElementById('f-email').value.trim()) && document.getElementById('f-phone').value.trim();
-  const btn = document.getElementById('confirm-btn');
-  if (ok){ btn.classList.remove('opacity-40','pointer-events-none'); } else { btn.classList.add('opacity-40','pointer-events-none'); }
-}
-async function confirmBooking(){
-  const btn = document.getElementById('confirm-btn');
-  const errorEl = document.getElementById('booking-error');
-  errorEl.classList.add('hidden');
-  btn.classList.add('opacity-40','pointer-events-none');
-  const originalLabel = btn.textContent;
-  btn.textContent = t('ui_submitting');
-
-  const d = bookingDates()[selectedDateIdx];
-  const payload = {
-    firstName: document.getElementById('f-first').value.trim(),
-    lastName: document.getElementById('f-last').value.trim(),
-    email: document.getElementById('f-email').value.trim(),
-    phone: document.getElementById('f-phone').value.trim(),
-    notes: document.getElementById('f-notes').value.trim(),
-    saveInfo: document.getElementById('f-save').checked,
-    newsletter: document.getElementById('f-newsletter').checked,
-    serviceSlugs: Object.keys(selected).filter(id => selected[id]),
-    date: d.iso,
-    time: selectedTime,
   };
+  var currentLang = 'nl';
+  try { currentLang = localStorage.getItem('ff-lang') || 'nl'; } catch(e){}
+  function t(key){ return I18N[currentLang][key]; }
+  function euro(n){ return currentLang === 'en' ? ('€ ' + n.toFixed(2)) : ('€ ' + n.toFixed(2).replace('.', ',')); }
 
-  try {
-    const res = await fetch(`${API_BASE}/bookings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+  function applyLanguage(){
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.dataset.i18n;
+      if (I18N[currentLang][key] === undefined) return;
+      if (el.id === 'svc-takes' || key === 'svc_takes'){ return; }
+      if (key === 'fact_hours_val' || key === 'fact_bookings_val'){ el.innerHTML = I18N[currentLang][key]; return; }
+      el.textContent = I18N[currentLang][key];
     });
-    const body = await res.json();
-    if (!res.ok) {
-      errorEl.textContent = res.status === 409 ? t('ui_slot_taken') : (body.error || t('ui_booking_error'));
-      errorEl.classList.remove('hidden');
-      btn.textContent = originalLabel;
-      btn.classList.remove('opacity-40','pointer-events-none');
-      if (res.status === 409) { selectedTime = null; goStep(2); }
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+      var key = el.dataset.i18nPh;
+      if (I18N[currentLang][key] !== undefined) el.placeholder = I18N[currentLang][key];
+    });
+    var svcTakes = document.querySelector('[data-i18n="svc_takes"]');
+    if (svcTakes){
+      svcTakes.firstChild && svcTakes.firstChild.nodeType === 3 ? (svcTakes.firstChild.textContent = t('svc_takes')) : svcTakes.prepend(document.createTextNode(t('svc_takes')));
+    }
+    document.getElementById('lang-btn-label').textContent = currentLang.toUpperCase();
+    document.querySelectorAll('.lang-opt,[data-lang]').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.lang === currentLang ? 'true' : 'false'); });
+    renderTicker();
+    renderServices();
+    renderShowcase();
+    renderDates();
+    if (selectedTime) renderSummary();
+  }
+  function setLanguage(lang){
+    currentLang = lang;
+    try { localStorage.setItem('ff-lang', lang); } catch(e){}
+    applyLanguage();
+  }
+  document.querySelectorAll('[data-lang]').forEach(function(b){
+    b.addEventListener('click', function(){ setLanguage(b.dataset.lang); closeLangMenu(); });
+  });
+  var langBtn = document.getElementById('lang-btn');
+  var langMenu = document.getElementById('lang-menu');
+  function closeLangMenu(){ langMenu.hidden = true; langBtn.setAttribute('aria-expanded','false'); }
+  langBtn.addEventListener('click', function(){
+    var open = langMenu.hidden;
+    langMenu.hidden = !open;
+    langBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function(e){
+    if (!langMenu.hidden && !langMenu.contains(e.target) && e.target !== langBtn) closeLangMenu();
+  });
+
+  function renderTicker(){
+    var items = [t('ticker_1'), t('ticker_2'), t('ticker_3'), t('ticker_4'), t('ticker_5')];
+    var html = '';
+    for (var r = 0; r < 4; r++){
+      items.forEach(function(label){
+        html += '<span class="ticker-item">' + label + '<svg width="16" height="16" aria-hidden="true"><use href="#ff-scissors"/></svg></span>';
+      });
+    }
+    document.getElementById('ticker-track').innerHTML = html;
+  }
+
+  /* ================= Booking engine (real backend) ================= */
+  var API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+    ? 'http://localhost:3000/api'
+    : 'https://freshfadez.onrender.com/api';
+
+  var SERVICES = [];
+  var servicesLoaded = false, servicesLoadFailed = false;
+  var selected = {};
+  var dateOffset = 0, selectedDateIdx = null, selectedTime = null;
+  var availabilityRequestId = 0;
+  var SHOWCASE = ['knippen-baard', 'skin-fade', 'baard'];
+  var activeShowcase = 'knippen-baard';
+
+  function spinnerSvg(){
+    return '<svg class="bk-spin" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-opacity=".25"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>';
+  }
+  function checkIconSvg(){ return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12.5 10 17.5 19 7.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
+  function clockIconSvg(){ return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.75"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
+
+  function loadServices(){
+    servicesLoaded = false; servicesLoadFailed = false;
+    return fetch(API_BASE + '/services').then(function(res){
+      if (!res.ok) throw new Error('Failed to load services');
+      return res.json();
+    }).then(function(data){
+      SERVICES = data.map(function(s){ return { id: s.slug, category: s.category, duration: s.duration, price: s.price }; });
+      servicesLoaded = true;
+    }).catch(function(err){
+      console.error(err);
+      servicesLoadFailed = true;
+    }).then(function(){
+      renderServices();
+      renderShowcase();
+    });
+  }
+
+  function categories(){
+    var seen = [], out = [];
+    SERVICES.forEach(function(s){ if (seen.indexOf(s.category) === -1){ seen.push(s.category); out.push(s.category); } });
+    return out;
+  }
+
+  function renderServices(){
+    var groups = document.getElementById('bk-service-groups');
+    var goBtn = document.getElementById('bk-go-time');
+    if (!servicesLoaded && !servicesLoadFailed){
+      groups.innerHTML = '<div class="bk-loading">' + spinnerSvg() + '<span>' + t('ui_loading') + '</span></div>';
+      document.getElementById('bk-total-price').textContent = euro(0);
+      goBtn.classList.add('disabled');
       return;
     }
-    goStep(4);
-  } catch (err) {
-    console.error(err);
-    errorEl.textContent = t('ui_booking_error');
-    errorEl.classList.remove('hidden');
-    btn.textContent = originalLabel;
-    btn.classList.remove('opacity-40','pointer-events-none');
-  }
-}
-
-applyLanguage();
-loadServices();
-
-const parallaxEls = [...document.querySelectorAll('[data-parallax]')];
-function onScrollParallax(){
-  const vh = window.innerHeight;
-  parallaxEls.forEach(el=>{
-    const r = el.getBoundingClientRect();
-    const progress = (vh/2 - (r.top + r.height/2)) / vh;
-    const shift = Math.max(-1, Math.min(1, progress)) * 14;
-    let inner = el.querySelector('[data-parallax-inner]');
-    if (!inner){
-      inner = document.createElement('div');
-      inner.dataset.parallaxInner = '';
-      inner.style.willChange = 'transform';
-      while (el.firstChild) inner.appendChild(el.firstChild);
-      el.appendChild(inner);
+    if (servicesLoadFailed){
+      groups.innerHTML = '<div class="bk-loading"><span>' + t('ui_load_error') + '</span><button type="button" class="bk-retry" id="bk-retry-services">' + t('ui_retry') + '</button></div>';
+      document.getElementById('bk-total-price').textContent = euro(0);
+      goBtn.classList.add('disabled');
+      var retryBtn = document.getElementById('bk-retry-services');
+      if (retryBtn) retryBtn.addEventListener('click', loadServices);
+      return;
     }
-    inner.style.transform = `translateY(${shift}px)`;
-  });
-}
-window.addEventListener('scroll', onScrollParallax, { passive: true });
-onScrollParallax();
+    if (SERVICES.length === 0){
+      groups.innerHTML = '<div class="bk-loading"><span>' + t('ui_no_services') + '</span></div>';
+      document.getElementById('bk-total-price').textContent = euro(0);
+      goBtn.classList.add('disabled');
+      return;
+    }
 
-parallaxEls.forEach(el=>{
-  el.style.position = 'relative';
-  el.style.overflow = 'hidden';
-  const spot = document.createElement('div');
-  spot.style.position = 'absolute';
-  spot.style.inset = '0';
-  spot.style.opacity = '0';
-  spot.style.transition = 'opacity .25s';
-  spot.style.pointerEvents = 'none';
-  spot.style.background = 'radial-gradient(600px circle at 50% 50%, rgba(242,240,236,.18), transparent 100%)';
-  el.appendChild(spot);
-  el.addEventListener('mousemove', e=>{
-    const r = el.getBoundingClientRect();
-    spot.style.background = `radial-gradient(${Math.max(r.width,r.height)}px circle at ${e.clientX-r.left}px ${e.clientY-r.top}px, rgba(242,240,236,.18), transparent 100%)`;
-    spot.style.opacity = '1';
+    groups.innerHTML = categories().map(function(cat){
+      var items = SERVICES.filter(function(s){ return s.category === cat; }).map(function(s){
+        var sel = !!selected[s.id];
+        return '<button type="button" class="bk-service-row" data-toggle="' + s.id + '">' +
+          '<span class="bk-check' + (sel ? ' on' : '') + '">' + (sel ? checkIconSvg() : '') + '</span>' +
+          '<span><span class="bk-svc-name">' + t('svc_' + s.id) + '</span>' +
+          '<div class="bk-svc-meta">' + s.duration + ' ' + t('ui_minutes') + '</div></span>' +
+          '<span class="bk-svc-price">' + euro(s.price) + '</span>' +
+        '</button>';
+      }).join('');
+      return '<div><div class="bk-cat-label">' + t('cat_' + cat) + '</div>' + items + '</div>';
+    }).join('');
+
+    groups.querySelectorAll('[data-toggle]').forEach(function(btn){
+      btn.addEventListener('click', function(){ toggleService(btn.dataset.toggle); });
+    });
+
+    var totalItems = SERVICES.filter(function(s){ return selected[s.id]; });
+    var total = totalItems.reduce(function(sum, s){ return sum + s.price; }, 0);
+    document.getElementById('bk-total-price').textContent = euro(total);
+    goBtn.classList.toggle('disabled', totalItems.length === 0);
+  }
+  function toggleService(id){ selected[id] = !selected[id]; renderServices(); }
+
+  function toISODate(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function bookingDates(){
+    var out = [], today = new Date();
+    for (var i = 0; i < 14; i++){
+      var d = new Date(today); d.setDate(today.getDate() + i);
+      out.push({ day: I18N[currentLang].days[d.getDay()], date: d.getDate(), month: I18N[currentLang].months[d.getMonth()], weekdayIdx: d.getDay(), iso: toISODate(d) });
+    }
+    return out;
+  }
+
+  function renderDates(){
+    var dates = bookingDates();
+    var strip = document.getElementById('bk-date-strip');
+    strip.innerHTML = dates.slice(dateOffset, dateOffset + 7).map(function(d, i){
+      var idx = dateOffset + i;
+      var active = idx === selectedDateIdx;
+      var closed = d.weekdayIdx === 0;
+      if (closed){
+        return '<div class="bk-date-closed"><div class="d1">' + d.day + '</div><div class="d2">' + d.date + '</div><div class="d3">' + d.month + '</div></div>';
+      }
+      return '<button type="button" class="bk-date-chip' + (active ? ' on' : '') + '" data-idx="' + idx + '"><div class="d1">' + d.day + '</div><div class="d2">' + d.date + '</div><div class="d3">' + d.month + '</div></button>';
+    }).join('');
+    strip.querySelectorAll('[data-idx]').forEach(function(btn){
+      btn.addEventListener('click', function(){ pickDate(parseInt(btn.dataset.idx, 10)); });
+    });
+    document.getElementById('bk-date-prev').disabled = dateOffset === 0;
+    document.getElementById('bk-date-next').disabled = dateOffset >= 7;
+    renderTimes();
+  }
+  function shiftDate(dir){ dateOffset = Math.max(0, Math.min(7, dateOffset + dir)); renderDates(); }
+  function pickDate(idx){ selectedDateIdx = idx; selectedTime = null; renderDates(); }
+
+  function renderTimes(){
+    var section = document.getElementById('bk-time-section');
+    if (selectedDateIdx == null){ section.hidden = true; return; }
+    section.hidden = false;
+    var d = bookingDates()[selectedDateIdx];
+    document.getElementById('bk-time-label').textContent = t('ui_available_times_on') + ' ' + I18N[currentLang].dayNamesFull[d.weekdayIdx] + ' ' + d.date + ' ' + d.month.toLowerCase();
+
+    var requestId = ++availabilityRequestId;
+    var grid = document.getElementById('bk-time-grid');
+    grid.innerHTML = '<div class="bk-loading" style="grid-column:1/-1">' + spinnerSvg() + '<span>' + t('ui_loading') + '</span></div>';
+
+    fetch(API_BASE + '/availability?date=' + d.iso).then(function(res){
+      if (!res.ok) throw new Error('Failed to load availability');
+      return res.json();
+    }).then(function(data){
+      if (requestId !== availabilityRequestId) return;
+      grid.innerHTML = data.slots.map(function(s){
+        var active = s.time === selectedTime;
+        if (!s.available) return '<button type="button" class="bk-time-chip" disabled>' + s.time + '</button>';
+        return '<button type="button" class="bk-time-chip' + (active ? ' on' : '') + '" data-time="' + s.time + '">' + s.time + '</button>';
+      }).join('');
+      grid.querySelectorAll('[data-time]').forEach(function(btn){
+        btn.addEventListener('click', function(){ pickTime(btn.dataset.time); });
+      });
+    }).catch(function(err){
+      console.error(err);
+      if (requestId !== availabilityRequestId) return;
+      grid.innerHTML = '<div class="bk-loading" style="grid-column:1/-1"><span>' + t('ui_load_error') + '</span><button type="button" class="bk-retry" id="bk-retry-times">' + t('ui_retry') + '</button></div>';
+      var retryBtn = document.getElementById('bk-retry-times');
+      if (retryBtn) retryBtn.addEventListener('click', renderTimes);
+    });
+  }
+  function pickTime(time){ selectedTime = time; renderSummary(); goStep(3); }
+
+  function renderSummary(){
+    var d = bookingDates()[selectedDateIdx];
+    var label = I18N[currentLang].dayNamesFull[d.weekdayIdx] + ' ' + d.date + ' ' + d.month.toLowerCase() + ' ' + t('ui_at') + ' ' + selectedTime;
+    document.getElementById('summary-line').textContent = label;
+    var items = SERVICES.filter(function(s){ return selected[s.id]; });
+    var duration = items.reduce(function(sum, s){ return sum + s.duration; }, 0);
+    document.getElementById('summary-duration').innerHTML = clockIconSvg() + '<span>' + duration + ' ' + t('ui_minutes') + '</span>' +
+      '<img src="./images/logo-mark-white.png" alt="" width="13" height="12" style="margin-left:6px">' + '<span>Fresh Fadez Studios</span>';
+    document.getElementById('summary-items').innerHTML = items.map(function(s){
+      return '<div class="bk-summary-item"><span>' + t('svc_' + s.id) + '</span><span>' + euro(s.price) + '</span></div>';
+    }).join('');
+    var total = items.reduce(function(sum, s){ return sum + s.price; }, 0);
+    document.getElementById('summary-total').textContent = euro(total);
+    document.getElementById('confirm-line').textContent = label;
+    document.getElementById('confirm-total').textContent = t('modal_total') + ' ' + euro(total) + ' · Fresh Fadez Studios';
+  }
+
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function checkForm(){
+    var ok = document.getElementById('f-first').value.trim() && document.getElementById('f-last').value.trim() &&
+      EMAIL_RE.test(document.getElementById('f-email').value.trim()) && document.getElementById('f-phone').value.trim();
+    document.getElementById('confirm-btn').classList.toggle('disabled', !ok);
+  }
+  ['f-first','f-last','f-email','f-phone'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', checkForm);
   });
-  el.addEventListener('mouseleave', ()=>{ spot.style.opacity = '0'; });
-});
+
+  function confirmBooking(){
+    var btn = document.getElementById('confirm-btn');
+    if (btn.classList.contains('disabled')) return;
+    var errorEl = document.getElementById('booking-error');
+    errorEl.classList.remove('show');
+    btn.classList.add('disabled');
+    var originalLabel = btn.textContent;
+    btn.textContent = t('ui_submitting');
+
+    var d = bookingDates()[selectedDateIdx];
+    var payload = {
+      firstName: document.getElementById('f-first').value.trim(),
+      lastName: document.getElementById('f-last').value.trim(),
+      email: document.getElementById('f-email').value.trim(),
+      phone: document.getElementById('f-phone').value.trim(),
+      notes: document.getElementById('f-notes').value.trim(),
+      saveInfo: document.getElementById('f-save').checked,
+      newsletter: document.getElementById('f-newsletter').checked,
+      serviceSlugs: Object.keys(selected).filter(function(id){ return selected[id]; }),
+      date: d.iso,
+      time: selectedTime
+    };
+
+    fetch(API_BASE + '/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(res){
+      return res.json().then(function(body){ return { res: res, body: body }; });
+    }).then(function(r){
+      if (!r.res.ok){
+        errorEl.textContent = r.res.status === 409 ? t('ui_slot_taken') : (r.body.error || t('ui_booking_error'));
+        errorEl.classList.add('show');
+        btn.textContent = originalLabel;
+        btn.classList.remove('disabled');
+        if (r.res.status === 409){ selectedTime = null; goStep(2); }
+        return;
+      }
+      goStep(4);
+    }).catch(function(err){
+      console.error(err);
+      errorEl.textContent = t('ui_booking_error');
+      errorEl.classList.add('show');
+      btn.textContent = originalLabel;
+      btn.classList.remove('disabled');
+    });
+  }
+  document.getElementById('confirm-btn').addEventListener('click', confirmBooking);
+
+  /* ---- Showcase (hero chips + "Find your cut") driven by real data ---- */
+  function findService(slug){ return SERVICES.filter(function(s){ return s.id === slug; })[0]; }
+
+  function renderShowcase(){
+    SHOWCASE.forEach(function(slug){
+      var el = document.querySelector('[data-time-for="' + slug + '"]');
+      var s = findService(slug);
+      if (el) el.textContent = s ? (s.duration + ' ' + t('ui_minutes')) : '···';
+    });
+    updateShowcasePanel();
+  }
+  function updateShowcasePanel(){
+    var s = findService(activeShowcase);
+    document.getElementById('svc-name').textContent = t('svc_' + activeShowcase);
+    document.getElementById('svc-price').textContent = s ? euro(s.price) : '···';
+    document.getElementById('svc-desc').textContent = t('desc_' + activeShowcase) || '';
+    document.getElementById('svc-time').textContent = s ? (s.duration + ' ' + t('ui_minutes')) : '···';
+    document.getElementById('svc-photo').textContent = t('photo_' + activeShowcase) || '';
+    document.getElementById('svc-book').textContent = t('book_prefix') + (t('svc_' + activeShowcase) || '').toLowerCase();
+    var svcTakesEl = document.querySelector('[data-i18n="svc_takes"]');
+    if (svcTakesEl){
+      var timeSpan = document.getElementById('svc-time');
+      svcTakesEl.innerHTML = '';
+      svcTakesEl.appendChild(document.createTextNode(t('svc_takes')));
+      svcTakesEl.appendChild(timeSpan);
+    }
+  }
+
+  var tabs = document.querySelectorAll('.svc-tab');
+  var indicator = document.querySelector('.svc-indicator');
+  var blob = document.querySelector('.svc-blob');
+  function moveIndicator(squish){
+    if (!indicator || getComputedStyle(indicator).display === 'none') return;
+    var sel = document.querySelector('.svc-tab[aria-selected="true"]');
+    if (!sel) return;
+    indicator.style.width = sel.offsetWidth + 'px';
+    indicator.style.transform = 'translateX(' + sel.offsetLeft + 'px)';
+    if (squish && !reduce){ blob.classList.remove('squish'); void blob.offsetWidth; blob.classList.add('squish'); }
+  }
+  var animateSwap = false;
+  function selectShowcase(slug, focusTab){
+    activeShowcase = slug;
+    tabs.forEach(function(tb){
+      var on = tb.dataset.slug === slug;
+      tb.setAttribute('aria-selected', on ? 'true' : 'false');
+      tb.tabIndex = on ? 0 : -1;
+      if (on && focusTab) tb.focus();
+    });
+    document.getElementById('svc-panel').setAttribute('aria-labelledby', 'tab-' + slug);
+    moveIndicator(animateSwap && !focusTab);
+    updateShowcasePanel();
+    if (!reduce && animateSwap && !focusTab){
+      document.querySelectorAll('#svc-panel .ph, #svc-panel .svc-body').forEach(function(el, i){
+        el.classList.remove('svc-anim'); void el.offsetWidth;
+        el.style.animationDelay = (i * 60) + 'ms';
+        el.classList.add('svc-anim');
+      });
+    }
+  }
+  tabs.forEach(function(tb){
+    tb.addEventListener('click', function(){ if (tb.getAttribute('aria-selected') !== 'true') selectShowcase(tb.dataset.slug); });
+    tb.addEventListener('keydown', function(e){
+      var i = SHOWCASE.indexOf(tb.dataset.slug), n = null;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') n = SHOWCASE[(i + 1) % SHOWCASE.length];
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') n = SHOWCASE[(i - 1 + SHOWCASE.length) % SHOWCASE.length];
+      if (n){ e.preventDefault(); selectShowcase(n, true); }
+    });
+  });
+  document.getElementById('svc-book').addEventListener('click', function(){ quickBook(activeShowcase); });
+
+  function quickBook(slug){
+    selected = {};
+    selected[slug] = true;
+    selectedTime = null; selectedDateIdx = null; dateOffset = 0;
+    goToBooking(2);
+  }
+
+  /* ================= Booking widget navigation (inline, always visible) ================= */
+  function goToBooking(step){
+    scrollToEl(document.getElementById('top'));
+    goStep(step || 1);
+  }
+  function resetBooking(){
+    selected = {}; dateOffset = 0; selectedDateIdx = null; selectedTime = null;
+    ['f-first','f-last','f-email','f-phone','f-notes'].forEach(function(id){ document.getElementById(id).value = ''; });
+    document.getElementById('f-save').checked = true;
+    document.getElementById('f-newsletter').checked = false;
+    document.getElementById('booking-error').classList.remove('show');
+    renderServices();
+    goStep(1);
+  }
+  function goStep(n){
+    document.querySelectorAll('.bk-step').forEach(function(s){ s.classList.remove('show','in'); });
+    var el = document.querySelector('.bk-step[data-step="' + n + '"]');
+    el.classList.add('show');
+    void el.offsetWidth;
+    el.classList.add('in');
+
+    var progress = document.getElementById('bk-progress');
+    if (n === 4){
+      progress.style.display = 'none';
+    } else {
+      progress.style.display = '';
+      [1,2,3].forEach(function(i){
+        var dot = document.querySelector('[data-dot="' + i + '"]');
+        dot.classList.toggle('active', i === n);
+        dot.classList.toggle('done', i < n);
+      });
+    }
+    document.getElementById('bk-panel').scrollTop = 0;
+    if (n === 2) renderDates();
+    if (n === 3) setTimeout(function(){ document.getElementById('f-first').focus(); }, 300);
+  }
+
+  document.getElementById('bk-back-2').addEventListener('click', function(){ goStep(1); });
+  document.getElementById('bk-back-3').addEventListener('click', function(){ goStep(2); });
+  document.getElementById('bk-go-time').addEventListener('click', function(){ if (!this.classList.contains('disabled')) goStep(2); });
+  document.getElementById('bk-date-prev').addEventListener('click', function(){ shiftDate(-1); });
+  document.getElementById('bk-date-next').addEventListener('click', function(){ shiftDate(1); });
+  document.getElementById('bk-restart').addEventListener('click', resetBooking);
+
+  ['nav-book-btn','menu-book-btn','visit-book-btn','mobile-cta-btn'].forEach(function(id){
+    document.getElementById(id).addEventListener('click', function(){ goToBooking(1); });
+  });
+  document.getElementById('about-book-link').addEventListener('click', function(e){ e.preventDefault(); goToBooking(1); });
+
+  /* ================= Mobile menu ================= */
+  var menuBtn = document.getElementById('menu-btn');
+  var sheet = document.getElementById('menu-sheet');
+  var topbarEl = document.getElementById('topbar');
+  function setMenu(open){
+    sheet.hidden = !open;
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', open ? 'Menu sluiten' : 'Menu openen');
+    topbarEl.classList.toggle('open', open);
+  }
+  menuBtn.addEventListener('click', function(){ setMenu(sheet.hidden); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !sheet.hidden){ setMenu(false); menuBtn.focus(); } });
+  matchMedia('(min-width: 761px)').addEventListener('change', function(m){ if (m.matches) setMenu(false); });
+
+  /* Eased scrolling to any section */
+  var scrolling = null;
+  function ease(t){ return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }
+  function scrollToEl(el){
+    var start = window.scrollY;
+    var end = el.id === 'top' ? 0 : el.getBoundingClientRect().top + start - 72;
+    end = Math.max(0, Math.min(end, document.documentElement.scrollHeight - innerHeight));
+    if (reduce){ window.scrollTo(0, end); return; }
+    var dist = end - start;
+    var dur = Math.min(1100, Math.max(500, Math.abs(dist) * 0.35));
+    var t0 = null;
+    if (scrolling) cancelAnimationFrame(scrolling);
+    function step(ts){
+      if (t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      window.scrollTo(0, start + dist * ease(p));
+      if (p < 1) scrolling = requestAnimationFrame(step); else scrolling = null;
+    }
+    scrolling = requestAnimationFrame(step);
+  }
+  ['wheel','touchstart','keydown'].forEach(function(ev){
+    window.addEventListener(ev, function(){ if (scrolling){ cancelAnimationFrame(scrolling); scrolling = null; } }, {passive:true});
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var href = a.getAttribute('href');
+      if (href === '#' || href.length < 2) return;
+      var el = document.getElementById(href.slice(1));
+      if (!el) return;
+      e.preventDefault();
+      setMenu(false);
+      scrollToEl(el);
+    });
+  });
+
+  /* Mobile booking bar */
+  var mcta = document.getElementById('mobile-cta');
+  var mctaBtn = document.getElementById('mobile-cta-btn');
+  var visitEl = document.getElementById('visit');
+  var bookHeroEl = document.querySelector('.book-hero');
+  function updateCta(){
+    var heroBottom = bookHeroEl.getBoundingClientRect().bottom;
+    var visitTop = visitEl.getBoundingClientRect().top;
+    var show = heroBottom < 0 && visitTop > innerHeight * 0.85;
+    mcta.classList.toggle('show', show);
+    mctaBtn.tabIndex = show ? 0 : -1;
+    var showTop = window.scrollY > innerHeight * 0.9;
+    toTop.classList.toggle('show', showTop);
+    toTop.tabIndex = showTop ? 0 : -1;
+  }
+  var toTop = document.getElementById('to-top');
+  toTop.addEventListener('click', function(){
+    scrollToEl(document.getElementById('top'));
+    var b = document.querySelector('.brand'); if (b) b.focus({preventScroll:true});
+  });
+  window.addEventListener('scroll', updateCta, {passive:true});
+  window.addEventListener('resize', updateCta);
+  updateCta();
+
+  /* Frosted nav on scroll */
+  var topbar = document.getElementById('topbar');
+  function updateTopbar(){
+    topbar.classList.toggle('scrolled', window.scrollY > 24);
+  }
+  window.addEventListener('scroll', function(){ requestAnimationFrame(updateTopbar); }, {passive:true});
+  updateTopbar();
+
+  /* Scroll reveal */
+  if (!reduce && 'IntersectionObserver' in window){
+    var groups = [['.svc-left','.svc-card'],['.about-img','.about-copy'],['.work-head'],['.gallery .ph'],['.visit-card'],['.footer-inner']];
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, {rootMargin:'0px 0px -8% 0px', threshold:0.08});
+    groups.forEach(function(sels){
+      var n = 0;
+      sels.forEach(function(sel){
+        document.querySelectorAll(sel).forEach(function(el){
+          if (el.getBoundingClientRect().top < innerHeight) return;
+          el.style.setProperty('--d', (n++ * 90) + 'ms');
+          el.classList.add('reveal');
+          io.observe(el);
+        });
+      });
+    });
+  }
+
+  /* ================= Init ================= */
+  applyLanguage();
+  selectShowcase('knippen-baard');
+  goStep(1);
+  animateSwap = true;
+  requestAnimationFrame(function(){ moveIndicator(false); requestAnimationFrame(function(){ indicator.classList.add('ready'); }); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ moveIndicator(false); });
+  window.addEventListener('resize', function(){
+    indicator.classList.remove('ready'); moveIndicator(false);
+    requestAnimationFrame(function(){ indicator.classList.add('ready'); });
+  });
+  loadServices();
+})();
 </script>
 </body>
 </html>

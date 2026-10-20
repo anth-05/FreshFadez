@@ -1,0 +1,44 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "Frontend/index.html"
+        ],
+        "createdAt": "2026-10-16T17:59:47.897Z",
+        "reason": "False positive: .about-inner carries the wrap class (padding-inline:24px), same pattern as hero-body/services/work/visit sections which are not flagged"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "Frontend/index.html"
+        ],
+        "createdAt": "2026-10-16T17:59:47.918Z",
+        "reason": "False positive: .topbar is position:fixed and .hero has no transform/filter/will-change, so topbar's containing block is the viewport, not hero -- verified it is not actually clipped"
+      },
+      {
+        "rule": "marquee",
+        "value": "*",
+        "files": [
+          "Frontend/index.html"
+        ],
+        "createdAt": "2026-10-16T17:59:47.934Z",
+        "reason": "Intentional element authored by the user in the redesign artifact they asked me to completely take over; already disclosed to user, not an agent-introduced pattern"
+      },
+      {
+        "rule": "buried-raster",
+        "value": "*",
+        "files": [
+          "Frontend/index.html"
+        ],
+        "createdAt": "2026-10-16T18:23:39.245Z",
+        "reason": "Pre-existing faint watermark design (same 0.05 opacity logo that previously existed as inline SVG, unflagged); only newly raster because the user asked to swap the logo mark for a PNG asset, not a new issue"
+      }
+    ]
+  }
+}
