@@ -198,8 +198,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 .work-head .lede{margin:16px 0 0}
 .work-head a{font-size:16px;font-weight:500;text-underline-offset:6px}
 .gallery{margin-top:48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px}
-.gallery .ph{aspect-ratio:4/5;border-radius:14px;max-width:100%}
-.gallery .ph-label{color:#3F454B}
+.gallery .shot{margin:0;display:flex;justify-content:center}
+.gallery .shot img{display:block;width:100%;max-width:240px;height:auto;aspect-ratio:1/1;border-radius:50%;object-fit:cover;object-position:50% var(--y,50%);background:var(--line);outline:1px solid rgba(18,20,23,.08);outline-offset:-1px}
 
 /* VISIT */
 .visit{padding-bottom:96px}
@@ -271,9 +271,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   .about-img{max-width:none}
   .work{padding-block:64px}
   .work-head{align-items:flex-start}
-  .gallery{margin-top:32px;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .gallery .ph{padding:10px}
-  .gallery .ph-label{font-size:13px}
+  .gallery{margin-top:32px;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 16px}
   .visit{padding-bottom:64px}
   .visit-card{padding:40px 22px;border-radius:22px;gap:36px}
   .visit-card .watermark{width:260px;right:-50px;bottom:-40px}
@@ -286,7 +284,6 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 }
 @media (max-width: 380px){
   .facts{grid-template-columns:1fr}
-  .gallery .ph-size{display:none}
 }
 
 /* ============ BOOKING WIDGET (inline, always visible) ============ */
@@ -634,10 +631,10 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       <a href="#" data-i18n="work_link">Volg ons op Instagram</a>
     </div>
     <div class="gallery">
-      <div class="ph ph-light" role="img" data-i18n-aria="gallery_1"><svg width="30" height="30" aria-hidden="true"><use href="#ff-camera"/></svg><span class="ph-label" data-i18n="gallery_1">Klantfoto: krullen met skin fade</span><span class="ph-size">1080 × 1350</span></div>
-      <div class="ph ph-light" role="img" data-i18n-aria="gallery_2"><svg width="30" height="30" aria-hidden="true"><use href="#ff-camera"/></svg><span class="ph-label" data-i18n="gallery_2">Klantfoto: baard lijnwerk</span><span class="ph-size">1080 × 1350</span></div>
-      <div class="ph ph-light" role="img" data-i18n-aria="gallery_3"><svg width="30" height="30" aria-hidden="true"><use href="#ff-camera"/></svg><span class="ph-label" data-i18n="gallery_3">Klantfoto: taper met lijnwerk</span><span class="ph-size">1080 × 1350</span></div>
-      <div class="ph ph-light" role="img" data-i18n-aria="gallery_4"><svg width="30" height="30" aria-hidden="true"><use href="#ff-camera"/></svg><span class="ph-label" data-i18n="gallery_4">Klantfoto: getextureerde crop</span><span class="ph-size">1080 × 1350</span></div>
+      <figure class="shot"><img src="./images/fade1.jpeg" alt="Skin fade met krullen" data-i18n-alt="gallery_1" loading="lazy" decoding="async" style="--y:66%"></figure>
+      <figure class="shot"><img src="./images/fade2.jpeg" alt="Drop fade met highlights en baard" data-i18n-alt="gallery_2" loading="lazy" decoding="async" style="--y:68%"></figure>
+      <figure class="shot"><img src="./images/fade3.jpeg" alt="Taper fade met textuur" data-i18n-alt="gallery_3" loading="lazy" decoding="async" style="--y:68%"></figure>
+      <figure class="shot"><img src="./images/fade4.jpeg" alt="Locs met lijnwerk en baard" data-i18n-alt="gallery_4" loading="lazy" decoding="async" style="--y:72%"></figure>
     </div>
   </section>
 
@@ -669,7 +666,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       <span class="bw"><span class="bn">FRESHFADEZ</span><span class="bs">STUDIOS</span></span>
       <span style="margin-left:8px">© 2026</span>
     </div>
-    <p class="powered"><span data-i18n="footer_powered">Powered by</span> <a href="https://branch.nu" target="_blank" rel="noopener"><img src="./images/branch-logo-icon.png" alt="">Branch</a></p>
+    <p class="powered"><span data-i18n="footer_powered">Aangedreven door</span> <a href="https://branch.nu" target="_blank" rel="noopener"><img src="./images/branch-logo-icon.png" alt="">Branch</a></p>
     <div class="footer-links">
       <a href="#">Instagram</a>
       <a href="#">TikTok</a>
@@ -699,10 +696,10 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       about_p2:'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       about_sign:'[Jouw naam], oprichter van Fresh Fadez Studios', about_link:'Boek een stoel bij mij',
       work_title:'Echte klanten, echte resultaten', work_lede:'Een paar recente stoelen. Nieuw werk komt elke week op Instagram.', work_link:'Volg ons op Instagram',
-      gallery_1:'Klantfoto: krullen met skin fade', gallery_2:'Klantfoto: baard lijnwerk', gallery_3:'Klantfoto: taper met lijnwerk', gallery_4:'Klantfoto: getextureerde crop',
+      gallery_1:'Skin fade met krullen', gallery_2:'Drop fade met highlights en baard', gallery_3:'Taper fade met textuur', gallery_4:'Locs met lijnwerk en baard',
       visit_title:'Jouw volgende knipbeurt is een klik verwijderd', visit_body:'Kies een tijd die jou uitkomt en laat de rest aan ons over.',
       fact_location:'Locatie', fact_hours:'Openingstijden', fact_hours_val:'Ma–Za 12:00–20:00<br>Zondag gesloten', fact_phone:'Telefoon', fact_bookings:'Boekingen', fact_bookings_val:'Alleen op afspraak',
-      footer_powered:'Powered by',
+      footer_powered:'Aangedreven door',
       chip_haircut:'Knippen', chip_fade:'Fade', chip_beard:'Baard',
       modal_step1_title:'KIES DIENSTEN', modal_step2_title:'KIES DATUM EN TIJD', modal_step3_title:'JOUW GEGEVENS', modal_step4_title:'Afspraak bevestigd',
       modal_required:'*Verplicht', modal_total:'Totaal', modal_choose_time:'Kies een tijd', modal_restart:'Nog een afspraak boeken',
@@ -737,7 +734,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       about_p2:'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       about_sign:'[Your name], founder of Fresh Fadez Studios', about_link:'Book a chair with me',
       work_title:'Real clients, real results', work_lede:'A few recent chairs. New work goes up on Instagram every week.', work_link:'Follow us on Instagram',
-      gallery_1:'Client photo: curly top with skin fade', gallery_2:'Client photo: beard line-up', gallery_3:'Client photo: taper and line-up', gallery_4:'Client photo: textured crop',
+      gallery_1:'Skin fade with curls', gallery_2:'Drop fade with highlights and beard', gallery_3:'Textured taper fade', gallery_4:'Locs with line-up and beard',
       visit_title:'Your next cut is a click away', visit_body:'Choose a time that works for you and let us take care of the rest.',
       fact_location:'Location', fact_hours:'Opening hours', fact_hours_val:'Mon–Sat 12:00–20:00<br>Sunday closed', fact_phone:'Phone', fact_bookings:'Bookings', fact_bookings_val:'By appointment only',
       footer_powered:'Powered by',
@@ -774,6 +771,10 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       if (el.id === 'svc-takes' || key === 'svc_takes'){ return; }
       if (key === 'fact_hours_val' || key === 'fact_bookings_val'){ el.innerHTML = I18N[currentLang][key]; return; }
       el.textContent = I18N[currentLang][key];
+    });
+    document.querySelectorAll('[data-i18n-alt]').forEach(function(el){
+      var key = el.dataset.i18nAlt;
+      if (I18N[currentLang][key] !== undefined) el.alt = I18N[currentLang][key];
     });
     document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
       var key = el.dataset.i18nPh;
@@ -1264,7 +1265,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 
   /* Scroll reveal */
   if (!reduce && 'IntersectionObserver' in window){
-    var groups = [['.svc-left','.svc-card'],['.about-img','.about-copy'],['.work-head'],['.gallery .ph'],['.visit-card'],['.footer-inner']];
+    var groups = [['.svc-left','.svc-card'],['.about-img','.about-copy'],['.work-head'],['.gallery .shot'],['.visit-card'],['.footer-inner']];
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
     }, {rootMargin:'0px 0px -8% 0px', threshold:0.08});
