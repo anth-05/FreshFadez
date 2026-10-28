@@ -4,14 +4,18 @@ import Service from '../models/Service.js';
 import { asyncHandler } from '../middleware/asyncHandler.js';
 import { ApiError } from '../middleware/errors.js';
 import { adminAuth } from '../middleware/adminAuth.js';
-import { TIME_SLOTS, BOOKABLE_DAYS_AHEAD, isClosedOn } from '../config/businessHours.js';
+import { BOOKABLE_DAYS_AHEAD } from '../config/businessHours.js';
+import { assertSlotOpen, coveredSlots } from '../lib/slots.js';
 
 const router = Router();
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^\+?[\d\s()-]+$/;
+const LIMITS = { name: 50, email: 254, notes: 500 };
 
-function todayStr() {
-  return new Date().toISOString().slice(0, 10);
+// 9–15 digits covers Dutch numbers (06…, 010…) and international ones (+31 6…).
+function isValidPhone(phone) {
+  const digits = phone.replace(/\D/g, '').length;
+  return PHONE_RE.test(phone) && digits >= 9 && digits <= 15;
 }
 
 router.post(
@@ -33,22 +37,19 @@ router.post(
     if (!firstName || !lastName || !email || !phone) {
       throw new ApiError(400, 'firstName, lastName, email and phone are required');
     }
-    if (!EMAIL_RE.test(email)) throw new ApiError(400, 'Invalid email address');
+    if ([firstName, lastName, email, phone, notes].some((v) => typeof v !== 'string')) {
+      throw new ApiError(400, 'firstName, lastName, email, phone and notes must be text');
+    }
+    if (!firstName.trim() || !lastName.trim()) throw new ApiError(400, 'firstName and lastName are required');
+    if (firstName.length > LIMITS.name || lastName.length > LIMITS.name) {
+      throw new ApiError(400, `Names can be at most ${LIMITS.name} characters`);
+    }
+    if (email.length > LIMITS.email || !EMAIL_RE.test(email)) throw new ApiError(400, 'Invalid email address');
+    if (!isValidPhone(phone)) throw new ApiError(400, 'Invalid phone number');
+    if (notes.length > LIMITS.notes) throw new ApiError(400, `notes can be at most ${LIMITS.notes} characters`);
     if (!Array.isArray(serviceSlugs) || serviceSlugs.length === 0) {
       throw new ApiError(400, 'Select at least one service');
     }
-    if (typeof date !== 'string' || !DATE_RE.test(date)) {
-      throw new ApiError(400, 'date must be formatted as YYYY-MM-DD');
-    }
-    if (date < todayStr()) throw new ApiError(400, 'date cannot be in the past');
-    const maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + BOOKABLE_DAYS_AHEAD);
-    if (date > maxDate.toISOString().slice(0, 10)) {
-      throw new ApiError(400, `date must be within ${BOOKABLE_DAYS_AHEAD} days`);
-    }
-    if (isClosedOn(date)) throw new ApiError(400, 'Selected date is closed');
-    if (!TIME_SLOTS.includes(time)) throw new ApiError(400, 'Invalid time slot');
-
     const services = await Service.find({ slug: { $in: serviceSlugs }, active: true }).lean();
     if (services.length !== serviceSlugs.length) {
       throw new ApiError(400, 'One or more selected services are invalid');
@@ -62,6 +63,7 @@ router.post(
     }));
     const totalPrice = bookedServices.reduce((sum, s) => sum + s.price, 0);
     const totalDuration = bookedServices.reduce((sum, s) => sum + s.duration, 0);
+    await assertSlotOpen(date, time, { maxDaysAhead: BOOKABLE_DAYS_AHEAD, duration: totalDuration });
 
     try {
       const booking = await Booking.create({
@@ -75,13 +77,14 @@ router.post(
         services: bookedServices,
         date,
         time,
+        slots: coveredSlots(date, time, totalDuration),
         totalPrice,
         totalDuration,
       });
       res.status(201).json(booking);
     } catch (err) {
       if (err.code === 11000) {
-        throw new ApiError(409, 'That time slot was just booked, please pick another one');
+        throw new ApiError(409, 'That time is no longer available, please pick another one');
       }
       throw err;
     }

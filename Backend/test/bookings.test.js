@@ -94,3 +94,34 @@ test('PATCH /api/bookings/:id cancels a booking, freeing the slot', async () => 
   const rebooked = await request(app).post('/api/bookings').send({ ...payload, email: 'other@example.com' });
   assert.equal(rebooked.status, 201);
 });
+
+test('POST /api/bookings validates phone numbers', async () => {
+  await Service.create({ slug: 'contour', name: 'Contour', category: 'contour', duration: 30, price: 20 });
+  for (const phone of ['abc', '06', '0612', '06-1234-5678-9999-0000', '06 1234 567x']) {
+    const res = await request(app).post('/api/bookings').send(validPayload({ phone }));
+    assert.equal(res.status, 400, `phone ${phone}`);
+  }
+  for (const [i, phone] of ['0612345678', '06 1234 5678', '+31 6 1234 5678', '010-1234567'].entries()) {
+    const res = await request(app).post('/api/bookings').send(validPayload({ phone, time: TIME_SLOTS[i] }));
+    assert.equal(res.status, 201, `phone ${phone}`);
+  }
+});
+
+test('POST /api/bookings enforces length limits and text types', async () => {
+  await Service.create({ slug: 'contour', name: 'Contour', category: 'contour', duration: 30, price: 20 });
+  const cases = [
+    { firstName: 'x'.repeat(51) },
+    { lastName: 'x'.repeat(51) },
+    { notes: 'x'.repeat(501) },
+    { email: `${'x'.repeat(250)}@example.com` },
+    { firstName: '   ' },
+    { firstName: { $gt: '' } },
+    { notes: ['a'] },
+  ];
+  for (const overrides of cases) {
+    const res = await request(app).post('/api/bookings').send(validPayload(overrides));
+    assert.equal(res.status, 400, JSON.stringify(overrides).slice(0, 60));
+  }
+  const ok = await request(app).post('/api/bookings').send(validPayload({ notes: 'x'.repeat(500) }));
+  assert.equal(ok.status, 201);
+});

@@ -5,9 +5,11 @@ import rateLimit from 'express-rate-limit';
 import servicesRouter from './routes/services.js';
 import availabilityRouter from './routes/availability.js';
 import bookingsRouter from './routes/bookings.js';
+import authRouter from './routes/auth.js';
+import barberRouter from './routes/barber.js';
 import { notFound, errorHandler } from './middleware/errors.js';
 
-export function createApp() {
+export function createApp({ rateLimits = true } = {}) {
   const app = express();
 
   app.use(helmet());
@@ -28,12 +30,25 @@ export function createApp() {
     limit: 20,
     standardHeaders: true,
     legacyHeaders: false,
+    skip: () => !rateLimits,
+  });
+
+  const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: true,
+    skip: () => !rateLimits,
   });
 
   app.get('/api/health', (req, res) => res.json({ ok: true }));
   app.use('/api/services', servicesRouter);
   app.use('/api/availability', availabilityRouter);
   app.use('/api/bookings', bookingLimiter, bookingsRouter);
+  app.use('/api/auth/login', loginLimiter);
+  app.use('/api/auth', authRouter);
+  app.use('/api/barber', barberRouter);
 
   app.use(notFound);
   app.use(errorHandler);

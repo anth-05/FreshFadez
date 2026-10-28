@@ -1,7 +1,8 @@
 export class ApiError extends Error {
-  constructor(status, message) {
+  constructor(status, message, details) {
     super(message);
     this.status = status;
+    this.details = details;
   }
 }
 
@@ -13,5 +14,5 @@ export function notFound(req, res) {
 export function errorHandler(err, req, res, next) {
   const status = err.status || 500;
   if (status === 500) console.error(err);
-  res.status(status).json({ error: err.message || 'Server error' });
+  res.status(status).json({ error: err.message || 'Server error', ...(err.details && { details: err.details }) });
 }

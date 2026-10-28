@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Barber portal — Fresh Fadez Studios</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#121417">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&display=swap">
+<style>
+/* Barber portal: session-gated, two tabs (appointments, availability). Same tokens as barber-login.html. */
+:root{
+  --ink:#121417;
+  --ink-2:#1E2226;
+  --ink-3:#272C31;
+  --line-dark:rgba(255,255,255,.14);
+  --muted-dark:#9AA0A6;
+  --ice:#D7D9DB;
+  --ice-ink:#121417;
+  --white:#FFFFFF;
+  --danger:#F2A399;
+  --ok:#A8D5BA;
+  --font:'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;min-height:100vh;min-height:100dvh;background:var(--ink);color:var(--white);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body.checking main,body.checking .top-right{visibility:hidden}
+img{display:block;max-width:100%}
+a{color:var(--white)}
+a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+a:focus-visible,button:focus-visible,input:focus-visible,[role="tab"]:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
+::selection{background:var(--ice);color:var(--ice-ink)}
+input{caret-color:var(--ice)}
+/* iOS keeps scrolling the page behind a modal dialog unless the root is locked. */
+html:has(dialog[open]){overflow:hidden}
+[hidden]{display:none!important}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:calc(18px + env(safe-area-inset-top,0px)) 24px 18px;border-bottom:1px solid var(--line-dark)}
+.brand{display:flex;align-items:center;gap:12px;color:var(--white);text-decoration:none}
+.brand .bw{display:flex;flex-direction:column;gap:5px;line-height:1}
+.brand .bn{font-size:15px;font-weight:700;font-stretch:112%;letter-spacing:.02em}
+.brand .bs{font-size:11px;letter-spacing:.4em;color:var(--muted-dark)}
+.top-right{display:flex;align-items:center;gap:10px}
+.pill{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line-dark);background:none;color:var(--white);font:600 13px/1 var(--font);letter-spacing:.02em;cursor:pointer}
+.lang{display:flex;gap:6px}
+.lang .pill{min-width:44px;padding:0;color:var(--muted-dark)}
+.lang .pill[aria-pressed="true"]{border-color:var(--ice);color:var(--white)}
+
+main{max-width:960px;margin:0 auto;padding:28px 24px 64px}
+h1{margin:0;font-size:clamp(26px,5vw,34px);line-height:1.05;font-weight:650;font-stretch:114%;letter-spacing:-.02em}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;margin:20px 0 20px;padding:4px;border-radius:999px;background:var(--ink-2);border:1px solid var(--line-dark);width:max-content;max-width:100%}
+.tab{min-height:44px;padding:0 20px;border:0;border-radius:999px;background:none;color:var(--muted-dark);font:600 15px/1 var(--font);cursor:pointer;transition:background-color 200ms ease,color 200ms ease}
+.tab[aria-selected="true"]{background:var(--ice);color:var(--ice-ink)}
+
+/* Toolbar + segmented filter */
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line-dark);background:none;color:var(--muted-dark);font:600 13px/1 var(--font);cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--ice);color:var(--white)}
+
+/* Appointment list: compact rows grouped per day; details expand on tap. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.search-row{display:flex;gap:10px;align-items:center;margin-bottom:18px}
+.search-row .field{flex:1;min-width:0;padding-left:44px;background:var(--ink-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%239AA0A6' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 16px center}
+.mini-pager{display:flex;align-items:center;gap:4px;flex:0 0 auto}
+.mini-pager .btn{width:44px;min-height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+#refresh{display:inline-flex;align-items:center;gap:8px}
+.mini-pager span{min-width:56px;text-align:center;font-size:14px;font-weight:600;color:var(--muted-dark);font-variant-numeric:tabular-nums}
+.day{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 8px;margin:22px 0 8px;font-weight:400}
+.day:first-child{margin-top:0}
+.day-rel{font-size:17px;font-weight:650;font-stretch:106%}
+.day-date{font-size:14px;color:var(--muted-dark)}
+.day-rel + .day-date::before{content:"· "}
+.day-count{margin-left:auto;font-size:13px;color:var(--muted-dark)}
+.day-group{border:1px solid var(--line-dark);border-radius:14px;background:var(--ink-2);overflow:hidden}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;column-gap:12px;padding-right:12px;border-top:1px solid var(--line-dark)}
+.row:first-child{border-top:0}
+.row-main{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:60px;padding:8px 0 8px 16px;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.r-time{font-size:17px;font-weight:650;font-stretch:106%;font-variant-numeric:tabular-nums}
+.r-who{min-width:0;display:flex;flex-direction:column;gap:1px}
+.r-name{font-size:15px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-meta{font-size:13px;color:var(--muted-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-flags{display:flex;gap:6px;align-items:center}
+.flag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;border:1px solid var(--line-dark);font-size:11px;font-weight:600;color:var(--muted-dark);white-space:nowrap}
+.flag svg{width:12px;height:12px;flex:none}
+.flag-live{border-color:var(--ok);color:var(--ok)}
+.r-phone{font-size:14px;color:var(--ice);text-underline-offset:3px;white-space:nowrap}
+.r-actions{display:flex;gap:6px}
+.r-actions .btn{min-height:36px;padding:0 14px;font-size:13px}
+.r-details{grid-column:1/-1;padding:4px 16px 16px 84px;font-size:14px}
+.r-details dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0}
+.r-details dt{color:var(--muted-dark)}
+.r-details dd{margin:0;word-break:break-word}
+.r-details a{color:var(--ice);text-underline-offset:3px}
+.r-notes{white-space:pre-wrap}
+.r-details .r-actions{display:none;margin-top:12px}
+.chev{width:16px;height:16px;color:var(--muted-dark);transition:transform 200ms var(--ease-out)}
+.row-main[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.pager{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:24px}
+.pager-row{display:flex;align-items:center;justify-content:center;gap:6px}
+#page-nums{display:contents}
+.pager-row .btn{min-width:44px;min-height:44px;padding:0 10px;font-variant-numeric:tabular-nums}
+.pager-row .btn[aria-current="page"]{background:var(--ice);border-color:var(--ice);color:var(--ice-ink);cursor:default}
+.pager-row .btn.arrow{display:inline-flex;align-items:center;justify-content:center}
+.pager-gap{min-width:24px;text-align:center;color:var(--muted-dark)}
+.pager-info{font-size:13px;color:var(--muted-dark);text-align:center}
+.btn{min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--line-dark);background:none;color:var(--white);font:600 14px/1 var(--font);cursor:pointer;white-space:nowrap;transition:transform 160ms var(--ease-out),background-color 200ms ease,border-color 200ms ease}
+.btn:active{transform:scale(.97);transition-duration:100ms}
+.btn[disabled]{opacity:.5;cursor:default}
+.btn-primary{background:var(--ice);border-color:var(--ice);color:var(--ice-ink)}
+.btn-danger{color:var(--danger);border-color:rgba(242,163,153,.4)}
+.btn-danger-solid{background:var(--danger);border-color:var(--danger);color:var(--ink)}
+
+.state{padding:40px 20px;border-radius:14px;border:1px dashed var(--line-dark);text-align:center;color:var(--muted-dark)}
+.state .btn{margin-top:14px}
+
+/* Availability */
+.panel-card{padding:24px;border-radius:16px;border:1px solid var(--line-dark);background:var(--ink-2)}
+.panel-card h2{margin:0 0 6px;font-size:20px;font-weight:650;font-stretch:108%}
+.panel-card .sub{margin:0 0 20px;font-size:14px;color:var(--muted-dark)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+label.lbl{display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:var(--muted-dark)}
+.field{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line-dark);background:var(--ink);color:var(--white);font:500 16px/1 var(--font)}
+.field:focus{outline:none;border-color:var(--ice)}
+.field[aria-invalid="true"]{border-color:var(--danger)}
+.check{display:inline-flex;align-items:center;gap:10px;margin:0 0 18px;font-size:15px;font-weight:500;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--ice);margin:0}
+.full{grid-column:1/-1}
+.form-actions{margin-top:20px;display:flex;justify-content:flex-end}
+.msg{margin:16px 0 0;padding:12px 14px;border-radius:12px;font-size:14px;line-height:1.5}
+.msg-err{background:rgba(242,163,153,.1);border:1px solid rgba(242,163,153,.35);color:var(--danger)}
+.msg ul{margin:8px 0 0;padding-left:18px;color:var(--white)}
+.blocks-h{margin:36px 0 12px;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-dark)}
+.block-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-radius:14px;border:1px solid var(--line-dark);background:var(--ink-2);margin-bottom:10px}
+.block-when{margin:0;font-weight:600}
+.block-reason{margin:2px 0 0;font-size:14px;color:var(--muted-dark);word-break:break-word}
+
+/* Dialogs */
+dialog{width:calc(100% - 32px);max-width:460px;max-height:calc(100dvh - 32px);padding:0;border-radius:18px;border:1px solid var(--line-dark);background:var(--ink-2);color:var(--white);box-shadow:0 30px 60px -20px rgba(0,0,0,.7)}
+dialog[open]{display:flex;flex-direction:column;animation:dlgIn 220ms var(--ease-out)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+@keyframes dlgIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.dlg-body{padding:24px;overflow-y:auto;overscroll-behavior:contain;min-height:0}
+.dlg-body h2{margin:0 0 8px;font-size:20px;font-weight:650;font-stretch:108%}
+.dlg-body p{margin:0;color:var(--muted-dark);font-size:15px}
+.dlg-body .who{color:var(--white);font-weight:600}
+.dlg-actions{flex:none;display:flex;gap:10px;justify-content:flex-end;padding:16px 24px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line-dark)}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+.slot{min-height:52px;border-radius:10px;border:1px solid var(--line-dark);background:var(--ink);color:var(--white);font:600 15px/1.1 var(--font);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.slot small{font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--muted-dark);text-transform:uppercase}
+.slot[disabled]{cursor:default;opacity:.45;text-decoration:line-through}
+.slot[disabled] small{text-decoration:none}
+.slot.on{background:var(--ice);border-color:var(--ice);color:var(--ice-ink)}
+.slot.on small{color:var(--ice-ink)}
+.slots-state{grid-column:1/-1;padding:16px 0;text-align:center;font-size:14px;color:var(--muted-dark)}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:100;transform:translate(-50%,20px);opacity:0;padding:12px 18px;border-radius:999px;background:var(--ice);color:var(--ice-ink);font-size:14px;font-weight:600;box-shadow:0 14px 30px -10px rgba(0,0,0,.6);transition:opacity 250ms ease,transform 300ms var(--ease-out);pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (hover:hover) and (pointer:fine){
+  .pill:hover,.btn:not([disabled]):not(.btn-primary):not(.btn-danger-solid):hover,.seg button:hover{border-color:rgba(255,255,255,.4)}
+  .btn-primary:not([disabled]):hover{background:#C7CACD}
+  .tab:not([aria-selected="true"]):hover{color:var(--white)}
+  .slot:not([disabled]):not(.on):hover{border-color:var(--ice)}
+}
+@media (max-width:640px){
+  .top{padding-inline:16px}
+  .brand .bw{display:none}
+  main{padding:28px 16px 64px}
+  .tabs{width:100%}
+  .tab{flex:1;padding:0 10px}
+  .row{grid-template-columns:minmax(0,1fr);padding-right:0}
+  .row > .r-phone,.row > .r-actions{display:none}
+  .row-main{grid-template-columns:48px minmax(0,1fr) auto;padding-right:14px}
+  .r-details{padding:0 16px 16px 16px}
+  .r-details .r-actions{display:flex}
+  .r-details .r-actions .btn{flex:1;min-height:44px}
+  .mini-pager{display:none!important}
+  .refresh-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+  #refresh{flex:none;width:44px;padding:0;justify-content:center}
+  .toolbar{flex-wrap:nowrap}
+  .seg{flex-wrap:nowrap;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .seg::-webkit-scrollbar{display:none}
+  .seg button{flex:none}
+  .flag{padding:0;width:24px;height:24px;justify-content:center}
+  .flag-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+  .r-flags{gap:4px}
+  .pager-row{gap:4px}
+  .pager-row .btn{min-width:40px;min-height:40px;padding:0 8px}
+  .form-grid{grid-template-columns:1fr}
+  .form-actions .btn{width:100%}
+  .slots{grid-template-columns:repeat(3,1fr)}
+  .dlg-actions .btn{flex:1}
+}
+/* Fingers need 44px targets; mouse users keep the denser desktop sizes. */
+@media (pointer:coarse){
+  .pill,.btn,.seg button,.r-actions .btn,.pager-row .btn,.dlg-actions .btn{min-height:44px}
+  .lang .pill{min-width:44px}
+  .check{min-height:44px}
+  .brand{min-height:44px;padding-right:8px}
+  .r-details dd a{display:inline-block;padding:12px 0;margin:-12px 0}
+  .r-phone{padding:12px 0}
+  .r-details dl{row-gap:12px}
+}
+@media (max-width:359px){
+  .toolbar{gap:8px}
+  .seg{gap:4px}
+  .seg button{padding:0 8px;font-size:12.5px}
+}
+@media (pointer:coarse) and (min-width:360px){
+  .pager-row .btn{min-width:44px}
+}
+@media (prefers-reduced-motion: reduce){
+  dialog[open]{animation:none}
+  .toast,.tab,.btn{transition:none}
+}
+</style>
+</head>
+<body class="checking">
+
+<header class="top">
+  <a class="brand" href="./index.html">
+    <img src="./images/logo-mark-white.png" alt="Fresh Fadez Studios" width="38" height="24">
+    <span class="bw"><span class="bn">FRESHFADEZ</span><span class="bs">STUDIOS</span></span>
+  </a>
+  <div class="top-right">
+    <div class="lang">
+      <button type="button" class="pill" data-lang="nl" aria-pressed="true">NL</button>
+      <button type="button" class="pill" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button type="button" class="pill" id="logout" data-i18n="logout">Uitloggen</button>
+  </div>
+</header>
+
+<main>
+  <h1><span data-i18n="hello">Hoi</span> <span id="barber-name"></span></h1>
+
+  <div class="tabs" role="tablist">
+    <button type="button" class="tab" role="tab" id="tab-appts" aria-controls="panel-appts" aria-selected="true" data-i18n="tab_appts">Afspraken</button>
+    <button type="button" class="tab" role="tab" id="tab-avail" aria-controls="panel-avail" aria-selected="false" tabindex="-1" data-i18n="tab_avail">Beschikbaarheid</button>
+  </div>
+
+  <!-- Tab 1: appointments -->
+  <section id="panel-appts" role="tabpanel" aria-labelledby="tab-appts">
+    <div class="toolbar">
+      <div class="seg" id="view-seg">
+        <button type="button" data-view="upcoming" aria-pressed="true" data-i18n="view_upcoming">Komend</button>
+        <button type="button" data-view="past" aria-pressed="false" data-i18n="view_past">Geweest</button>
+        <button type="button" data-view="cancelled" aria-pressed="false" data-i18n="view_cancelled">Geannuleerd</button>
+      </div>
+      <button type="button" class="btn" id="refresh" data-i18n-aria="refresh" aria-label="Vernieuwen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><span class="refresh-label" data-i18n="refresh">Vernieuwen</span></button>
+    </div>
+    <div class="search-row">
+      <label class="sr-only" for="appt-search" data-i18n="search_label">Zoek in komend</label>
+      <input class="field" type="search" id="appt-search" autocomplete="off" maxlength="100">
+      <div class="mini-pager" id="mini-pager" hidden>
+        <button type="button" class="btn" id="mini-prev" data-i18n-aria="prev_aria" aria-label="Vorige pagina"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <span id="mini-info"></span>
+        <button type="button" class="btn" id="mini-next" data-i18n-aria="next_aria" aria-label="Volgende pagina"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <div id="appt-list" aria-live="polite"></div>
+    <nav class="pager" id="appt-pager" data-i18n-aria="pages_aria" aria-label="Pagina's" hidden>
+      <div class="pager-row">
+        <button type="button" class="btn arrow" id="page-prev" data-i18n-aria="prev_aria" aria-label="Vorige pagina"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <span class="pager-row" id="page-nums"></span>
+        <button type="button" class="btn arrow" id="page-next" data-i18n-aria="next_aria" aria-label="Volgende pagina"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+      <span class="pager-info" id="pager-info"></span>
+    </nav>
+  </section>
+
+  <!-- Tab 2: availability -->
+  <section id="panel-avail" role="tabpanel" aria-labelledby="tab-avail" hidden>
+    <form class="panel-card" id="block-form" novalidate>
+      <h2 data-i18n="block_h">Niet beschikbaar</h2>
+      <p class="sub" data-i18n="block_sub">Haal een periode weg waarin klanten niet kunnen boeken.</p>
+      <label class="check"><input type="checkbox" id="b-allday" checked> <span data-i18n="block_allday">Hele dag(en)</span></label>
+      <div class="form-grid">
+        <div>
+          <label class="lbl" for="b-from-date" data-i18n="block_from_date">Vanaf datum</label>
+          <input class="field" type="date" id="b-from-date" required>
+        </div>
+        <div class="time-field" hidden>
+          <label class="lbl" for="b-from-time" data-i18n="block_from_time">Vanaf tijd</label>
+          <input class="field" type="time" id="b-from-time" step="900" value="12:00">
+        </div>
+        <div>
+          <label class="lbl" for="b-to-date" data-i18n="block_to_date">Tot en met datum</label>
+          <input class="field" type="date" id="b-to-date" required>
+        </div>
+        <div class="time-field" hidden>
+          <label class="lbl" for="b-to-time" data-i18n="block_to_time">Tot tijd</label>
+          <input class="field" type="time" id="b-to-time" step="900" value="15:00">
+        </div>
+        <div class="full">
+          <label class="lbl" for="b-reason" data-i18n="block_reason">Reden (optioneel, alleen voor jou)</label>
+          <input class="field" type="text" id="b-reason" maxlength="200" autocomplete="off">
+        </div>
+      </div>
+      <div id="block-msg" role="alert"></div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="block-submit" data-i18n="block_submit">Periode blokkeren</button>
+      </div>
+    </form>
+
+    <h3 class="blocks-h" data-i18n="blocks_h">Geblokkeerde periodes</h3>
+    <div id="block-list" aria-live="polite"></div>
+  </section>
+</main>
+
+<!-- Cancel confirmation -->
+<dialog id="dlg-cancel" aria-labelledby="dlg-cancel-h">
+  <div class="dlg-body">
+    <h2 id="dlg-cancel-h" data-i18n="cancel_h">Afspraak annuleren?</h2>
+    <p><span class="who" id="cancel-who"></span></p>
+    <p style="margin-top:8px" data-i18n="cancel_p">Het tijdstip komt weer vrij voor andere klanten. Dit kan niet ongedaan worden gemaakt.</p>
+    <div id="cancel-msg" role="alert"></div>
+  </div>
+  <div class="dlg-actions">
+    <button type="button" class="btn" data-close data-i18n="keep">Behouden</button>
+    <button type="button" class="btn btn-danger-solid" id="cancel-confirm" data-i18n="cancel_confirm">Ja, annuleren</button>
+  </div>
+</dialog>
+
+<!-- Reschedule -->
+<dialog id="dlg-move" aria-labelledby="dlg-move-h">
+  <div class="dlg-body">
+    <h2 id="dlg-move-h" data-i18n="move_h">Afspraak verplaatsen</h2>
+    <p><span class="who" id="move-who"></span></p>
+    <div style="margin-top:18px">
+      <label class="lbl" for="move-date" data-i18n="move_date">Nieuwe datum</label>
+      <input class="field" type="date" id="move-date">
+    </div>
+    <div class="slots" id="move-slots" role="group" aria-label="Tijden"></div>
+    <div id="move-msg" role="alert"></div>
+  </div>
+  <div class="dlg-actions">
+    <button type="button" class="btn" data-close data-i18n="close" autofocus>Sluiten</button>
+    <button type="button" class="btn btn-primary" id="move-confirm" disabled data-i18n="move_confirm">Verplaatsen</button>
+  </div>
+</dialog>
+
+<!-- Remove block confirmation -->
+<dialog id="dlg-unblock" aria-labelledby="dlg-unblock-h">
+  <div class="dlg-body">
+    <h2 id="dlg-unblock-h" data-i18n="unblock_h">Periode vrijgeven?</h2>
+    <p><span class="who" id="unblock-when"></span></p>
+    <p style="margin-top:8px" data-i18n="unblock_p">Klanten kunnen deze tijden dan weer boeken.</p>
+    <div id="unblock-msg" role="alert"></div>
+  </div>
+  <div class="dlg-actions">
+    <button type="button" class="btn" data-close data-i18n="keep">Behouden</button>
+    <button type="button" class="btn btn-primary" id="unblock-confirm" data-i18n="unblock_confirm">Vrijgeven</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+    ? 'http://localhost:3000/api'
+    : 'https://freshfadez.onrender.com/api';
+  var SESSION_KEY = 'ff-barber-session';
+  var TAB_KEY = 'ff-portal-tab';
+  var LOGIN_URL = './barber-login.html';
+  var RESCHEDULE_DAYS_AHEAD = 60; // matches Backend/src/config/businessHours.js
+
+  var I18N = {
+    nl: {
+      logout:'Uitloggen', hello:'Hoi',
+      tab_appts:'Afspraken', tab_avail:'Beschikbaarheid',
+      view_upcoming:'Komend', view_past:'Geweest', view_cancelled:'Geannuleerd', refresh:'Vernieuwen',
+      loading:'Laden…', retry:'Opnieuw proberen',
+      load_error:'Kon de gegevens niet laden. Controleer of de server draait.',
+      empty_upcoming:'Geen komende afspraken.', empty_past:'Nog geen afgeronde afspraken.', empty_cancelled:'Geen geannuleerde afspraken.',
+      search_upcoming:'Zoek in komend', search_past:'Zoek in geweest', search_cancelled:'Zoek in geannuleerd',
+      search_ph:'Naam, e-mail of telefoon',
+      prev_aria:'Vorige pagina', next_aria:'Volgende pagina', pages_aria:'Pagina\'s', page_n:'Pagina {n}', details:'Details', d_phone:'Telefoon', d_email:'E-mail', d_notes:'Notitie', d_history:'Geschiedenis', flag_note:'Notitie', flag_moved:'Verplaatst', no_results:'Geen afspraken gevonden voor “{q}”.',
+      page_info:'Pagina {page} van {pages} · {total} afspraken',
+      yesterday:'Gisteren', count_one:'1 afspraak', count_many:'{n} afspraken',
+      today:'Vandaag', tomorrow:'Morgen', min:'min', in_progress:'Nu bezig',
+      move:'Verplaatsen', cancel:'Annuleren',
+      moved_from:'Verplaatst van {when}', cancelled_on:'Geannuleerd op {when}',
+      cancel_h:'Afspraak annuleren?', cancel_p:'Het tijdstip komt weer vrij voor andere klanten. Dit kan niet ongedaan worden gemaakt.',
+      keep:'Behouden', cancel_confirm:'Ja, annuleren', cancelling:'Annuleren…', cancelled_toast:'Afspraak geannuleerd',
+      move_h:'Afspraak verplaatsen', move_date:'Nieuwe datum', close:'Sluiten', move_confirm:'Verplaatsen', moving:'Verplaatsen…',
+      moved_toast:'Afspraak verplaatst naar {when}',
+      st_free:'Vrij', st_booked:'Bezet', st_blocked:'Geblokt', st_past:'Voorbij', st_current:'Huidig', st_no_room:'Past niet',
+      closed_day:'Gesloten op deze dag.', pick_date:'Kies eerst een datum.',
+      block_h:'Niet beschikbaar', block_sub:'Haal een periode weg waarin klanten niet kunnen boeken.',
+      block_allday:'Hele dag(en)', block_from_date:'Vanaf datum', block_from_time:'Vanaf tijd',
+      block_to_date:'Tot en met datum', block_to_time:'Tot tijd', block_reason:'Reden (optioneel, alleen voor jou)',
+      block_submit:'Periode blokkeren', blocking:'Blokkeren…', blocked_toast:'Periode geblokkeerd',
+      blocks_h:'Geblokkeerde periodes', blocks_empty:'Je hebt geen geblokkeerde periodes.',
+      remove:'Vrijgeven', allday:'hele dag',
+      unblock_h:'Periode vrijgeven?', unblock_p:'Klanten kunnen deze tijden dan weer boeken.', unblock_confirm:'Vrijgeven', unblocked_toast:'Periode vrijgegeven',
+      err_dates:'Vul een begin- en einddatum in.', err_times:'Vul een begin- en eindtijd in.',
+      err_order:'Het einde moet na het begin liggen.', err_over:'Deze periode is al voorbij.',
+      err_conflicts:'Er staan afspraken in deze periode. Verplaats of annuleer ze eerst:',
+      err_already_cancelled:'Deze afspraak was al geannuleerd.', err_started:'Deze afspraak is al begonnen of voorbij.',
+      err_not_found:'Deze afspraak bestaat niet meer.', err_slot_taken:'Dit tijdstip is net bezet of niet meer beschikbaar. Kies een ander tijdstip.',
+      err_block_gone:'Deze periode was al vrijgegeven.',
+      err_network:'Kan de server niet bereiken. Probeer het opnieuw.', err_generic:'Er ging iets mis: {msg}'
+    },
+    en: {
+      logout:'Sign out', hello:'Hi',
+      tab_appts:'Appointments', tab_avail:'Availability',
+      view_upcoming:'Upcoming', view_past:'Past', view_cancelled:'Cancelled', refresh:'Refresh',
+      loading:'Loading…', retry:'Try again',
+      load_error:'Couldn’t load the data. Check that the server is running.',
+      empty_upcoming:'No upcoming appointments.', empty_past:'No finished appointments yet.', empty_cancelled:'No cancelled appointments.',
+      search_upcoming:'Search upcoming', search_past:'Search past', search_cancelled:'Search cancelled',
+      search_ph:'Name, email or phone',
+      prev_aria:'Previous page', next_aria:'Next page', pages_aria:'Pages', page_n:'Page {n}', details:'Details', d_phone:'Phone', d_email:'Email', d_notes:'Note', d_history:'History', flag_note:'Note', flag_moved:'Moved', no_results:'No appointments found for “{q}”.',
+      page_info:'Page {page} of {pages} · {total} appointments',
+      yesterday:'Yesterday', count_one:'1 appointment', count_many:'{n} appointments',
+      today:'Today', tomorrow:'Tomorrow', min:'min', in_progress:'In progress',
+      move:'Reschedule', cancel:'Cancel',
+      moved_from:'Moved from {when}', cancelled_on:'Cancelled on {when}',
+      cancel_h:'Cancel appointment?', cancel_p:'The time slot opens up for other customers again. This can’t be undone.',
+      keep:'Keep', cancel_confirm:'Yes, cancel', cancelling:'Cancelling…', cancelled_toast:'Appointment cancelled',
+      move_h:'Reschedule appointment', move_date:'New date', close:'Close', move_confirm:'Reschedule', moving:'Rescheduling…',
+      moved_toast:'Appointment moved to {when}',
+      st_free:'Free', st_booked:'Booked', st_blocked:'Blocked', st_past:'Passed', st_current:'Current', st_no_room:'No room',
+      closed_day:'Closed on this day.', pick_date:'Pick a date first.',
+      block_h:'Unavailable', block_sub:'Take out a period when customers can’t book.',
+      block_allday:'Whole day(s)', block_from_date:'From date', block_from_time:'From time',
+      block_to_date:'Until and including', block_to_time:'Until time', block_reason:'Reason (optional, only you see it)',
+      block_submit:'Block period', blocking:'Blocking…', blocked_toast:'Period blocked',
+      blocks_h:'Blocked periods', blocks_empty:'You have no blocked periods.',
+      remove:'Unblock', allday:'whole day',
+      unblock_h:'Unblock period?', unblock_p:'Customers will be able to book these times again.', unblock_confirm:'Unblock', unblocked_toast:'Period unblocked',
+      err_dates:'Fill in a start and end date.', err_times:'Fill in a start and end time.',
+      err_order:'The end has to be after the start.', err_over:'This period is already over.',
+      err_conflicts:'There are appointments in this period. Reschedule or cancel them first:',
+      err_already_cancelled:'This appointment was already cancelled.', err_started:'This appointment has already started or passed.',
+      err_not_found:'This appointment no longer exists.', err_slot_taken:'That time was just taken or is no longer available. Pick another time.',
+      err_block_gone:'This period was already unblocked.',
+      err_network:'Can’t reach the server. Please try again.', err_generic:'Something went wrong: {msg}'
+    }
+  };
+
+  /* ---------- Session ---------- */
+  function readSession(){
+    var raw = null;
+    try { raw = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY); } catch(e){}
+    try {
+      var s = JSON.parse(raw);
+      return s && s.token && new Date(s.expiresAt) > new Date() ? s : null;
+    } catch(e){ return null; }
+  }
+  function clearSession(){
+    try { localStorage.removeItem(SESSION_KEY); sessionStorage.removeItem(SESSION_KEY); } catch(e){}
+  }
+  function toLogin(){ clearSession(); location.replace(LOGIN_URL); }
+
+  var session = readSession();
+  if (!session) { toLogin(); return; }
+
+  // Resolves to { ok, status, body }; rejects only on network failure. A 401 means the session is gone.
+  function api(method, path, body){
+    var opts = { method: method, headers: { Authorization: 'Bearer ' + session.token } };
+    if (body !== undefined){ opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+    return fetch(API_BASE + path, opts).then(function(res){
+      if (res.status === 401){ toLogin(); return new Promise(function(){}); }
+      if (res.status === 204) return { ok: true, status: 204, body: null };
+      return res.json().catch(function(){ return {}; }).then(function(b){ return { ok: res.ok, status: res.status, body: b }; });
+    });
+  }
+
+  /* ---------- i18n + formatting ---------- */
+  var lang = 'nl';
+  try { lang = localStorage.getItem('ff-lang') || 'nl'; } catch(e){}
+  if (!I18N[lang]) lang = 'nl';
+  function t(k, vars){
+    var s = I18N[lang][k] || k;
+    if (vars) Object.keys(vars).forEach(function(v){ s = s.replace('{' + v + '}', vars[v]); });
+    return s;
+  }
+  function locale(){ return lang === 'nl' ? 'nl-NL' : 'en-GB'; }
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function isoLocal(d){
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function todayIso(){ return isoLocal(new Date()); }
+  function nowStamp(){ var d = new Date(); return isoLocal(d) + 'T' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+  function addDaysIso(iso, n){ var d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + n); return isoLocal(d); }
+  function fmtDay(iso, style){
+    var d = new Date(iso + 'T12:00:00');
+    var opts = style === 'short' ? { weekday:'short', day:'numeric', month:'short' } : { weekday:'long', day:'numeric', month:'long' };
+    var s = d.toLocaleDateString(locale(), opts);
+    if (style !== 'short'){
+      if (iso === todayIso()) s = t('today') + ' · ' + s;
+      else if (iso === addDaysIso(todayIso(), 1)) s = t('tomorrow') + ' · ' + s;
+    }
+    return s;
+  }
+  function fmtWhen(date, time){ return fmtDay(date, 'short') + ' ' + time; }
+  function euro(n){ return new Intl.NumberFormat(locale(), { style:'currency', currency:'EUR' }).format(n); }
+  function errorText(r){ return t('err_generic', { msg: (r && r.body && r.body.error) || ('HTTP ' + (r && r.status)) }); }
+
+  function setMsg(el, html){ el.innerHTML = html ? '<div class="msg msg-err">' + html + '</div>' : ''; }
+
+  var toastTimer;
+  function toast(text){
+    var el = document.getElementById('toast');
+    el.textContent = text;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 3200);
+  }
+
+  function busy(btn, on, labelKey){
+    btn.disabled = on;
+    btn.textContent = t(on ? labelKey : btn.dataset.i18n);
+  }
+
+  /* ---------- Tabs ---------- */
+  var tabs = [document.getElementById('tab-appts'), document.getElementById('tab-avail')];
+  function selectTab(tab, focus){
+    tabs.forEach(function(x){
+      var on = x === tab;
+      x.setAttribute('aria-selected', on ? 'true' : 'false');
+      x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (focus) tab.focus();
+    try { localStorage.setItem(TAB_KEY, tab.id); } catch(e){}
+    if (tab.id === 'tab-avail') loadBlocks(); else loadAppointments();
+  }
+  tabs.forEach(function(tab, i){
+    tab.addEventListener('click', function(){ selectTab(tab); });
+    tab.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ e.preventDefault(); selectTab(tabs[(i + 1) % 2], true); }
+    });
+  });
+
+  /* ---------- Appointments ---------- */
+  var view = 'upcoming';
+  // Each view keeps its own search text and page, so switching views doesn't lose your place.
+  var viewState = { upcoming: { q: '', page: 1 }, past: { q: '', page: 1 }, cancelled: { q: '', page: 1 } };
+  var bookings = null; // null until a load succeeds
+  var paging = null;
+  var listEl = document.getElementById('appt-list');
+  var pagerEl = document.getElementById('appt-pager');
+  var searchEl = document.getElementById('appt-search');
+  var loadId = 0;
+
+  document.querySelectorAll('#view-seg [data-view]').forEach(function(b){
+    b.addEventListener('click', function(){
+      view = b.dataset.view;
+      document.querySelectorAll('#view-seg [data-view]').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      searchEl.value = viewState[view].q;
+      updateSearchLabel();
+      loadAppointments();
+    });
+  });
+  document.getElementById('refresh').addEventListener('click', loadAppointments);
+
+  function updateSearchLabel(){
+    document.querySelector('[data-i18n="search_label"]').textContent = t('search_' + view);
+    searchEl.placeholder = t('search_ph');
+  }
+  var searchTimer;
+  searchEl.addEventListener('input', function(){
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function(){
+      var q = searchEl.value.trim();
+      if (q === viewState[view].q) return;
+      viewState[view].q = q;
+      viewState[view].page = 1;
+      loadAppointments();
+    }, 250);
+  });
+  document.getElementById('page-prev').addEventListener('click', function(){ goPage(-1); });
+  document.getElementById('page-next').addEventListener('click', function(){ goPage(1); });
+  document.getElementById('mini-prev').addEventListener('click', function(){ goPage(-1); });
+  document.getElementById('mini-next').addEventListener('click', function(){ goPage(1); });
+  function goPage(dir){ if (paging) toPage(paging.page + dir); }
+  function toPage(next){
+    if (!paging || next < 1 || next > paging.pages || next === paging.page) return;
+    viewState[view].page = next;
+    loadAppointments();
+    document.getElementById('panel-appts').scrollIntoView({ block: 'start' });
+  }
+
+  function loadAppointments(){
+    var id = ++loadId;
+    var st = viewState[view];
+    bookings = null;
+    pagerEl.hidden = true;
+    document.getElementById('mini-pager').hidden = true;
+    listEl.innerHTML = '<div class="state">' + t('loading') + '</div>';
+    var qs = '?view=' + view + '&page=' + st.page + (st.q ? '&q=' + encodeURIComponent(st.q) : '');
+    api('GET', '/barber/bookings' + qs).then(function(r){
+      if (id !== loadId) return;
+      if (!r.ok) throw r;
+      bookings = r.body.items;
+      paging = { page: r.body.page, pages: r.body.pages, total: r.body.total };
+      st.page = r.body.page; // the server clamps a page that no longer exists
+      renderAppointments();
+    }).catch(function(){
+      if (id !== loadId) return;
+      listEl.innerHTML = '<div class="state">' + t('load_error') + '<br><button type="button" class="btn" id="appt-retry">' + t('retry') + '</button></div>';
+      document.getElementById('appt-retry').addEventListener('click', loadAppointments);
+    });
+  }
+
+  function renderAppointments(){
+    renderPager();
+    if (!bookings.length){
+      var q = viewState[view].q;
+      listEl.innerHTML = '<div class="state">' + (q ? esc(t('no_results', { q: q })) : t('empty_' + view)) + '</div>';
+      return;
+    }
+    var perDay = {};
+    bookings.forEach(function(b){ perDay[b.date] = (perDay[b.date] || 0) + 1; });
+    var chev = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+    var html = '', lastDay = null;
+    bookings.forEach(function(b){
+      if (b.date !== lastDay){
+        if (lastDay) html += '</div>';
+        html += dayHeading(b.date, perDay[b.date]) + '<div class="day-group">';
+        lastDay = b.date;
+      }
+      var id = esc(b._id);
+      var services = (b.services || []).map(function(s){ return s.name; }).join(', ');
+      var started = view === 'upcoming' && b.date + 'T' + b.time <= nowStamp();
+      var moved = b.rescheduledFrom && b.rescheduledFrom.date;
+      var flags = (started ? flag('live', t('in_progress')) : '') + (moved ? flag('moved', t('flag_moved')) : '') + (b.notes ? flag('note', t('flag_note')) : '');
+      var actions = view === 'upcoming' && !started
+        ? '<div class="r-actions"><button type="button" class="btn" data-move="' + id + '">' + t('move') + '</button>' +
+          '<button type="button" class="btn btn-danger" data-cancel="' + id + '">' + t('cancel') + '</button></div>'
+        : '';
+      var history = [];
+      if (moved) history.push(t('moved_from', { when: fmtWhen(b.rescheduledFrom.date, b.rescheduledFrom.time) }));
+      if (b.status === 'cancelled' && b.cancelledAt) history.push(t('cancelled_on', { when: new Date(b.cancelledAt).toLocaleString(locale(), { dateStyle:'medium', timeStyle:'short' }) }));
+      html += '<div class="row">' +
+        '<button type="button" class="row-main" aria-expanded="false" aria-controls="d-' + id + '">' +
+          '<span class="r-time">' + esc(b.time) + '</span>' +
+          '<span class="r-who"><span class="r-name">' + esc(b.firstName + ' ' + b.lastName) + '</span>' +
+          '<span class="r-meta">' + esc(services) + ' · ' + esc(b.totalDuration) + ' ' + t('min') + ' · ' + esc(euro(b.totalPrice)) + '</span></span>' +
+          '<span class="r-flags">' + flags + chev + '</span>' +
+        '</button>' +
+        '<a class="r-phone" href="tel:' + esc(b.phone) + '">' + esc(b.phone) + '</a>' +
+        actions +
+        '<div class="r-details" id="d-' + id + '" hidden><dl>' +
+          '<dt>' + t('d_phone') + '</dt><dd><a href="tel:' + esc(b.phone) + '">' + esc(b.phone) + '</a></dd>' +
+          '<dt>' + t('d_email') + '</dt><dd><a href="mailto:' + esc(b.email) + '">' + esc(b.email) + '</a></dd>' +
+          (b.notes ? '<dt>' + t('d_notes') + '</dt><dd class="r-notes">' + esc(b.notes) + '</dd>' : '') +
+          (history.length ? '<dt>' + t('d_history') + '</dt><dd>' + history.map(esc).join('<br>') + '</dd>' : '') +
+        '</dl>' + actions + '</div>' +
+      '</div>';
+    });
+    if (lastDay) html += '</div>';
+    listEl.innerHTML = html;
+    listEl.querySelectorAll('.row-main').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var open = btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
+      });
+    });
+    listEl.querySelectorAll('[data-cancel]').forEach(function(btn){ btn.addEventListener('click', function(){ openCancel(btn.dataset.cancel); }); });
+    listEl.querySelectorAll('[data-move]').forEach(function(btn){ btn.addEventListener('click', function(){ openMove(btn.dataset.move); }); });
+  }
+  var FLAG_ICONS = {
+    live: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="currentColor"/></svg>',
+    moved: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>',
+    note: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h4"/></svg>'
+  };
+  // On phones only the icon shows; the label stays for screen readers.
+  function flag(kind, label){
+    return '<span class="flag flag-' + kind + '" title="' + esc(label) + '">' + FLAG_ICONS[kind] + '<span class="flag-label">' + esc(label) + '</span></span>';
+  }
+  function dayHeading(iso, n){
+    var today = todayIso();
+    var rel = iso === today ? t('today') : iso === addDaysIso(today, 1) ? t('tomorrow') : iso === addDaysIso(today, -1) ? t('yesterday') : '';
+    var date = new Date(iso + 'T12:00:00').toLocaleDateString(locale(), { weekday:'long', day:'numeric', month:'long' });
+    return '<h3 class="day">' + (rel ? '<span class="day-rel">' + esc(rel) + '</span><span class="day-date">' + esc(date) + '</span>'
+      : '<span class="day-rel">' + esc(date.charAt(0).toUpperCase() + date.slice(1)) + '</span>') +
+      '<span class="day-count">' + esc(n === 1 ? t('count_one') : t('count_many', { n: n })) + '</span></h3>';
+  }
+  function renderPager(){
+    var hide = !paging || paging.pages <= 1;
+    pagerEl.hidden = hide;
+    document.getElementById('mini-pager').hidden = hide;
+    if (hide) return;
+    document.getElementById('pager-info').textContent = t('page_info', paging);
+    document.getElementById('mini-info').textContent = paging.page + ' / ' + paging.pages;
+    // Numbered buttons like a shop listing: first, last, and the current page with its neighbours.
+    // Phones get no neighbours so the row never wraps: ‹ 1 … 4 … 17 ›
+    var around = matchMedia('(max-width:640px)').matches ? 0 : 1;
+    var nums = [], last = 0;
+    for (var n = 1; n <= paging.pages; n++){
+      if (n !== 1 && n !== paging.pages && Math.abs(n - paging.page) > around) continue;
+      if (n - last > 1) nums.push(n - last === 2 ? last + 1 : null);
+      nums.push(n);
+      last = n;
+    }
+    var numsEl = document.getElementById('page-nums');
+    numsEl.innerHTML = nums.map(function(n){
+      if (n === null) return '<span class="pager-gap" aria-hidden="true">…</span>';
+      var cur = n === paging.page;
+      return '<button type="button" class="btn" data-page="' + n + '" aria-label="' + esc(t('page_n', { n: n })) + '"' + (cur ? ' aria-current="page"' : '') + '>' + n + '</button>';
+    }).join('');
+    numsEl.querySelectorAll('[data-page]').forEach(function(b){
+      b.addEventListener('click', function(){ toPage(parseInt(b.dataset.page, 10)); });
+    });
+    ['page-prev','mini-prev'].forEach(function(id){ document.getElementById(id).disabled = paging.page <= 1; });
+    ['page-next','mini-next'].forEach(function(id){ document.getElementById(id).disabled = paging.page >= paging.pages; });
+  }
+
+  function findBooking(id){ return (bookings || []).filter(function(b){ return b._id === id; })[0]; }
+  function who(b){ return b.firstName + ' ' + b.lastName + ' · ' + fmtWhen(b.date, b.time); }
+
+  /* ---------- Dialog helpers ---------- */
+  document.querySelectorAll('dialog [data-close]').forEach(function(btn){
+    btn.addEventListener('click', function(){ btn.closest('dialog').close(); });
+  });
+  document.querySelectorAll('dialog').forEach(function(dlg){
+    dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+  });
+
+  /* ---------- Cancel ---------- */
+  var dlgCancel = document.getElementById('dlg-cancel');
+  var cancelBtn = document.getElementById('cancel-confirm');
+  var cancelMsg = document.getElementById('cancel-msg');
+  var cancelling = null;
+  function openCancel(id){
+    cancelling = findBooking(id);
+    if (!cancelling) return;
+    document.getElementById('cancel-who').textContent = who(cancelling);
+    setMsg(cancelMsg, '');
+    busy(cancelBtn, false);
+    dlgCancel.showModal();
+  }
+  cancelBtn.addEventListener('click', function(){
+    if (!cancelling || cancelBtn.disabled) return;
+    busy(cancelBtn, true, 'cancelling');
+    api('POST', '/barber/bookings/' + cancelling._id + '/cancel').then(function(r){
+      busy(cancelBtn, false);
+      if (r.ok){ dlgCancel.close(); toast(t('cancelled_toast')); loadAppointments(); return; }
+      var key = r.status === 409 ? 'err_already_cancelled' : r.status === 400 ? 'err_started' : r.status === 404 ? 'err_not_found' : null;
+      setMsg(cancelMsg, esc(key ? t(key) : errorText(r)));
+      if (key) loadAppointments();
+    }).catch(function(){ busy(cancelBtn, false); setMsg(cancelMsg, esc(t('err_network'))); });
+  });
+
+  /* ---------- Reschedule ---------- */
+  var dlgMove = document.getElementById('dlg-move');
+  var moveDate = document.getElementById('move-date');
+  var moveSlots = document.getElementById('move-slots');
+  var moveBtn = document.getElementById('move-confirm');
+  var moveMsg = document.getElementById('move-msg');
+  var moving = null, moveTime = null, slotsId = 0;
+
+  function openMove(id){
+    moving = findBooking(id);
+    if (!moving) return;
+    document.getElementById('move-who').textContent = who(moving);
+    moveDate.min = todayIso();
+    moveDate.max = addDaysIso(todayIso(), RESCHEDULE_DAYS_AHEAD);
+    moveDate.value = moving.date;
+    setMsg(moveMsg, '');
+    busy(moveBtn, false);
+    dlgMove.showModal();
+    loadSlots();
+  }
+  function setMoveTime(time){
+    moveTime = time;
+    moveBtn.disabled = !time;
+    moveSlots.querySelectorAll('[data-time]').forEach(function(s){
+      var on = s.dataset.time === time;
+      s.classList.toggle('on', on);
+      s.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  function loadSlots(){
+    setMoveTime(null);
+    var date = moveDate.value;
+    if (!date){ moveSlots.innerHTML = '<div class="slots-state">' + t('pick_date') + '</div>'; return; }
+    var id = ++slotsId;
+    moveSlots.innerHTML = '<div class="slots-state">' + t('loading') + '</div>';
+    api('GET', '/barber/slots?date=' + encodeURIComponent(date) + '&booking=' + encodeURIComponent(moving._id)).then(function(r){
+      if (id !== slotsId) return;
+      if (!r.ok) throw r;
+      if (r.body.closed){ moveSlots.innerHTML = '<div class="slots-state">' + t('closed_day') + '</div>'; return; }
+      moveSlots.innerHTML = r.body.slots.map(function(s){
+        var current = date === moving.date && s.time === moving.time;
+        var label = current ? t('st_current') : t('st_' + s.status);
+        var free = s.status === 'free' && !current;
+        return '<button type="button" class="slot" ' + (free ? 'data-time="' + s.time + '" aria-pressed="false"' : 'disabled') + '>' +
+          s.time + '<small>' + esc(label) + '</small></button>';
+      }).join('');
+      moveSlots.querySelectorAll('[data-time]').forEach(function(btn){
+        btn.addEventListener('click', function(){ setMoveTime(btn.dataset.time); });
+      });
+    }).catch(function(){
+      if (id !== slotsId) return;
+      moveSlots.innerHTML = '<div class="slots-state">' + t('load_error') + '</div>';
+    });
+  }
+  moveDate.addEventListener('change', function(){ setMsg(moveMsg, ''); loadSlots(); });
+  moveBtn.addEventListener('click', function(){
+    if (!moving || !moveTime || moveBtn.disabled) return;
+    var date = moveDate.value, time = moveTime;
+    busy(moveBtn, true, 'moving');
+    api('POST', '/barber/bookings/' + moving._id + '/reschedule', { date: date, time: time }).then(function(r){
+      busy(moveBtn, false);
+      if (r.ok){
+        dlgMove.close();
+        toast(t('moved_toast', { when: fmtWhen(date, time) }));
+        loadAppointments();
+        return;
+      }
+      if (r.status === 409){ setMsg(moveMsg, esc(t('err_slot_taken'))); loadSlots(); return; }
+      if (r.status === 404){ setMsg(moveMsg, esc(t('err_not_found'))); loadAppointments(); return; }
+      setMsg(moveMsg, esc(errorText(r)));
+      moveBtn.disabled = !moveTime;
+    }).catch(function(){ busy(moveBtn, false); moveBtn.disabled = !moveTime; setMsg(moveMsg, esc(t('err_network'))); });
+  });
+
+  /* ---------- Availability: blocks ---------- */
+  var blockForm = document.getElementById('block-form');
+  var allDay = document.getElementById('b-allday');
+  var fromDate = document.getElementById('b-from-date');
+  var toDate = document.getElementById('b-to-date');
+  var fromTime = document.getElementById('b-from-time');
+  var toTime = document.getElementById('b-to-time');
+  var reason = document.getElementById('b-reason');
+  var blockMsg = document.getElementById('block-msg');
+  var blockSubmit = document.getElementById('block-submit');
+  var blockList = document.getElementById('block-list');
+  var blocks = null; // null until a load succeeds
+  var blocksId = 0;
+
+  fromDate.min = toDate.min = todayIso();
+  fromDate.value = toDate.value = todayIso();
+  function syncAllDay(){
+    document.querySelectorAll('.time-field').forEach(function(el){ el.hidden = allDay.checked; });
+  }
+  allDay.addEventListener('change', syncAllDay);
+  syncAllDay();
+  // Keep "until" from ever sitting before "from" while the barber picks dates.
+  fromDate.addEventListener('change', function(){
+    if (fromDate.value) toDate.min = fromDate.value;
+    if (fromDate.value && (!toDate.value || toDate.value < fromDate.value)) toDate.value = fromDate.value;
+  });
+  [fromDate, toDate, fromTime, toTime].forEach(function(el){
+    el.addEventListener('input', function(){ el.removeAttribute('aria-invalid'); setMsg(blockMsg, ''); });
+  });
+
+  blockForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (blockSubmit.disabled) return;
+    setMsg(blockMsg, '');
+    [fromDate, toDate, fromTime, toTime].forEach(function(el){ el.removeAttribute('aria-invalid'); });
+
+    if (!fromDate.value || !toDate.value){
+      [fromDate, toDate].forEach(function(el){ if (!el.value) el.setAttribute('aria-invalid', 'true'); });
+      return setMsg(blockMsg, esc(t('err_dates')));
+    }
+    if (!allDay.checked && (!fromTime.value || !toTime.value)){
+      [fromTime, toTime].forEach(function(el){ if (!el.value) el.setAttribute('aria-invalid', 'true'); });
+      return setMsg(blockMsg, esc(t('err_times')));
+    }
+    var start = fromDate.value + 'T' + (allDay.checked ? '00:00' : fromTime.value);
+    var end = toDate.value + 'T' + (allDay.checked ? '24:00' : toTime.value);
+    if (end <= start){ toDate.setAttribute('aria-invalid', 'true'); return setMsg(blockMsg, esc(t('err_order'))); }
+    if (end <= nowStamp()) return setMsg(blockMsg, esc(t('err_over')));
+
+    busy(blockSubmit, true, 'blocking');
+    api('POST', '/barber/blocks', { start: start, end: end, reason: reason.value.trim() }).then(function(r){
+      busy(blockSubmit, false);
+      if (r.ok){ reason.value = ''; toast(t('blocked_toast')); loadBlocks(); return; }
+      if (r.status === 409 && r.body.details){
+        var items = r.body.details.map(function(b){ return '<li>' + esc(fmtWhen(b.date, b.time) + ' · ' + b.firstName + ' ' + b.lastName) + '</li>'; }).join('');
+        return setMsg(blockMsg, esc(t('err_conflicts')) + '<ul>' + items + '</ul>');
+      }
+      setMsg(blockMsg, esc(errorText(r)));
+    }).catch(function(){ busy(blockSubmit, false); setMsg(blockMsg, esc(t('err_network'))); });
+  });
+
+  function fmtBlock(b){
+    var sd = b.start.slice(0, 10), st = b.start.slice(11), ed = b.end.slice(0, 10), et = b.end.slice(11);
+    if (st === '00:00' && et === '24:00'){
+      return (sd === ed ? fmtDay(sd, 'short') : fmtDay(sd, 'short') + ' – ' + fmtDay(ed, 'short')) + ' (' + t('allday') + ')';
+    }
+    return sd === ed ? fmtDay(sd, 'short') + ' ' + st + ' – ' + et : fmtWhen(sd, st) + ' – ' + fmtWhen(ed, et);
+  }
+
+  function loadBlocks(){
+    var id = ++blocksId;
+    blocks = null;
+    blockList.innerHTML = '<div class="state">' + t('loading') + '</div>';
+    api('GET', '/barber/blocks').then(function(r){
+      if (id !== blocksId) return;
+      if (!r.ok) throw r;
+      blocks = r.body;
+      renderBlocks();
+    }).catch(function(){
+      if (id !== blocksId) return;
+      blockList.innerHTML = '<div class="state">' + t('load_error') + '<br><button type="button" class="btn" id="block-retry">' + t('retry') + '</button></div>';
+      document.getElementById('block-retry').addEventListener('click', loadBlocks);
+    });
+  }
+  function renderBlocks(){
+    if (!blocks.length){ blockList.innerHTML = '<div class="state">' + t('blocks_empty') + '</div>'; return; }
+    blockList.innerHTML = blocks.map(function(b){
+      return '<div class="block-row"><div><p class="block-when">' + esc(fmtBlock(b)) + '</p>' +
+        (b.reason ? '<p class="block-reason">' + esc(b.reason) + '</p>' : '') + '</div>' +
+        '<button type="button" class="btn" data-unblock="' + esc(b._id) + '">' + t('remove') + '</button></div>';
+    }).join('');
+    blockList.querySelectorAll('[data-unblock]').forEach(function(btn){
+      btn.addEventListener('click', function(){ openUnblock(btn.dataset.unblock); });
+    });
+  }
+
+  var dlgUnblock = document.getElementById('dlg-unblock');
+  var unblockBtn = document.getElementById('unblock-confirm');
+  var unblockMsg = document.getElementById('unblock-msg');
+  var unblocking = null;
+  function openUnblock(id){
+    unblocking = (blocks || []).filter(function(b){ return b._id === id; })[0];
+    if (!unblocking) return;
+    document.getElementById('unblock-when').textContent = fmtBlock(unblocking);
+    setMsg(unblockMsg, '');
+    busy(unblockBtn, false);
+    dlgUnblock.showModal();
+  }
+  unblockBtn.addEventListener('click', function(){
+    if (!unblocking || unblockBtn.disabled) return;
+    unblockBtn.disabled = true;
+    api('DELETE', '/barber/blocks/' + unblocking._id).then(function(r){
+      unblockBtn.disabled = false;
+      if (r.ok || r.status === 404){
+        dlgUnblock.close();
+        toast(t(r.ok ? 'unblocked_toast' : 'err_block_gone'));
+        loadBlocks();
+        return;
+      }
+      setMsg(unblockMsg, esc(errorText(r)));
+    }).catch(function(){ unblockBtn.disabled = false; setMsg(unblockMsg, esc(t('err_network'))); });
+  });
+
+  /* ---------- Language ---------- */
+  function applyLanguage(){
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      el.textContent = t(el.dataset.i18n);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function(el){ el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+    updateSearchLabel();
+    document.querySelectorAll('[data-lang]').forEach(function(b){
+      b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false');
+    });
+  }
+  document.querySelectorAll('[data-lang]').forEach(function(b){
+    b.addEventListener('click', function(){
+      lang = b.dataset.lang;
+      try { localStorage.setItem('ff-lang', lang); } catch(e){}
+      applyLanguage();
+      if (bookings) renderAppointments();
+      if (blocks) renderBlocks();
+    });
+  });
+
+  document.getElementById('logout').addEventListener('click', toLogin);
+
+  var name = (session.email || '').split('@')[0];
+  document.getElementById('barber-name').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+  applyLanguage();
+
+  // The stored session is only a hint; the server has the final say on whether it's still valid.
+  api('GET', '/auth/me').then(function(){
+    document.body.classList.remove('checking');
+    var saved = null;
+    try { saved = localStorage.getItem(TAB_KEY); } catch(e){}
+    selectTab(document.getElementById(saved) || tabs[0]);
+  }).catch(function(){
+    // Server unreachable: show the shell with its error states rather than a blank page.
+    document.body.classList.remove('checking');
+    selectTab(tabs[0]);
+  });
+})();
+</script>
+</body>
+</html>

@@ -8,7 +8,11 @@ export async function startTestServer() {
   mongod = await MongoMemoryServer.create();
   await mongoose.connect(mongod.getUri());
   process.env.ADMIN_API_KEY = 'test-admin-key';
-  return createApp();
+  process.env.SESSION_SECRET = 'test-session-secret';
+  process.env.BARBER_EMAIL = 'saph@freshfadez.com';
+  process.env.BARBER_PASSWORD = 'test-password';
+  // Tests create far more bookings than a real customer could; limits would make them flaky.
+  return createApp({ rateLimits: false });
 }
 
 export async function stopTestServer() {

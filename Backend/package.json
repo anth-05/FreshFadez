@@ -11,6 +11,8 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "seed": "node src/scripts/seed.js",
+    "seed:test-bookings": "node src/scripts/seedTestBookings.js",
+    "remove:test-bookings": "node src/scripts/seedTestBookings.js --remove",
     "test": "node --test test/**/*.test.js"
   },
   "dependencies": {
