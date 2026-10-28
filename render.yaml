@@ -1,0 +1,30 @@
+# Render Blueprint for the booking API. The website itself stays a separate static site.
+services:
+  - type: web
+    name: freshfadez-api
+    runtime: node
+    rootDir: Backend
+    plan: free
+    # --omit=dev skips mongodb-memory-server, which only the tests need.
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: TRUST_PROXY
+        value: "1"
+      # Every address the website is served from; the API refuses browser requests from anywhere else.
+      - key: FRONTEND_ORIGIN
+        value: https://freshfadezstudios.nl,https://www.freshfadezstudios.nl,https://freshfadez.onrender.com
+      - key: BARBER_EMAIL
+        value: saph@freshfadez.com
+      # Secrets: Render asks for these when the Blueprint is created; they never go in git.
+      - key: MONGODB_URI
+        sync: false
+      - key: BARBER_PASSWORD
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_API_KEY
+        generateValue: true

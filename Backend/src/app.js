@@ -11,6 +11,8 @@ import { notFound, errorHandler } from './middleware/errors.js';
 
 export function createApp({ rateLimits = true } = {}) {
   const app = express();
+  // Behind Render's proxy the client IP arrives in X-Forwarded-For; rate limits need the real IP.
+  app.set('trust proxy', Number(process.env.TRUST_PROXY ?? 0));
 
   app.use(helmet());
   app.use(express.json());
