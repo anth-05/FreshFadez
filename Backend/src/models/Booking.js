@@ -14,7 +14,8 @@ const bookingSchema = new mongoose.Schema(
   {
     firstName: { type: String, required: true, trim: true, maxlength: 50 },
     lastName: { type: String, required: true, trim: true, maxlength: 50 },
-    email: { type: String, required: true, trim: true, lowercase: true, maxlength: 254 },
+    // Optional only for appointments the barber plans in; the public booking route requires it.
+    email: { type: String, trim: true, lowercase: true, default: '', maxlength: 254 },
     phone: { type: String, required: true, trim: true },
     notes: { type: String, trim: true, default: '', maxlength: 500 },
     saveInfo: { type: Boolean, default: true },
@@ -29,6 +30,7 @@ const bookingSchema = new mongoose.Schema(
     slots: { type: [String], default: undefined },
     cancelledAt: { type: Date },
     rescheduledFrom: { date: String, time: String },
+    source: { type: String, enum: ['online', 'barber'], default: 'online' },
   },
   { timestamps: true }
 );

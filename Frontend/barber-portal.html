@@ -72,7 +72,8 @@ h1{margin:0;font-size:clamp(26px,5vw,34px);line-height:1.05;font-weight:650;font
 .search-row .field{flex:1;min-width:0;padding-left:44px;background:var(--ink-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%239AA0A6' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-3.5-3.5'/%3E%3C/svg%3E") no-repeat 16px center}
 .mini-pager{display:flex;align-items:center;gap:4px;flex:0 0 auto}
 .mini-pager .btn{width:44px;min-height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center}
-#refresh{display:inline-flex;align-items:center;gap:8px}
+#refresh,#new-appt{display:inline-flex;align-items:center;gap:8px}
+.toolbar-actions{display:flex;gap:8px;flex:none}
 .mini-pager span{min-width:56px;text-align:center;font-size:14px;font-weight:600;color:var(--muted-dark);font-variant-numeric:tabular-nums}
 .day{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 8px;margin:22px 0 8px;font-weight:400}
 .day:first-child{margin-top:0}
@@ -127,7 +128,7 @@ h1{margin:0;font-size:clamp(26px,5vw,34px);line-height:1.05;font-weight:650;font
 .panel-card h2{margin:0 0 6px;font-size:20px;font-weight:650;font-stretch:108%}
 .panel-card .sub{margin:0 0 20px;font-size:14px;color:var(--muted-dark)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-label.lbl{display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:var(--muted-dark)}
+label.lbl,span.lbl{display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:var(--muted-dark)}
 .field{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line-dark);background:var(--ink);color:var(--white);font:500 16px/1 var(--font)}
 .field:focus{outline:none;border-color:var(--ice)}
 .field[aria-invalid="true"]{border-color:var(--danger)}
@@ -161,6 +162,16 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 .slot.on{background:var(--ice);border-color:var(--ice);color:var(--ice-ink)}
 .slot.on small{color:var(--ice-ink)}
 .slots-state{grid-column:1/-1;padding:16px 0;text-align:center;font-size:14px;color:var(--muted-dark)}
+.dlg-section{margin-top:18px}
+.svc-list{display:flex;flex-direction:column;gap:6px}
+.svc{display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 14px;border-radius:12px;border:1px solid var(--line-dark);background:var(--ink);cursor:pointer}
+.svc input{width:20px;height:20px;accent-color:var(--ice);margin:0;flex:none}
+.svc-name{flex:1;min-width:0;font-size:15px;font-weight:600}
+.svc-meta{font-size:13px;color:var(--muted-dark);white-space:nowrap}
+.svc:has(input:checked){border-color:var(--ice)}
+.svc-total{margin:8px 0 0;font-size:13px;color:var(--muted-dark)}
+.dlg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical}
 
 /* Toast */
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:100;transform:translate(-50%,20px);opacity:0;padding:12px 18px;border-radius:999px;background:var(--ice);color:var(--ice-ink);font-size:14px;font-weight:600;box-shadow:0 14px 30px -10px rgba(0,0,0,.6);transition:opacity 250ms ease,transform 300ms var(--ease-out);pointer-events:none;max-width:calc(100% - 32px);text-align:center}
@@ -170,7 +181,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   .pill:hover,.btn:not([disabled]):not(.btn-primary):not(.btn-danger-solid):hover,.seg button:hover{border-color:rgba(255,255,255,.4)}
   .btn-primary:not([disabled]):hover{background:#C7CACD}
   .tab:not([aria-selected="true"]):hover{color:var(--white)}
-  .slot:not([disabled]):not(.on):hover{border-color:var(--ice)}
+  .slot:not([disabled]):not(.on):hover,.svc:hover{border-color:var(--ice)}
 }
 @media (max-width:640px){
   .top{padding-inline:16px}
@@ -185,8 +196,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   .r-details .r-actions{display:flex}
   .r-details .r-actions .btn{flex:1;min-height:44px}
   .mini-pager{display:none!important}
-  .refresh-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
-  #refresh{flex:none;width:44px;padding:0;justify-content:center}
+  .refresh-label,.new-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+  #refresh,#new-appt{flex:none;width:44px;padding:0;justify-content:center}
+  .dlg-grid{grid-template-columns:1fr}
   .toolbar{flex-wrap:nowrap}
   .seg{flex-wrap:nowrap;min-width:0;overflow-x:auto;scrollbar-width:none}
   .seg::-webkit-scrollbar{display:none}
@@ -257,7 +269,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         <button type="button" data-view="past" aria-pressed="false" data-i18n="view_past">Geweest</button>
         <button type="button" data-view="cancelled" aria-pressed="false" data-i18n="view_cancelled">Geannuleerd</button>
       </div>
+      <div class="toolbar-actions">
+      <button type="button" class="btn btn-primary" id="new-appt" data-i18n-aria="new_appt" aria-label="Nieuwe afspraak"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="new-label" data-i18n="new_appt">Nieuwe afspraak</span></button>
       <button type="button" class="btn" id="refresh" data-i18n-aria="refresh" aria-label="Vernieuwen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><span class="refresh-label" data-i18n="refresh">Vernieuwen</span></button>
+      </div>
     </div>
     <div class="search-row">
       <label class="sr-only" for="appt-search" data-i18n="search_label">Zoek in komend</label>
@@ -350,6 +365,51 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   </div>
 </dialog>
 
+<!-- Plan in a new appointment -->
+<dialog id="dlg-new" aria-labelledby="dlg-new-h">
+  <form class="dlg-body" id="new-form" novalidate>
+    <h2 id="dlg-new-h" data-i18n="new_h">Afspraak inplannen</h2>
+    <p data-i18n="new_p">Voor een klant die belde of binnenliep. Bezette tijden kun je niet kiezen.</p>
+    <div class="dlg-section">
+      <span class="lbl" id="new-svc-lbl" data-i18n="new_services">Behandeling</span>
+      <div class="svc-list" id="new-services" role="group" aria-labelledby="new-svc-lbl"></div>
+      <p class="svc-total" id="new-total" hidden></p>
+    </div>
+    <div class="dlg-section">
+      <label class="lbl" for="new-date" data-i18n="new_date">Datum</label>
+      <input class="field" type="date" id="new-date">
+    </div>
+    <div class="slots" id="new-slots" role="group" aria-label="Tijden"></div>
+    <div class="dlg-section dlg-grid">
+      <div>
+        <label class="lbl" for="new-first" data-i18n="new_first">Voornaam</label>
+        <input class="field" type="text" id="new-first" maxlength="50" autocomplete="off">
+      </div>
+      <div>
+        <label class="lbl" for="new-last" data-i18n="new_last">Achternaam</label>
+        <input class="field" type="text" id="new-last" maxlength="50" autocomplete="off">
+      </div>
+      <div>
+        <label class="lbl" for="new-phone" data-i18n="new_phone">Telefoon</label>
+        <input class="field" type="tel" id="new-phone" maxlength="20" autocomplete="off" inputmode="tel">
+      </div>
+      <div>
+        <label class="lbl" for="new-email" data-i18n="new_email">E-mail (optioneel)</label>
+        <input class="field" type="email" id="new-email" maxlength="254" autocomplete="off">
+      </div>
+      <div class="full">
+        <label class="lbl" for="new-notes" data-i18n="new_notes">Notitie (optioneel)</label>
+        <textarea class="field" id="new-notes" maxlength="500"></textarea>
+      </div>
+    </div>
+    <div id="new-msg" role="alert"></div>
+  </form>
+  <div class="dlg-actions">
+    <button type="button" class="btn" data-close data-i18n="close">Sluiten</button>
+    <button type="submit" form="new-form" class="btn btn-primary" id="new-confirm" disabled data-i18n="new_confirm">Inplannen</button>
+  </div>
+</dialog>
+
 <!-- Remove block confirmation -->
 <dialog id="dlg-unblock" aria-labelledby="dlg-unblock-h">
   <div class="dlg-body">
@@ -411,6 +471,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       err_already_cancelled:'Deze afspraak was al geannuleerd.', err_started:'Deze afspraak is al begonnen of voorbij.',
       err_not_found:'Deze afspraak bestaat niet meer.', err_slot_taken:'Dit tijdstip is net bezet of niet meer beschikbaar. Kies een ander tijdstip.',
       err_block_gone:'Deze periode was al vrijgegeven.',
+      new_appt:'Nieuwe afspraak', new_h:'Afspraak inplannen', new_p:'Voor een klant die belde of binnenliep. Bezette tijden kun je niet kiezen.',
+      new_services:'Behandeling', new_date:'Datum', new_first:'Voornaam', new_last:'Achternaam', new_phone:'Telefoon',
+      new_email:'E-mail (optioneel)', new_notes:'Notitie (optioneel)', new_confirm:'Inplannen', planning:'Inplannen…',
+      new_total:'Totaal {min} min · {price}', pick_service:'Kies eerst een behandeling.', planned_toast:'Afspraak ingepland op {when}',
+      err_new_services:'Kies minstens één behandeling.', err_new_time:'Kies een tijd.', err_new_name:'Vul voor- en achternaam in.',
+      err_new_phone:'Vul een geldig telefoonnummer in.', err_new_email:'Dit e-mailadres klopt niet.',
       err_network:'Kan de server niet bereiken. Probeer het opnieuw.', err_generic:'Er ging iets mis: {msg}'
     },
     en: {
@@ -447,6 +513,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       err_already_cancelled:'This appointment was already cancelled.', err_started:'This appointment has already started or passed.',
       err_not_found:'This appointment no longer exists.', err_slot_taken:'That time was just taken or is no longer available. Pick another time.',
       err_block_gone:'This period was already unblocked.',
+      new_appt:'New appointment', new_h:'Plan in appointment', new_p:'For a customer who called or walked in. Taken times can’t be picked.',
+      new_services:'Service', new_date:'Date', new_first:'First name', new_last:'Last name', new_phone:'Phone',
+      new_email:'Email (optional)', new_notes:'Note (optional)', new_confirm:'Plan in', planning:'Planning…',
+      new_total:'Total {min} min · {price}', pick_service:'Pick a service first.', planned_toast:'Appointment planned for {when}',
+      err_new_services:'Pick at least one service.', err_new_time:'Pick a time.', err_new_name:'Fill in first and last name.',
+      err_new_phone:'Fill in a valid phone number.', err_new_email:'This email address doesn’t look right.',
       err_network:'Can’t reach the server. Please try again.', err_generic:'Something went wrong: {msg}'
     }
   };
@@ -661,7 +733,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         actions +
         '<div class="r-details" id="d-' + id + '" hidden><dl>' +
           '<dt>' + t('d_phone') + '</dt><dd><a href="tel:' + esc(b.phone) + '">' + esc(b.phone) + '</a></dd>' +
-          '<dt>' + t('d_email') + '</dt><dd><a href="mailto:' + esc(b.email) + '">' + esc(b.email) + '</a></dd>' +
+          (b.email ? '<dt>' + t('d_email') + '</dt><dd><a href="mailto:' + esc(b.email) + '">' + esc(b.email) + '</a></dd>' : '') +
           (b.notes ? '<dt>' + t('d_notes') + '</dt><dd class="r-notes">' + esc(b.notes) + '</dd>' : '') +
           (history.length ? '<dt>' + t('d_history') + '</dt><dd>' + history.map(esc).join('<br>') + '</dd>' : '') +
         '</dl>' + actions + '</div>' +
@@ -834,6 +906,158 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       setMsg(moveMsg, esc(errorText(r)));
       moveBtn.disabled = !moveTime;
     }).catch(function(){ busy(moveBtn, false); moveBtn.disabled = !moveTime; setMsg(moveMsg, esc(t('err_network'))); });
+  });
+
+  /* ---------- Plan in a new appointment ---------- */
+  var dlgNew = document.getElementById('dlg-new');
+  var newForm = document.getElementById('new-form');
+  var newServices = document.getElementById('new-services');
+  var newTotal = document.getElementById('new-total');
+  var newDate = document.getElementById('new-date');
+  var newSlots = document.getElementById('new-slots');
+  var newBtn = document.getElementById('new-confirm');
+  var newMsg = document.getElementById('new-msg');
+  var newFirst = document.getElementById('new-first');
+  var newLast = document.getElementById('new-last');
+  var newPhone = document.getElementById('new-phone');
+  var newEmail = document.getElementById('new-email');
+  var newNotes = document.getElementById('new-notes');
+  var services = null, newTime = null, newSlotsId = 0;
+
+  document.getElementById('new-appt').addEventListener('click', openNew);
+
+  function openNew(){
+    newForm.reset();
+    [newFirst, newLast, newPhone, newEmail].forEach(function(el){ el.removeAttribute('aria-invalid'); });
+    newDate.min = todayIso();
+    newDate.max = addDaysIso(todayIso(), RESCHEDULE_DAYS_AHEAD);
+    newDate.value = todayIso();
+    setMsg(newMsg, '');
+    busy(newBtn, false);
+    setNewTime(null);
+    dlgNew.showModal();
+    if (services) renderServices(); else loadServices();
+  }
+  function loadServices(){
+    newServices.innerHTML = '<div class="slots-state">' + t('loading') + '</div>';
+    newSlots.innerHTML = '';
+    // Public endpoint, no session needed.
+    fetch(API_BASE + '/services').then(function(res){
+      if (!res.ok) throw res;
+      return res.json();
+    }).then(function(list){ services = list; renderServices(); }).catch(function(){
+      newServices.innerHTML = '<div class="slots-state">' + t('load_error') + '</div>';
+    });
+  }
+  function renderServices(){
+    newServices.innerHTML = services.map(function(s){
+      return '<label class="svc"><input type="checkbox" value="' + esc(s.slug) + '">' +
+        '<span class="svc-name">' + esc(s.name) + '</span>' +
+        '<span class="svc-meta">' + esc(s.duration) + ' ' + t('min') + ' · ' + esc(euro(s.price)) + '</span></label>';
+    }).join('');
+    newServices.querySelectorAll('input').forEach(function(cb){
+      cb.addEventListener('change', function(){ setMsg(newMsg, ''); updateTotal(); loadNewSlots(); });
+    });
+    updateTotal();
+    loadNewSlots();
+  }
+  function chosenServices(){
+    var slugs = Array.prototype.map.call(newServices.querySelectorAll('input:checked'), function(cb){ return cb.value; });
+    return (services || []).filter(function(s){ return slugs.indexOf(s.slug) !== -1; });
+  }
+  function updateTotal(){
+    var chosen = chosenServices();
+    newTotal.hidden = !chosen.length;
+    if (!chosen.length) return;
+    var min = chosen.reduce(function(n, s){ return n + s.duration; }, 0);
+    var price = chosen.reduce(function(n, s){ return n + s.price; }, 0);
+    newTotal.textContent = t('new_total', { min: min, price: euro(price) });
+  }
+  function setNewTime(time){
+    newTime = time;
+    newBtn.disabled = !time;
+    newSlots.querySelectorAll('[data-time]').forEach(function(s){
+      var on = s.dataset.time === time;
+      s.classList.toggle('on', on);
+      s.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  // Slots are judged by the length of the chosen services, so a long appointment can't be
+  // started where it would run into the next one.
+  function loadNewSlots(){
+    setNewTime(null);
+    var chosen = chosenServices();
+    var date = newDate.value;
+    if (!chosen.length){ newSlots.innerHTML = '<div class="slots-state">' + t('pick_service') + '</div>'; return; }
+    if (!date){ newSlots.innerHTML = '<div class="slots-state">' + t('pick_date') + '</div>'; return; }
+    var duration = chosen.reduce(function(n, s){ return n + s.duration; }, 0);
+    var id = ++newSlotsId;
+    newSlots.innerHTML = '<div class="slots-state">' + t('loading') + '</div>';
+    api('GET', '/barber/slots?date=' + encodeURIComponent(date) + '&duration=' + duration).then(function(r){
+      if (id !== newSlotsId) return;
+      if (!r.ok) throw r;
+      if (r.body.closed){ newSlots.innerHTML = '<div class="slots-state">' + t('closed_day') + '</div>'; return; }
+      newSlots.innerHTML = r.body.slots.map(function(s){
+        var free = s.status === 'free';
+        return '<button type="button" class="slot" ' + (free ? 'data-time="' + s.time + '" aria-pressed="false"' : 'disabled') + '>' +
+          s.time + '<small>' + esc(t('st_' + s.status)) + '</small></button>';
+      }).join('');
+      newSlots.querySelectorAll('[data-time]').forEach(function(btn){
+        btn.addEventListener('click', function(){ setMsg(newMsg, ''); setNewTime(btn.dataset.time); });
+      });
+    }).catch(function(){
+      if (id !== newSlotsId) return;
+      newSlots.innerHTML = '<div class="slots-state">' + t('load_error') + '</div>';
+    });
+  }
+  newDate.addEventListener('change', function(){ setMsg(newMsg, ''); loadNewSlots(); });
+  [newFirst, newLast, newPhone, newEmail].forEach(function(el){
+    el.addEventListener('input', function(){ el.removeAttribute('aria-invalid'); setMsg(newMsg, ''); });
+  });
+
+  // The dialog scrolls, so make sure an error below the fold is actually seen.
+  function newError(html){
+    setMsg(newMsg, html);
+    newMsg.scrollIntoView({ block: 'nearest' });
+  }
+
+  newForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (newBtn.disabled) return;
+    [newFirst, newLast, newPhone, newEmail].forEach(function(el){ el.removeAttribute('aria-invalid'); });
+    var chosen = chosenServices();
+    var first = newFirst.value.trim(), last = newLast.value.trim(), phone = newPhone.value.trim(), email = newEmail.value.trim();
+    var digits = phone.replace(/\D/g, '').length;
+    var err = null, bad = [];
+    if (!chosen.length) err = 'err_new_services';
+    else if (!newTime) err = 'err_new_time';
+    else if (!first || !last){ err = 'err_new_name'; bad = [first ? null : newFirst, last ? null : newLast]; }
+    else if (!/^\+?[\d\s()-]+$/.test(phone) || digits < 9 || digits > 15){ err = 'err_new_phone'; bad = [newPhone]; }
+    else if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ err = 'err_new_email'; bad = [newEmail]; }
+    if (err){
+      bad.forEach(function(el){ if (el) el.setAttribute('aria-invalid', 'true'); });
+      if (bad[0] || bad[1]) (bad[0] || bad[1]).focus();
+      return newError(esc(t(err)));
+    }
+
+    var date = newDate.value, time = newTime;
+    busy(newBtn, true, 'planning');
+    api('POST', '/barber/bookings', {
+      firstName: first, lastName: last, phone: phone, email: email, notes: newNotes.value.trim(),
+      serviceSlugs: chosen.map(function(s){ return s.slug; }), date: date, time: time
+    }).then(function(r){
+      busy(newBtn, false);
+      if (r.ok){
+        dlgNew.close();
+        toast(t('planned_toast', { when: fmtWhen(date, time) }));
+        if (view === 'upcoming') loadAppointments();
+        return;
+      }
+      // Someone else (an online customer, another device) took the time in the meantime.
+      if (r.status === 409){ newError(esc(t('err_slot_taken'))); loadNewSlots(); return; }
+      newError(esc(errorText(r)));
+      newBtn.disabled = !newTime;
+    }).catch(function(){ busy(newBtn, false); newBtn.disabled = !newTime; newError(esc(t('err_network'))); });
   });
 
   /* ---------- Availability: blocks ---------- */

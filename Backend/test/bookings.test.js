@@ -117,6 +117,8 @@ test('POST /api/bookings enforces length limits and text types', async () => {
     { firstName: '   ' },
     { firstName: { $gt: '' } },
     { notes: ['a'] },
+    { email: '' }, // only the barber may leave out the email
+    { email: undefined },
   ];
   for (const overrides of cases) {
     const res = await request(app).post('/api/bookings').send(validPayload(overrides));

@@ -6,6 +6,7 @@ import { asyncHandler } from '../middleware/asyncHandler.js';
 import { ApiError } from '../middleware/errors.js';
 import { barberAuth } from '../middleware/barberAuth.js';
 import { RESCHEDULE_DAYS_AHEAD, SLOT_MINUTES, isClosedOn, nowInShop, addDays } from '../config/businessHours.js';
+import { createBooking, parseCustomer } from '../lib/newBooking.js';
 import {
   assertSlotOpen,
   coveredSlots,
@@ -118,6 +119,24 @@ router.get(
   })
 );
 
+// The barber plans in an appointment (phone call, walk-in). Same clash rules as online bookings,
+// but email is optional and it can be planned as far ahead as a reschedule.
+router.post(
+  '/bookings',
+  asyncHandler(async (req, res) => {
+    const { date, time, serviceSlugs } = req.body ?? {};
+    const booking = await createBooking({
+      customer: parseCustomer(req.body, { emailRequired: false }),
+      serviceSlugs,
+      date,
+      time,
+      maxDaysAhead: RESCHEDULE_DAYS_AHEAD,
+      extra: { source: 'barber', saveInfo: false },
+    });
+    res.status(201).json(booking);
+  })
+);
+
 router.post(
   '/bookings/:id/cancel',
   asyncHandler(async (req, res) => {
@@ -166,11 +185,21 @@ router.post(
 router.get(
   '/slots',
   asyncHandler(async (req, res) => {
-    const { date, booking: bookingId } = req.query;
+    const { date, booking: bookingId, duration } = req.query;
     if (!isValidDate(date)) throw new ApiError(400, 'Query param "date" must be formatted as YYYY-MM-DD');
     // When picking a new time for a booking, judge slots by its duration and ignore its current spot.
+    // When planning a new appointment, judge them by the duration of the chosen services.
     let options = {};
-    if (bookingId !== undefined) {
+    if (bookingId !== undefined && duration !== undefined) {
+      throw new ApiError(400, 'Use either "booking" or "duration", not both');
+    }
+    if (duration !== undefined) {
+      const minutes = Number(duration);
+      if (!Number.isInteger(minutes) || minutes < 1 || minutes > 600) {
+        throw new ApiError(400, 'duration must be a whole number of minutes between 1 and 600');
+      }
+      options = { duration: minutes };
+    } else if (bookingId !== undefined) {
       if (!mongoose.isValidObjectId(bookingId)) throw new ApiError(404, 'Booking not found');
       const booking = await Booking.findById(bookingId).select('totalDuration').lean();
       if (!booking) throw new ApiError(404, 'Booking not found');
