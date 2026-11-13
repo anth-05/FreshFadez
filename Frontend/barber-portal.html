@@ -6,7 +6,8 @@
 <title>Barber portal — Fresh Fadez Studios</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#121417">
-<link rel="icon" type="image/png" href="./images/logo-mark-dark.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./images/ff-icon.png">
+<link rel="apple-touch-icon" href="./images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&display=swap">
@@ -243,7 +244,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
 
 <header class="top">
   <a class="brand" href="./index.html">
-    <img src="./images/logo-mark-white.png" alt="Fresh Fadez Studios" width="38" height="24">
+    <img src="./images/ff-logo-white.svg" alt="Fresh Fadez Studios" width="33" height="24">
     <span class="bw"><span class="bn">FRESHFADEZ</span><span class="bs">STUDIOS</span></span>
   </a>
   <div class="top-right">
@@ -515,7 +516,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       err_order:'Het einde moet na het begin liggen.', err_over:'Deze periode is al voorbij.',
       err_conflicts:'Er staan afspraken in deze periode. Verplaats of annuleer ze eerst:',
       err_already_cancelled:'Deze afspraak was al geannuleerd.', err_started:'Deze afspraak is al begonnen of voorbij.',
-      err_not_found:'Deze afspraak bestaat niet meer.', err_slot_taken:'Dit tijdstip is net bezet of niet meer beschikbaar. Kies een ander tijdstip.',
+      err_not_found:'Deze afspraak bestaat niet meer.', err_outdated:'De server kent deze actie nog niet: de nieuwste versie staat nog niet online. Probeer het opnieuw zodra de update live is.', err_slot_taken:'Dit tijdstip is net bezet of niet meer beschikbaar. Kies een ander tijdstip.',
       err_block_gone:'Deze periode was al vrijgegeven.',
       new_appt:'Nieuwe afspraak', new_h:'Afspraak inplannen', new_p:'Voor een klant die belde of binnenliep. Bezette tijden kun je niet kiezen.',
       new_services:'Behandeling', new_date:'Datum', new_first:'Voornaam', new_last:'Achternaam', new_phone:'Telefoon',
@@ -561,7 +562,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       err_order:'The end has to be after the start.', err_over:'This period is already over.',
       err_conflicts:'There are appointments in this period. Reschedule or cancel them first:',
       err_already_cancelled:'This appointment was already cancelled.', err_started:'This appointment has already started or passed.',
-      err_not_found:'This appointment no longer exists.', err_slot_taken:'That time was just taken or is no longer available. Pick another time.',
+      err_not_found:'This appointment no longer exists.', err_outdated:'The server doesn’t know this action yet: the latest version isn’t live. Try again once the update is deployed.', err_slot_taken:'That time was just taken or is no longer available. Pick another time.',
       err_block_gone:'This period was already unblocked.',
       new_appt:'New appointment', new_h:'Plan in appointment', new_p:'For a customer who called or walked in. Taken times can’t be picked.',
       new_services:'Service', new_date:'Date', new_first:'First name', new_last:'Last name', new_phone:'Phone',
@@ -652,7 +653,11 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
     }
     select.innerHTML = html;
   }
-  function errorText(r){ return t('err_generic', { msg: (r && r.body && r.body.error) || ('HTTP ' + (r && r.status)) }); }
+  // The API answers 'Not found' for a route it doesn't have (an older server than this page),
+  // and 'Booking not found' / 'Block not found' when the item itself is gone.
+  function routeMissing(r){ return r.status === 404 && (r.body && r.body.error) === 'Not found'; }
+  function itemGone(r){ return r.status === 404 && !routeMissing(r); }
+  function errorText(r){ if (routeMissing(r)) return t('err_outdated'); return t('err_generic', { msg: (r && r.body && r.body.error) || ('HTTP ' + (r && r.status)) }); }
 
   function setMsg(el, html){ el.innerHTML = html ? '<div class="msg msg-err">' + html + '</div>' : ''; }
 
@@ -900,7 +905,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
     api('POST', '/barber/bookings/' + cancelling._id + '/cancel').then(function(r){
       busy(cancelBtn, false);
       if (r.ok){ dlgCancel.close(); toast(t('cancelled_toast')); loadAppointments(); return; }
-      var key = r.status === 409 ? 'err_already_cancelled' : r.status === 400 ? 'err_started' : r.status === 404 ? 'err_not_found' : null;
+      var key = r.status === 409 ? 'err_already_cancelled' : r.status === 400 ? 'err_started' : itemGone(r) ? 'err_not_found' : null;
       setMsg(cancelMsg, esc(key ? t(key) : errorText(r)));
       if (key) loadAppointments();
     }).catch(function(){ busy(cancelBtn, false); setMsg(cancelMsg, esc(t('err_network'))); });
@@ -974,7 +979,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
         return;
       }
       if (r.status === 409){ setMsg(moveMsg, esc(t('err_slot_taken'))); loadSlots(); return; }
-      if (r.status === 404){ setMsg(moveMsg, esc(t('err_not_found'))); loadAppointments(); return; }
+      if (itemGone(r)){ setMsg(moveMsg, esc(t('err_not_found'))); loadAppointments(); return; }
       setMsg(moveMsg, esc(errorText(r)));
       moveBtn.disabled = !moveTime;
     }).catch(function(){ busy(moveBtn, false); moveBtn.disabled = !moveTime; setMsg(moveMsg, esc(t('err_network'))); });
@@ -1196,7 +1201,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       if (r.ok){ dlgEdit.close(); toast(t('edited_toast')); loadAppointments(); return; }
       if (r.status === 409 && /run into/.test(r.body.error || '')) return editError(esc(t('err_edit_overlap')));
       var msg = r.body.error || '';
-      var key = r.status === 404 ? 'err_not_found' : r.status === 409 && /cancelled/.test(msg) ? 'err_already_cancelled' : r.status === 400 && /already over/.test(msg) ? 'err_over_edit' : null;
+      var key = itemGone(r) ? 'err_not_found' : r.status === 409 && /cancelled/.test(msg) ? 'err_already_cancelled' : r.status === 400 && /already over/.test(msg) ? 'err_over_edit' : null;
       editError(esc(key ? t(key) : errorText(r)));
       if (key) loadAppointments();
     }).catch(function(){ busy(editBtn, false); editError(esc(t('err_network'))); });
@@ -1315,7 +1320,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
     unblockBtn.disabled = true;
     api('DELETE', '/barber/blocks/' + unblocking._id).then(function(r){
       unblockBtn.disabled = false;
-      if (r.ok || r.status === 404){
+      if (r.ok || itemGone(r)){
         dlgUnblock.close();
         toast(t(r.ok ? 'unblocked_toast' : 'err_block_gone'));
         loadBlocks();

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="12 -11 236 174" width="236" height="174">
+  <defs>
+    <g id="half">
+      <path d="M86 -20 L126 60 L135 82 C139 94 143 105 149 113 Q153 118 161 116 L155 120.5 L150 123 C142 112 134 102 126 101 L117 82 Z"/>
+      <ellipse cx="168" cy="141" rx="15" ry="25" transform="rotate(-25 168 141)" fill="none" stroke="#FFFFFF" stroke-width="5.5"/>
+    </g>
+  </defs>
+  <g fill="#FFFFFF">
+    <path d="M24 55 H56 V61.5 H30.5 V77.5 H53 V84 H30.5 V105 H24 Z"/>
+    <path d="M204 55 H236 V61.5 H210.5 V77.5 H233 V84 H210.5 V105 H204 Z"/>
+    <g transform="translate(130 80) scale(0.85) translate(-126 -80)">
+      <use href="#half"/>
+      <use href="#half" transform="translate(252 0) scale(-1 1)"/>
+    </g>
+  </g>
+</svg>

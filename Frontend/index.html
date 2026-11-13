@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://freshfadezstudios.nl/">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="theme-color" content="#121417">
-<link rel="icon" type="image/png" href="./images/logo-mark-dark.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./images/ff-icon.png">
 <link rel="apple-touch-icon" href="./images/apple-touch-icon.png">
 <link rel="preload" as="image" href="./images/hero-redesign.jpg" fetchpriority="high">
 
@@ -37,7 +37,7 @@
   "description": "Barbershop in Lelystad voor knipbeurten, skin fades en baardtrims. Alleen op afspraak, online te boeken.",
   "url": "https://freshfadezstudios.nl/",
   "image": "https://freshfadezstudios.nl/images/og-image.jpg",
-  "logo": "https://freshfadezstudios.nl/images/logo-mark-dark.png",
+  "logo": "https://freshfadezstudios.nl/images/ff-logo-dark.png",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "De Waag 8",
@@ -242,12 +242,37 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 /* ABOUT */
 .about{background:var(--ink);color:var(--white)}
 .about-inner{display:flex;flex-wrap:wrap;align-items:center;gap:72px;padding-block:96px}
-.about-img{flex:1 1 340px;max-width:460px;min-width:0;width:100%;aspect-ratio:975/1039;object-fit:cover;border-radius:20px}
+.about-img{flex:1 1 280px;max-width:360px;min-width:0;width:100%;height:auto;aspect-ratio:975/1039;object-fit:cover;border-radius:20px}
 .about-copy{flex:999 1 420px;min-width:0;max-width:560px}
 .about-copy .eyebrow{margin:0 0 16px;font-size:16px;color:var(--ice)}
 .about-copy p.body{margin:20px 0 0;font-size:17px;line-height:1.7;color:var(--mist);max-width:62ch}
 .about-sign{margin:32px 0 0;font-size:18px;font-weight:600;font-stretch:110%}
 .about-copy .text-link{display:inline-block;margin-top:28px;padding:0;border:0;background:none;color:var(--ice);font:500 16px/1.5 var(--font);text-decoration:underline;text-underline-offset:6px;cursor:pointer}
+
+/* TEAM */
+.team{padding-bottom:96px}
+.team-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:48px 72px}
+.team-head{flex:1 1 300px;max-width:420px}
+.team-head .lede{margin:16px 0 0}
+.team-people{flex:999 1 520px;max-width:640px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin:0;padding:0;list-style:none}
+.person{min-width:0}
+/* Until a photo is added (or if it fails to load) the frame shows the logo instead of a broken image. */
+.person-photo{position:relative;aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:var(--ink);display:flex;align-items:center;justify-content:center}
+.person-photo .mark{width:56px;height:auto;opacity:.22}
+.person-photo img:not(.mark){position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.person-name{margin:18px 0 0;font-size:24px;line-height:1.2;font-weight:650;font-stretch:112%;letter-spacing:-.01em}
+.person-role{margin:4px 0 0;font-size:16px;color:var(--muted)}
+.person-link{display:inline-flex;align-items:center;gap:8px;max-width:100%;min-height:44px;margin-top:6px;color:var(--ink);font-size:16px;font-weight:600;text-decoration:underline;text-underline-offset:6px}
+.person-link svg{width:16px;height:16px;flex:none}
+/* A booking link that hasn't been filled in yet stays visible but can't be clicked. */
+.person-link:not([href^="http"]){opacity:.4;pointer-events:none}
+@media (max-width:760px){
+  .team{padding-bottom:64px}
+  .team-people{gap:16px}
+  .person-name{font-size:19px}
+  .person-role{font-size:15px}
+  .person-link{gap:6px;font-size:15px;line-height:1.3}
+}
 
 /* WORK */
 .work{padding-block:96px}
@@ -348,7 +373,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   .nav-links{display:none}
   .menu-btn{display:inline-flex}
   .nav{padding-block:16px}
-  .topbar .mark{width:46px;height:29px}
+  .topbar .mark{width:40px;height:29px}
   .book-hero{min-height:88svh}
   .hero-img{object-position:68% 30%}
   .book-hero::after{background:linear-gradient(180deg,rgba(18,20,23,.5) 0,rgba(18,20,23,.1) 30%,rgba(18,20,23,.55) 55%,rgba(18,20,23,.94) 100%)}
@@ -376,7 +401,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   .svc-intro h3{font-size:28px}
   .svc-card{max-width:none;flex-basis:100%}
   .about-inner{padding-block:64px;gap:36px}
-  .about-img{max-width:none}
+  .about-img{max-width:280px}
   .work{padding-block:64px}
   .work-head{align-items:flex-start}
   .gallery{margin-top:32px;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 16px}
@@ -544,6 +569,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
         <circle cx="26" cy="29.5" r="3.3"/><circle cx="38" cy="29.5" r="3.3"/>
       </g>
     </symbol>
+    <symbol id="ff-external" viewBox="0 0 24 24"><path d="M8 16 16 8M9 8h7v7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
     <symbol id="ff-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
     <symbol id="ff-chev-l" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
     <symbol id="ff-chev-r" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
@@ -556,7 +582,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 <div class="topbar" id="topbar">
   <nav class="nav wrap" aria-label="Main">
     <a class="brand" href="#top" aria-label="Fresh Fadez Studios, home">
-      <img class="mark" src="./images/logo-mark-white.png" alt="" width="36" height="34">
+      <img class="mark" src="./images/ff-logo-white.svg" alt="" width="46" height="34">
       <span class="brand-words"><span class="brand-name">FRESHFADEZ</span><span class="brand-sub">STUDIOS</span></span>
     </a>
     <div class="nav-links">
@@ -640,7 +666,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
           <button type="button" class="bk-icon-btn right" data-bk-close aria-label="Sluiten"><svg width="18" height="18" aria-hidden="true"><use href="#ff-close"/></svg></button>
         </div>
         <div class="bk-info-row">
-          <span class="bk-info-mark"><img src="./images/logo-mark-white.png" alt="" width="18" height="17"></span>
+          <span class="bk-info-mark"><img src="./images/ff-logo-white.svg" alt="" width="23" height="17"></span>
           <div><div class="bk-info-name">Fresh Fadez Studios</div><div class="bk-info-sub">Lelystad</div></div>
         </div>
         <div class="bk-date-row">
@@ -741,7 +767,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 
     <article class="svc-card" id="svc-panel" role="tabpanel" aria-labelledby="tab-knippen-baard">
       <div class="svc-body">
-        <img class="svc-mark" src="./images/logo-mark-white.png" alt="" width="26" height="25">
+        <img class="svc-mark" src="./images/ff-logo-white.svg" alt="" width="34" height="25">
         <div class="svc-intro">
           <h3 id="svc-name">···</h3>
           <p class="svc-desc" id="svc-desc"></p>
@@ -753,6 +779,40 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
         <button type="button" class="btn btn-ice" id="svc-book">···</button>
       </div>
     </article>
+  </section>
+
+  <!-- Team: de braider en de tweede barber hebben elk hun eigen Salonized-agenda. -->
+  <section class="team wrap" id="team">
+    <div class="team-inner">
+      <div class="team-head">
+        <h2 class="h2" data-i18n="team_title">Ons team</h2>
+        <p class="lede" data-i18n="team_lede">Naast mij werken er nog twee vakmensen in de studio. Zij hebben hun eigen agenda: boek direct bij hen via Salonized.</p>
+      </div>
+      <ul class="team-people">
+        <li class="person">
+          <div class="person-photo">
+            <img class="mark" src="./images/ff-logo-white.svg" alt="" width="56" height="41">
+            <!-- FOTO: zet de foto in Frontend/images/team-braider.jpg (staand, bijv. 1200 × 1500). -->
+            <img src="./images/team-braider.jpg" width="1200" height="1500" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+          </div>
+          <h3 class="person-name" id="team-braider">Jayjay</h3>
+          <p class="person-role" data-i18n="team_role_braider">Braider</p>
+          <!-- LINK: vervang # door de Salonized-link, bijv. https://widget.salonized.com/... -->
+          <a class="person-link" href="#" target="_blank" rel="noopener" aria-describedby="team-braider"><span data-i18n="team_book">Boek via Salonized</span><svg aria-hidden="true"><use href="#ff-external"/></svg></a>
+        </li>
+        <li class="person">
+          <div class="person-photo">
+            <img class="mark" src="./images/ff-logo-white.svg" alt="" width="56" height="41">
+            <!-- FOTO: zet de foto in Frontend/images/team-barber.jpg (staand, bijv. 1200 × 1500). -->
+            <img src="./images/team-barber.jpg" width="1200" height="1500" alt="" loading="lazy" decoding="async" onerror="this.remove()">
+          </div>
+          <h3 class="person-name" id="team-barber">Jonevan</h3>
+          <p class="person-role" data-i18n="team_role_barber">Barber</p>
+          <!-- LINK: vervang # door de Salonized-link, bijv. https://widget.salonized.com/... -->
+          <a class="person-link" href="#" target="_blank" rel="noopener" aria-describedby="team-barber"><span data-i18n="team_book">Boek via Salonized</span><svg aria-hidden="true"><use href="#ff-external"/></svg></a>
+        </li>
+      </ul>
+    </div>
   </section>
 
   <section class="about" id="about">
@@ -844,7 +904,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 
   <section class="visit wrap" id="visit">
     <div class="visit-card">
-      <img class="watermark" src="./images/logo-mark-white.png" width="430" height="409" alt="" aria-hidden="true">
+      <img class="watermark" src="./images/ff-logo-white.svg" width="430" height="317" alt="" aria-hidden="true">
       <div class="visit-copy">
         <h2 class="h2" data-i18n="visit_title">Jouw volgende knipbeurt is een klik verwijderd</h2>
         <p data-i18n="visit_body">Kies een tijd die jou uitkomt en laat de rest aan ons over.</p>
@@ -866,7 +926,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 <footer class="footer">
   <div class="footer-inner wrap">
     <div class="footer-brand">
-      <img class="mark" src="./images/logo-mark-dark.png" alt="" width="30" height="29">
+      <img class="mark" src="./images/ff-logo-dark.svg" alt="" width="39" height="29">
       <span class="bw"><span class="bn">FRESHFADEZ</span><span class="bs">STUDIOS</span></span>
       <span style="margin-left:8px">© 2026</span>
     </div>
@@ -898,6 +958,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       about_p1:'Fresh Fadez Studios is een barbershop in Lelystad, aan De Waag 8. Hier draait alles om strakke fades, scherpe lijnen en een baard die bij je gezicht past. Je zit hier alleen op afspraak, dus je hoeft nooit te wachten en de stoel is helemaal voor jou.',
       about_p2:'Elke afspraak begint met een kort gesprek over wat je wilt, zodat het resultaat past bij jouw haar en jouw routine. Of je nu komt voor een skin fade, een complete knipbeurt met baard of een kids cut: je loopt naar buiten met een cut waar je zelf blij mee bent.',
       about_sign:'Oprichter van Fresh Fadez Studios', about_link:'Boek een stoel bij mij',
+      team_title:'Ons team', team_lede:'Naast mij werken er nog twee vakmensen in de studio. Zij hebben hun eigen agenda: boek direct bij hen via Salonized.',
+      team_role_braider:'Braider', team_role_barber:'Barber', team_book:'Boek via Salonized',
       work_title:'Echte klanten, echte resultaten', work_lede:'Een paar recente knipbeurten uit de studio.',
       gallery_1:'Skin fade met krullen', gallery_2:'Drop fade met highlights en baard', gallery_3:'Taper fade met textuur', gallery_4:'Locs met lijnwerk en baard',
       visit_title:'Jouw volgende knipbeurt is een klik verwijderd', visit_body:'Kies een tijd die jou uitkomt en laat de rest aan ons over.',
@@ -956,6 +1018,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       about_p1:'Fresh Fadez Studios is a barbershop in Lelystad, at De Waag 8. It is all about clean fades, sharp lines and a beard that suits your face. It is appointment only, so you never wait and the chair is all yours.',
       about_p2:'Every appointment starts with a quick chat about what you want, so the result fits your hair and your routine. Whether you come in for a skin fade, a full cut with beard or a kids cut, you leave with a cut you are happy with.',
       about_sign:'Founder of Fresh Fadez Studios', about_link:'Book a chair with me',
+      team_title:'Our team', team_lede:'Two more professionals work alongside me in the studio. They keep their own calendar: book with them directly on Salonized.',
+      team_role_braider:'Braider', team_role_barber:'Barber', team_book:'Book on Salonized',
       work_title:'Real clients, real results', work_lede:'A few recent cuts from the studio.',
       gallery_1:'Skin fade with curls', gallery_2:'Drop fade with highlights and beard', gallery_3:'Textured taper fade', gallery_4:'Locs with line-up and beard',
       visit_title:'Your next cut is a click away', visit_body:'Choose a time that works for you and let us take care of the rest.',
@@ -1227,7 +1291,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     var items = SERVICES.filter(function(s){ return selected[s.id]; });
     var duration = items.reduce(function(sum, s){ return sum + s.duration; }, 0);
     document.getElementById('summary-duration').innerHTML = clockIconSvg() + '<span>' + duration + ' ' + t('ui_minutes') + '</span>' +
-      '<img src="./images/logo-mark-white.png" alt="" width="13" height="12" style="margin-left:6px">' + '<span>Fresh Fadez Studios</span>';
+      '<img src="./images/ff-logo-white.svg" alt="" width="16" height="12" style="margin-left:6px">' + '<span>Fresh Fadez Studios</span>';
     document.getElementById('summary-items').innerHTML = items.map(function(s){
       return '<div class="bk-summary-item"><span>' + t('svc_' + s.id) + '</span><span>' + euro(s.price) + '</span></div>';
     }).join('');
@@ -1652,7 +1716,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 
   /* Scroll reveal */
   if (!reduce && 'IntersectionObserver' in window){
-    var groups = [['.svc-left','.svc-card'],['.about-img','.about-copy'],['.work-head'],['.gallery .shot'],['.visit-card'],['.policy-head','.policy-body'],['.footer-inner']];
+    var groups = [['.svc-left','.svc-card'],['.about-img','.about-copy'],['.team-head','.team-people .person'],['.work-head'],['.gallery .shot'],['.visit-card'],['.policy-head','.policy-body'],['.footer-inner']];
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
     }, {rootMargin:'0px 0px -8% 0px', threshold:0.08});
