@@ -1,15 +1,44 @@
-// Mirrors the hardcoded schedule in Frontend/index.html (bookingDates/renderTimes).
-export const CLOSED_WEEKDAYS = [0]; // Sunday
-export const TIME_SLOTS = ['12:00', '13:00', '14:00', '15:00', '18:00', '19:00', '20:00'];
+// Opening hours per weekday (0 = Sunday), as listed on the shop's Salonized page and the website.
+// The website shows these hours in index.html (fact_hours_val) and in its structured data.
+export const OPENING_HOURS = {
+  1: { open: '11:00', close: '21:00' },
+  2: { open: '11:00', close: '21:00' },
+  3: { open: '11:00', close: '21:00' },
+  4: { open: '11:00', close: '21:00' },
+  5: { open: '11:00', close: '20:00' },
+  6: { open: '10:00', close: '14:00' },
+};
+export const CLOSED_WEEKDAYS = [0, 1, 2, 3, 4, 5, 6].filter((d) => !OPENING_HOURS[d]);
 export const SLOT_MINUTES = 60;
 export const BOOKABLE_DAYS_AHEAD = 14;
 // The barber can move appointments further out than customers can book.
 export const RESCHEDULE_DAYS_AHEAD = 60;
 export const SHOP_TIMEZONE = 'Europe/Amsterdam';
 
+export function weekdayOf(dateStr) {
+  return new Date(`${dateStr}T00:00:00`).getDay();
+}
+
 export function isClosedOn(dateStr) {
-  const weekday = new Date(`${dateStr}T00:00:00`).getDay();
-  return CLOSED_WEEKDAYS.includes(weekday);
+  return CLOSED_WEEKDAYS.includes(weekdayOf(dateStr));
+}
+
+export function hoursOn(dateStr) {
+  return OPENING_HOURS[weekdayOf(dateStr)] ?? null;
+}
+
+// Whole-hour start times customers can book on a weekday: every hour from opening until the
+// last hour before closing.
+export function startTimes(weekday) {
+  const hours = OPENING_HOURS[weekday];
+  if (!hours) return [];
+  const out = [];
+  for (let t = hours.open; addMinutes(t, SLOT_MINUTES) <= hours.close; t = addMinutes(t, SLOT_MINUTES)) out.push(t);
+  return out;
+}
+
+export function timeSlotsOn(dateStr) {
+  return startTimes(weekdayOf(dateStr));
 }
 
 // Current wall-clock date and time at the shop, independent of the server's timezone.

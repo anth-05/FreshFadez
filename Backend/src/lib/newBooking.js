@@ -1,7 +1,7 @@
 import Booking from '../models/Booking.js';
 import Service from '../models/Service.js';
 import { ApiError } from '../middleware/errors.js';
-import { assertSlotOpen, coveredSlots } from './slots.js';
+import { assertSlotOpen, assertValidLength, onlineLength, placement, quarterLength } from './slots.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[\d\s()-]+$/;
@@ -35,8 +35,10 @@ export function parseCustomer(body, { emailRequired = true } = {}) {
 }
 
 // Creates a confirmed booking for the given services at (date, time), refusing anything that
-// would overlap another booking or a blocked period.
-export async function createBooking({ customer, serviceSlugs, date, time, maxDaysAhead, extra = {} }) {
+// would overlap another booking or a blocked period. The barber (`byBarber`) may start on any
+// quarter hour and choose the length; online bookings start on the hour and take at least an hour.
+export async function createBooking({ customer, serviceSlugs, date, time, maxDaysAhead, byBarber = false, length, extra = {} }) {
+  if (length !== undefined) assertValidLength(length);
   if (!Array.isArray(serviceSlugs) || serviceSlugs.length === 0) {
     throw new ApiError(400, 'Select at least one service');
   }
@@ -53,16 +55,15 @@ export async function createBooking({ customer, serviceSlugs, date, time, maxDay
   }));
   const totalPrice = bookedServices.reduce((sum, s) => sum + s.price, 0);
   const totalDuration = bookedServices.reduce((sum, s) => sum + s.duration, 0);
-  await assertSlotOpen(date, time, { maxDaysAhead, duration: totalDuration });
+  const agendaLength = length ?? (byBarber ? quarterLength(totalDuration) : onlineLength(totalDuration));
+  await assertSlotOpen(date, time, { maxDaysAhead, length: agendaLength, quarters: byBarber });
 
   try {
     return await Booking.create({
       ...customer,
       ...extra,
       services: bookedServices,
-      date,
-      time,
-      slots: coveredSlots(date, time, totalDuration),
+      ...placement(date, time, agendaLength),
       totalPrice,
       totalDuration,
     });

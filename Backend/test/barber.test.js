@@ -3,19 +3,29 @@ import assert from 'node:assert/strict';
 import request from 'supertest';
 import Service from '../src/models/Service.js';
 import Booking from '../src/models/Booking.js';
-import { TIME_SLOTS, nowInShop, addDays } from '../src/config/businessHours.js';
-import { hasStarted, isValidStamp, coveredSlots, backfillBookingSlots } from '../src/lib/slots.js';
+import { startTimes, nowInShop, addDays } from '../src/config/businessHours.js';
+import { hasEnded, hasStarted, isValidStamp, coveredSlots, backfillBookingSlots, onlineLength, quarterLength } from '../src/lib/slots.js';
 import { startTestServer, stopTestServer, resetDB } from './helpers/testServer.js';
 
+// The tests book on Mondays; these are that day's whole-hour start times.
+const TIME_SLOTS = startTimes(1);
+
 let app;
+let server;
 let token;
 
 before(async () => {
-  app = await startTestServer();
+  // One listening server for the whole file: request(app) would start a fresh one per request,
+  // and with many requests in parallel that occasionally drops a connection (ECONNRESET).
+  server = (await startTestServer()).listen(0);
+  app = server;
   await Booking.init(); // make sure the unique slot index exists before the race tests
 });
 
-after(stopTestServer);
+after(async () => {
+  server.close();
+  await stopTestServer();
+});
 
 beforeEach(async () => {
   await resetDB();
@@ -58,6 +68,7 @@ function book(date, time, overrides = {}) {
 
 const barber = {
   get: (url) => request(app).get(`/api/barber${url}`).set('Authorization', `Bearer ${token}`),
+  patch: (url, body) => request(app).patch(`/api/barber${url}`).set('Authorization', `Bearer ${token}`).send(body),
   post: (url, body) => request(app).post(`/api/barber${url}`).set('Authorization', `Bearer ${token}`).send(body),
   del: (url) => request(app).delete(`/api/barber${url}`).set('Authorization', `Bearer ${token}`),
 };
@@ -137,8 +148,15 @@ test('happy flow: a whole-day block over several days covers every slot', async 
 test('a block that only partly overlaps a slot still blocks that slot', async () => {
   const monday = MONDAY();
   await barber.post('/blocks', { start: `${monday}T12:30`, end: `${monday}T12:45` });
-  assert.equal(await slotStatus(monday, '12:00'), 'blocked');
-  assert.equal(await slotStatus(monday, '13:00'), 'free');
+  // Customers see whole hours: the 12:00 hour is gone.
+  const avail = await request(app).get('/api/availability').query({ date: monday });
+  const online = Object.fromEntries(avail.body.slots.map((s) => [s.time, s.available]));
+  assert.equal(online['12:00'], false);
+  assert.equal(online['13:00'], true);
+  // The barber sees quarters: only 12:30 is blocked, an hour from 12:00 or 12:15 would run into it.
+  assert.equal(await slotStatus(monday, '12:30'), 'blocked');
+  assert.equal(await slotStatus(monday, '12:15'), 'no_room');
+  assert.equal(await slotStatus(monday, '12:45'), 'free');
 });
 
 /* ---------------- Barber plans in appointments ---------------- */
@@ -164,7 +182,9 @@ test('happy flow: barber plans in an appointment, it shows up and the slot is ta
   assert.equal(res.status, 201);
   assert.equal(res.body.source, 'barber');
   assert.equal(res.body.email, '');
-  assert.deepEqual(res.body.slots, ['14:00']);
+  // A 30-minute service planned by the barber takes 30 minutes, not a whole hour.
+  assert.equal(res.body.length, 30);
+  assert.equal(res.body.end, '14:30');
   assert.equal(res.body.totalPrice, 20);
 
   const upcoming = await barber.get('/bookings');
@@ -193,7 +213,7 @@ test('happy flow: barber plans a long appointment next to existing ones and beyo
 
   const long = await plan(monday, '13:00', { serviceSlugs: LONG, email: 'Long@Example.com' });
   assert.equal(long.status, 201);
-  assert.deepEqual(long.body.slots, ['13:00', '14:00']);
+  assert.equal(long.body.end, '14:45');
   assert.equal(long.body.email, 'long@example.com');
   assert.equal(await Booking.countDocuments({ date: monday, status: 'confirmed' }), 2);
 
@@ -251,7 +271,7 @@ test('sad flow: planning with invalid details is refused', async () => {
     { notes: 'x'.repeat(501) },
     { serviceSlugs: [] },
     { serviceSlugs: ['does-not-exist'] },
-    { time: '16:00' },
+    { time: '21:00' }, // closing time on a Monday
     { date: '2026-02-30' },
   ];
   for (const overrides of cases) {
@@ -275,6 +295,145 @@ test('double booking: barber planning and a customer booking the same slot at on
     const results = await Promise.all([plan(monday, '15:00'), book(monday, '15:00')]);
     assert.deepEqual(results.map((r) => r.status).sort(), [201, 409], `round ${round}`);
     assert.equal(await Booking.countDocuments({ date: monday, time: '15:00', status: 'confirmed' }), 1);
+  }
+});
+
+/* ---------------- Barber edits appointments ---------------- */
+
+test('happy flow: shorten a 60-minute appointment to 30 and plan someone else in the freed half hour', async () => {
+  const monday = MONDAY();
+  const first = await book(monday, '12:00'); // online: takes the whole hour
+  assert.equal(first.body.length, 60);
+  assert.equal(await slotStatus(monday, '12:30'), 'booked');
+  assert.equal((await plan(monday, '12:30', { length: 30 })).status, 409);
+
+  const edited = await barber.patch(`/bookings/${first.body._id}`, { length: 30 });
+  assert.equal(edited.status, 200);
+  assert.equal(edited.body.length, 30);
+  assert.equal(edited.body.end, '12:30');
+  assert.deepEqual(edited.body.slots, ['12:00', '12:15']);
+  assert.equal(edited.body.firstName, 'Jane'); // details untouched
+
+  const picker = await barber.get(`/slots?date=${monday}&duration=30`);
+  const st = Object.fromEntries(picker.body.slots.map((x) => [x.time, x.status]));
+  assert.equal(st['12:00'], 'booked');
+  assert.equal(st['12:15'], 'booked');
+  assert.equal(st['12:30'], 'free');
+
+  const second = await plan(monday, '12:30', { length: 30 });
+  assert.equal(second.status, 201);
+  assert.equal(second.body.end, '13:00');
+
+  // The half hour is now full again; 13:00 is untouched.
+  assert.equal((await plan(monday, '12:45', { length: 15 })).status, 409);
+  const avail = await request(app).get('/api/availability').query({ date: monday });
+  const online = Object.fromEntries(avail.body.slots.map((x) => [x.time, x.available]));
+  assert.equal(online['12:00'], false);
+  assert.equal(online['13:00'], true);
+
+  const list = await barber.get('/bookings');
+  assert.deepEqual(list.body.items.map((b) => `${b.time}-${b.end}`), ['12:00-12:30', '12:30-13:00']);
+});
+
+test('happy flow: the barber picks how long a new appointment takes, as long as it fits', async () => {
+  const monday = MONDAY();
+  await book(monday, '13:00');
+  // 12:30 + 45 min would run into 13:00; 30 min fits exactly.
+  assert.equal((await barber.get(`/slots?date=${monday}&duration=45`)).body.slots.find((x) => x.time === '12:30').status, 'no_room');
+  assert.equal((await plan(monday, '12:30', { length: 45 })).status, 409);
+  assert.equal((await plan(monday, '12:30', { length: 30 })).status, 201);
+  // 12:00 + 30 min fits in front of it.
+  const early = await plan(monday, '12:00', { length: 30, firstName: 'Early' });
+  assert.equal(early.status, 201);
+  assert.equal(await Booking.countDocuments({ date: monday, status: 'confirmed' }), 3);
+});
+
+test('happy flow: edit customer details only, or lengthen into free time', async () => {
+  const monday = MONDAY();
+  const b = await plan(monday, '18:00', { length: 30 });
+  const details = await barber.patch(`/bookings/${b.body._id}`, { firstName: 'Renamed', phone: '0611111111', notes: 'Skin fade 0.5' });
+  assert.equal(details.status, 200);
+  assert.equal(details.body.firstName, 'Renamed');
+  assert.equal(details.body.lastName, 'In');
+  assert.equal(details.body.notes, 'Skin fade 0.5');
+  assert.equal(details.body.length, 30);
+
+  const longer = await barber.patch(`/bookings/${b.body._id}`, { length: 90 });
+  assert.equal(longer.status, 200);
+  assert.equal(longer.body.end, '19:30');
+  assert.equal(await slotStatus(monday, '19:15'), 'booked');
+  assert.equal((await book(monday, '19:00')).status, 409);
+});
+
+test('sad flow: lengthening into the next appointment or a blocked period is refused and changes nothing', async () => {
+  const monday = MONDAY();
+  const a = await plan(monday, '12:00', { length: 30 });
+  await plan(monday, '12:30', { length: 30, firstName: 'Next' });
+
+  const res = await barber.patch(`/bookings/${a.body._id}`, { length: 45, firstName: 'Changed' });
+  assert.equal(res.status, 409);
+  assert.match(res.body.error, /another appointment/);
+  const still = await Booking.findById(a.body._id).lean();
+  assert.equal(still.length, 30);
+  assert.equal(still.firstName, 'Walk'); // the whole edit is refused, not just the length
+
+  const c = await plan(monday, '18:00', { length: 30 });
+  await barber.post('/blocks', { start: `${monday}T18:45`, end: `${monday}T19:00` });
+  const blocked = await barber.patch(`/bookings/${c.body._id}`, { length: 60 });
+  assert.equal(blocked.status, 409);
+  assert.match(blocked.body.error, /blocked/);
+  assert.equal((await barber.patch(`/bookings/${c.body._id}`, { length: 45 })).status, 200);
+});
+
+test('sad flow: invalid edits, unknown, cancelled and finished appointments', async () => {
+  const monday = MONDAY();
+  const b = await book(monday, '14:00');
+  const id = b.body._id;
+  for (const length of [0, 10, 20, 195, -15, '30', null]) {
+    assert.equal((await barber.patch(`/bookings/${id}`, { length })).status, 400, `length ${length}`);
+  }
+  for (const body of [{ phone: '12' }, { firstName: '' }, { email: 'nope' }, { notes: 'x'.repeat(501) }]) {
+    assert.equal((await barber.patch(`/bookings/${id}`, body)).status, 400, JSON.stringify(body));
+  }
+  assert.equal((await Booking.findById(id).lean()).length, 60);
+
+  assert.equal((await barber.patch('/bookings/000000000000000000000000', { length: 30 })).status, 404);
+  assert.equal((await barber.patch('/bookings/not-an-id', { length: 30 })).status, 404);
+
+  await barber.post(`/bookings/${id}/cancel`);
+  assert.equal((await barber.patch(`/bookings/${id}`, { length: 30 })).status, 409);
+
+  const yesterday = addDays(nowInShop().date, -1);
+  const old = await Booking.create({
+    firstName: 'Old', lastName: 'One', email: 'o@example.com', phone: '0612345678',
+    services: [{ slug: 'contour', name: 'Contour', price: 20, duration: 30 }],
+    date: yesterday, time: '12:00', length: 60, end: '13:00', totalPrice: 20, totalDuration: 30,
+  });
+  assert.equal((await barber.patch(`/bookings/${old._id}`, { length: 30 })).status, 400);
+});
+
+test('hasEnded: an appointment in progress can still be edited, a finished one cannot', () => {
+  const b = { date: '2026-11-02', time: '12:00', length: 30 };
+  assert.equal(hasEnded(b, { date: '2026-11-02', time: '12:15' }), false);
+  assert.equal(hasEnded(b, { date: '2026-11-02', time: '12:30' }), true);
+  // Old bookings without a length take an hour.
+  assert.equal(hasEnded({ date: '2026-11-02', time: '12:00', totalDuration: 30 }, { date: '2026-11-02', time: '12:45' }), false);
+});
+
+test('double booking: lengthening an appointment and planning into the same time at once, only one wins', async () => {
+  for (let round = 0; round < 5; round++) {
+    await Booking.deleteMany({});
+    const monday = MONDAY();
+    const a = await plan(monday, '12:00', { length: 30 });
+    const results = await Promise.all([
+      barber.patch(`/bookings/${a.body._id}`, { length: 60 }),
+      plan(monday, '12:30', { length: 30, firstName: 'Other' }),
+    ]);
+    const [edit, planned] = results.map((r) => r.status);
+    assert.ok((edit === 200 && planned === 409) || (edit === 409 && planned === 201), `round ${round}: ${edit} ${planned}`);
+    const day = await Booking.find({ date: monday, status: 'confirmed' }).lean();
+    const units = day.flatMap((b) => b.slots);
+    assert.equal(new Set(units).size, units.length, 'no quarter is held twice');
   }
 });
 
@@ -322,6 +481,7 @@ test('sad flow: every barber route needs a valid session', async () => {
     request(app).get(`/api/barber/slots?date=${MONDAY()}`),
     request(app).post('/api/barber/blocks').send({}),
     request(app).post('/api/barber/bookings').send({}),
+    request(app).patch('/api/barber/bookings/x').send({ length: 30 }),
     request(app).post('/api/barber/bookings/x/cancel'),
     request(app).post('/api/barber/bookings/x/reschedule').send({}),
     request(app).delete('/api/barber/blocks/x'),
@@ -375,7 +535,8 @@ test('sad flow: reschedule rejects bad targets', async () => {
     [{ date: monday, time: TIME_SLOTS[0] }, 400], // same slot
     [{ date: SUNDAY(), time: '12:00' }, 400], // closed
     [{ date: addDays(nowInShop().date, -1), time: '12:00' }, 400], // past
-    [{ date: monday, time: '12:30' }, 400], // not a slot
+    [{ date: monday, time: '12:10' }, 400], // not on a quarter hour
+    [{ date: monday, time: '21:15' }, 400], // after closing
     [{ date: '2026-02-31', time: '12:00' }, 400], // not a real date
     [{ date: addDays(nowInShop().date, 90), time: '12:00' }, 400], // too far out
     [{}, 400], // nothing sent
@@ -524,20 +685,32 @@ test('search is scoped to the view', async () => {
 /* ---------------- Long appointments ---------------- */
 
 
-test('coveredSlots: long bookings hold every slot they overlap, but not across the break', () => {
-  assert.deepEqual(coveredSlots('2026-11-02', '12:00', 105), ['12:00', '13:00']);
-  assert.deepEqual(coveredSlots('2026-11-02', '12:00', 30), ['12:00']);
-  assert.deepEqual(coveredSlots('2026-11-02', '12:00', 60), ['12:00']);
-  assert.deepEqual(coveredSlots('2026-11-02', '12:00', 61), ['12:00', '13:00']);
-  assert.deepEqual(coveredSlots('2026-11-02', '15:00', 105), ['15:00']);
-  assert.deepEqual(coveredSlots('2026-11-02', '18:00', 150), ['18:00', '19:00', '20:00']);
+test('coveredSlots: bookings hold every quarter they overlap, but not past closing', () => {
+  assert.deepEqual(coveredSlots('2026-11-02', '12:00', 30), ['12:00', '12:15']);
+  assert.deepEqual(coveredSlots('2026-11-02', '12:30', 30), ['12:30', '12:45']);
+  assert.deepEqual(coveredSlots('2026-11-02', '12:00', 60), ['12:00', '12:15', '12:30', '12:45']);
+  assert.deepEqual(coveredSlots('2026-11-02', '12:00', 105), ['12:00', '12:15', '12:30', '12:45', '13:00', '13:15', '13:30']);
+  assert.deepEqual(coveredSlots('2026-11-02', '15:00', 105), ['15:00', '15:15', '15:30', '15:45', '16:00', '16:15', '16:30']);
+  assert.deepEqual(coveredSlots('2026-11-02', '20:30', 60), ['20:30', '20:45']);
+  // Saturday closes at 14:00.
+  assert.deepEqual(coveredSlots('2026-11-07', '13:30', 60), ['13:30', '13:45']);
+});
+
+test('lengths: online bookings take at least an hour, barber ones the services rounded to a quarter', () => {
+  assert.equal(onlineLength(30), 60);
+  assert.equal(onlineLength(105), 105);
+  assert.equal(quarterLength(30), 30);
+  assert.equal(quarterLength(20), 30);
+  assert.equal(quarterLength(105), 105);
+  assert.equal(quarterLength(500), 180);
 });
 
 test('overlap: a 105-minute booking at 12:00 also takes 13:00', async () => {
   const monday = MONDAY();
   const long = await book(monday, '12:00', { serviceSlugs: LONG });
   assert.equal(long.status, 201);
-  assert.deepEqual(long.body.slots, ['12:00', '13:00']);
+  assert.deepEqual(long.body.slots, ['12:00', '12:15', '12:30', '12:45', '13:00', '13:15', '13:30']);
+  assert.equal(long.body.end, '13:45');
 
   assert.equal((await book(monday, '13:00', { email: 'b@example.com' })).status, 409);
   const avail = await request(app).get('/api/availability').query({ date: monday });
@@ -557,7 +730,7 @@ test('overlap: a long booking cannot start where it would run into the next book
   const forShort = await request(app).get('/api/availability').query({ date: monday, duration: 30 });
   const at = (res, t) => res.body.slots.find((s) => s.time === t).available;
   assert.equal(at(forLong, '14:00'), true);
-  assert.equal(at(forLong, '15:00'), true); // runs into the break, not into a booking
+  assert.equal(at(forLong, '15:00'), true); // nothing booked after it
   await book(monday, '19:00', { email: 'c@example.com' });
   const later = await request(app).get('/api/availability').query({ date: monday, duration: 105 });
   assert.equal(at(later, '18:00'), false); // would run into 19:00
@@ -597,7 +770,7 @@ test('overlap: rescheduling respects the booking length, and can shift into its 
   assert.equal((await barber.post(`/bookings/${long.body._id}/reschedule`, { date: monday, time: '18:00' })).status, 409);
   const shifted = await barber.post(`/bookings/${long.body._id}/reschedule`, { date: monday, time: '13:00' });
   assert.equal(shifted.status, 200);
-  assert.deepEqual(shifted.body.slots, ['13:00', '14:00']);
+  assert.equal(shifted.body.end, '14:45');
   assert.equal((await book(monday, '12:00', { email: 'c@example.com' })).status, 201); // 12:00 freed
   assert.equal((await book(monday, '14:00', { email: 'd@example.com' })).status, 409); // 14:00 taken
 });
@@ -626,12 +799,22 @@ test('backfill fills slots for old bookings and reports overlaps it cannot resol
     { ...base, firstName: 'Old', lastName: 'Long', email: 'a@x.nl', time: '12:00', totalDuration: 105, status: 'confirmed', createdAt: new Date(1) },
     { ...base, firstName: 'Old', lastName: 'Clash', email: 'b@x.nl', time: '13:00', totalDuration: 30, status: 'confirmed', createdAt: new Date(2) },
     { ...base, firstName: 'Old', lastName: 'Fine', email: 'c@x.nl', time: '18:00', totalDuration: 30, status: 'confirmed', createdAt: new Date(3) },
+    { ...base, firstName: 'Old', lastName: 'Hourly', email: 'd@x.nl', time: '19:00', totalDuration: 30, slots: ['19:00'], status: 'confirmed', createdAt: new Date(4) },
   ]);
   const { updated, overlapping } = await backfillBookingSlots();
-  assert.equal(updated, 2);
+  assert.equal(updated, 3);
   assert.deepEqual(overlapping.map((b) => b.lastName), ['Clash']);
-  assert.deepEqual((await Booking.findById(insertedIds[0]).lean()).slots, ['12:00', '13:00']);
-  assert.equal((await Booking.findById(insertedIds[1]).lean()).slots, undefined);
+  const old = await Booking.findById(insertedIds[0]).lean();
+  assert.deepEqual(old.slots, ['12:00', '12:15', '12:30', '12:45', '13:00', '13:15', '13:30']);
+  assert.equal(old.length, 105);
+  assert.equal(old.end, '13:45');
+  // Hourly slots stored by the previous version are converted to quarters.
+  const hourly = await Booking.findById(insertedIds[3]).lean();
+  assert.deepEqual(hourly.slots, ['19:00', '19:15', '19:30', '19:45']);
+  assert.equal(hourly.length, 60);
+  const clash = await Booking.findById(insertedIds[1]).lean();
+  assert.equal(clash.slots, undefined);
+  assert.equal(clash.end, '14:00'); // still listed correctly
   assert.equal(await slotStatus(monday, '13:00'), 'booked');
   assert.equal((await backfillBookingSlots()).overlapping.length, 1); // still reported next start
 });

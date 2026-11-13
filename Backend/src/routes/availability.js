@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { asyncHandler } from '../middleware/asyncHandler.js';
 import { ApiError } from '../middleware/errors.js';
 import { isClosedOn } from '../config/businessHours.js';
-import { isValidDate, slotStatuses } from '../lib/slots.js';
+import { isValidDate, onlineLength, slotStatuses } from '../lib/slots.js';
 import { SLOT_MINUTES } from '../config/businessHours.js';
 
 const router = Router();
@@ -24,7 +24,7 @@ router.get(
       return res.json({ date, closed: true, slots: [] });
     }
 
-    const slots = (await slotStatuses(date, { duration })).map((s) => ({ time: s.time, available: s.status === 'free' }));
+    const slots = (await slotStatuses(date, { length: onlineLength(duration) })).map((s) => ({ time: s.time, available: s.status === 'free' }));
     res.json({ date, closed: false, slots });
   })
 );

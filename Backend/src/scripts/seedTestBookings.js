@@ -4,7 +4,7 @@ import { connectDB } from '../config/db.js';
 import Booking from '../models/Booking.js';
 import Service from '../models/Service.js';
 import { isClosedOn, nowInShop, addDays } from '../config/businessHours.js';
-import { coveredSlots, slotStatuses } from '../lib/slots.js';
+import { onlineLength, placement, slotStatuses } from '../lib/slots.js';
 
 // Test bookings are recognisable by this email domain, so --remove only ever deletes these.
 const TEST_EMAIL_DOMAIN = 'test.freshfadez.nl';
@@ -34,7 +34,7 @@ async function add(count) {
       const [firstName, lastName, phone] = PEOPLE[created.length % PEOPLE.length];
       const picked = services.slice(created.length % services.length, (created.length % services.length) + 1 + (created.length % 2));
       const duration = picked.reduce((sum, s) => sum + s.duration, 0);
-      const slot = (await slotStatuses(date, { duration })).find((s) => s.status === 'free');
+      const slot = (await slotStatuses(date, { length: onlineLength(duration) })).find((s) => s.status === 'free');
       if (!slot) break;
       const { time } = slot;
       const booking = await Booking.create({
@@ -44,9 +44,7 @@ async function add(count) {
         email: `${firstName.toLowerCase()}.${created.length + 1}@${TEST_EMAIL_DOMAIN}`,
         notes: created.length % 3 === 0 ? 'TEST: graag kort aan de zijkant' : '',
         services: picked.map(({ slug, name, price, duration }) => ({ slug, name, price, duration })),
-        date,
-        time,
-        slots: coveredSlots(date, time, duration),
+        ...placement(date, time, onlineLength(duration)),
         totalPrice: picked.reduce((sum, s) => sum + s.price, 0),
         totalDuration: duration,
       });

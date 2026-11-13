@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# The barber pages carry a noindex tag; they stay crawlable so search engines can see it.
+
+Sitemap: https://freshfadezstudios.nl/sitemap.xml

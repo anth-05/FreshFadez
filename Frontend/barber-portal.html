@@ -170,6 +170,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 .svc-meta{font-size:13px;color:var(--muted-dark);white-space:nowrap}
 .svc:has(input:checked){border-color:var(--ice)}
 .svc-total{margin:8px 0 0;font-size:13px;color:var(--muted-dark)}
+select.field{appearance:none;-webkit-appearance:none;padding-right:40px;background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239AA0A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;cursor:pointer}
+.hint{margin:6px 0 0;font-size:13px;color:var(--muted-dark)}
 .dlg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical}
 
@@ -210,7 +212,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
   .pager-row .btn{min-width:40px;min-height:40px;padding:0 8px}
   .form-grid{grid-template-columns:1fr}
   .form-actions .btn{width:100%}
-  .slots{grid-template-columns:repeat(3,1fr)}
+  .slot{min-height:48px;font-size:14px}
   .dlg-actions .btn{flex:1}
 }
 /* Fingers need 44px targets; mouse users keep the denser desktop sizes. */
@@ -376,6 +378,10 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       <p class="svc-total" id="new-total" hidden></p>
     </div>
     <div class="dlg-section">
+      <label class="lbl" for="new-length" data-i18n="length">Duur in de agenda</label>
+      <select class="field length-select" id="new-length"></select>
+    </div>
+    <div class="dlg-section">
       <label class="lbl" for="new-date" data-i18n="new_date">Datum</label>
       <input class="field" type="date" id="new-date">
     </div>
@@ -407,6 +413,46 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
   <div class="dlg-actions">
     <button type="button" class="btn" data-close data-i18n="close">Sluiten</button>
     <button type="submit" form="new-form" class="btn btn-primary" id="new-confirm" disabled data-i18n="new_confirm">Inplannen</button>
+  </div>
+</dialog>
+
+<!-- Edit appointment -->
+<dialog id="dlg-edit" aria-labelledby="dlg-edit-h">
+  <form class="dlg-body" id="edit-form" novalidate>
+    <h2 id="dlg-edit-h" data-i18n="edit_h">Afspraak bewerken</h2>
+    <p><span class="who" id="edit-who"></span></p>
+    <div class="dlg-section">
+      <label class="lbl" for="edit-length" data-i18n="length">Duur in de agenda</label>
+      <select class="field length-select" id="edit-length"></select>
+      <p class="hint" id="edit-ends"></p>
+    </div>
+    <div class="dlg-section dlg-grid">
+      <div>
+        <label class="lbl" for="edit-first" data-i18n="new_first">Voornaam</label>
+        <input class="field" type="text" id="edit-first" maxlength="50" autocomplete="off">
+      </div>
+      <div>
+        <label class="lbl" for="edit-last" data-i18n="new_last">Achternaam</label>
+        <input class="field" type="text" id="edit-last" maxlength="50" autocomplete="off">
+      </div>
+      <div>
+        <label class="lbl" for="edit-phone" data-i18n="new_phone">Telefoon</label>
+        <input class="field" type="tel" id="edit-phone" maxlength="20" autocomplete="off" inputmode="tel">
+      </div>
+      <div>
+        <label class="lbl" for="edit-email" data-i18n="new_email">E-mail (optioneel)</label>
+        <input class="field" type="email" id="edit-email" maxlength="254" autocomplete="off">
+      </div>
+      <div class="full">
+        <label class="lbl" for="edit-notes" data-i18n="new_notes">Notitie (optioneel)</label>
+        <textarea class="field" id="edit-notes" maxlength="500"></textarea>
+      </div>
+    </div>
+    <div id="edit-msg" role="alert"></div>
+  </form>
+  <div class="dlg-actions">
+    <button type="button" class="btn" data-close data-i18n="close">Sluiten</button>
+    <button type="submit" form="edit-form" class="btn btn-primary" id="edit-confirm" data-i18n="edit_confirm">Opslaan</button>
   </div>
 </dialog>
 
@@ -477,6 +523,10 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       new_total:'Totaal {min} min · {price}', pick_service:'Kies eerst een behandeling.', planned_toast:'Afspraak ingepland op {when}',
       err_new_services:'Kies minstens één behandeling.', err_new_time:'Kies een tijd.', err_new_name:'Vul voor- en achternaam in.',
       err_new_phone:'Vul een geldig telefoonnummer in.', err_new_email:'Dit e-mailadres klopt niet.',
+      edit:'Bewerken', edit_h:'Afspraak bewerken', edit_confirm:'Opslaan', saving:'Opslaan…', edited_toast:'Afspraak bijgewerkt',
+      length:'Duur in de agenda', ends_at:'Loopt van {start} tot {end}', d_time:'Tijd',
+      err_edit_overlap:'Zo lang past niet: dan loopt de afspraak in een volgende afspraak of een geblokkeerde periode.',
+      err_over_edit:'Deze afspraak is al afgelopen.',
       err_network:'Kan de server niet bereiken. Probeer het opnieuw.', err_generic:'Er ging iets mis: {msg}'
     },
     en: {
@@ -519,6 +569,10 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       new_total:'Total {min} min · {price}', pick_service:'Pick a service first.', planned_toast:'Appointment planned for {when}',
       err_new_services:'Pick at least one service.', err_new_time:'Pick a time.', err_new_name:'Fill in first and last name.',
       err_new_phone:'Fill in a valid phone number.', err_new_email:'This email address doesn’t look right.',
+      edit:'Edit', edit_h:'Edit appointment', edit_confirm:'Save', saving:'Saving…', edited_toast:'Appointment updated',
+      length:'Time in the agenda', ends_at:'Runs from {start} to {end}', d_time:'Time',
+      err_edit_overlap:'That’s too long: it would run into the next appointment or a blocked period.',
+      err_over_edit:'This appointment is already over.',
       err_network:'Can’t reach the server. Please try again.', err_generic:'Something went wrong: {msg}'
     }
   };
@@ -584,6 +638,20 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
   }
   function fmtWhen(date, time){ return fmtDay(date, 'short') + ' ' + time; }
   function euro(n){ return new Intl.NumberFormat(locale(), { style:'currency', currency:'EUR' }).format(n); }
+  function addTime(time, minutes){
+    var p = time.split(':'), total = +p[0] * 60 + +p[1] + minutes;
+    return String(Math.floor(total / 60)).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0');
+  }
+  // Mirrors lengthOf in Backend/src/lib/slots.js: old bookings without a length take at least an hour.
+  function lengthOf(b){ return b.length || Math.max(b.totalDuration || 60, 60); }
+  var LENGTH_STEP = 15, MAX_LENGTH = 180; // matches Backend/src/lib/slots.js
+  function fillLengths(select, value){
+    var html = '';
+    for (var m = LENGTH_STEP; m <= MAX_LENGTH; m += LENGTH_STEP){
+      html += '<option value="' + m + '"' + (m === value ? ' selected' : '') + '>' + m + ' ' + t('min') + '</option>';
+    }
+    select.innerHTML = html;
+  }
   function errorText(r){ return t('err_generic', { msg: (r && r.body && r.body.error) || ('HTTP ' + (r && r.status)) }); }
 
   function setMsg(el, html){ el.innerHTML = html ? '<div class="msg msg-err">' + html + '</div>' : ''; }
@@ -713,12 +781,14 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       var id = esc(b._id);
       var services = (b.services || []).map(function(s){ return s.name; }).join(', ');
       var started = view === 'upcoming' && b.date + 'T' + b.time <= nowStamp();
+      var len = lengthOf(b);
       var moved = b.rescheduledFrom && b.rescheduledFrom.date;
       var flags = (started ? flag('live', t('in_progress')) : '') + (moved ? flag('moved', t('flag_moved')) : '') + (b.notes ? flag('note', t('flag_note')) : '');
-      var actions = view === 'upcoming' && !started
-        ? '<div class="r-actions"><button type="button" class="btn" data-move="' + id + '">' + t('move') + '</button>' +
-          '<button type="button" class="btn btn-danger" data-cancel="' + id + '">' + t('cancel') + '</button></div>'
-        : '';
+      // An appointment in progress can still be edited (e.g. it finished early), not moved or cancelled.
+      var actions = view !== 'upcoming' ? '' :
+        '<div class="r-actions"><button type="button" class="btn" data-edit="' + id + '">' + t('edit') + '</button>' +
+        (started ? '' : '<button type="button" class="btn" data-move="' + id + '">' + t('move') + '</button>' +
+          '<button type="button" class="btn btn-danger" data-cancel="' + id + '">' + t('cancel') + '</button>') + '</div>';
       var history = [];
       if (moved) history.push(t('moved_from', { when: fmtWhen(b.rescheduledFrom.date, b.rescheduledFrom.time) }));
       if (b.status === 'cancelled' && b.cancelledAt) history.push(t('cancelled_on', { when: new Date(b.cancelledAt).toLocaleString(locale(), { dateStyle:'medium', timeStyle:'short' }) }));
@@ -726,12 +796,13 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
         '<button type="button" class="row-main" aria-expanded="false" aria-controls="d-' + id + '">' +
           '<span class="r-time">' + esc(b.time) + '</span>' +
           '<span class="r-who"><span class="r-name">' + esc(b.firstName + ' ' + b.lastName) + '</span>' +
-          '<span class="r-meta">' + esc(services) + ' · ' + esc(b.totalDuration) + ' ' + t('min') + ' · ' + esc(euro(b.totalPrice)) + '</span></span>' +
+          '<span class="r-meta">' + esc(services) + ' · ' + esc(len) + ' ' + t('min') + ' · ' + esc(euro(b.totalPrice)) + '</span></span>' +
           '<span class="r-flags">' + flags + chev + '</span>' +
         '</button>' +
         '<a class="r-phone" href="tel:' + esc(b.phone) + '">' + esc(b.phone) + '</a>' +
         actions +
         '<div class="r-details" id="d-' + id + '" hidden><dl>' +
+          '<dt>' + t('d_time') + '</dt><dd>' + esc(b.time + '–' + addTime(b.time, len)) + '</dd>' +
           '<dt>' + t('d_phone') + '</dt><dd><a href="tel:' + esc(b.phone) + '">' + esc(b.phone) + '</a></dd>' +
           (b.email ? '<dt>' + t('d_email') + '</dt><dd><a href="mailto:' + esc(b.email) + '">' + esc(b.email) + '</a></dd>' : '') +
           (b.notes ? '<dt>' + t('d_notes') + '</dt><dd class="r-notes">' + esc(b.notes) + '</dd>' : '') +
@@ -749,6 +820,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       });
     });
     listEl.querySelectorAll('[data-cancel]').forEach(function(btn){ btn.addEventListener('click', function(){ openCancel(btn.dataset.cancel); }); });
+    listEl.querySelectorAll('[data-edit]').forEach(function(btn){ btn.addEventListener('click', function(){ openEdit(btn.dataset.edit); }); });
     listEl.querySelectorAll('[data-move]').forEach(function(btn){ btn.addEventListener('click', function(){ openMove(btn.dataset.move); }); });
   }
   var FLAG_ICONS = {
@@ -922,6 +994,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
   var newPhone = document.getElementById('new-phone');
   var newEmail = document.getElementById('new-email');
   var newNotes = document.getElementById('new-notes');
+  var newLength = document.getElementById('new-length');
   var services = null, newTime = null, newSlotsId = 0;
 
   document.getElementById('new-appt').addEventListener('click', openNew);
@@ -932,6 +1005,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
     newDate.min = todayIso();
     newDate.max = addDaysIso(todayIso(), RESCHEDULE_DAYS_AHEAD);
     newDate.value = todayIso();
+    fillLengths(newLength, 60);
     setMsg(newMsg, '');
     busy(newBtn, false);
     setNewTime(null);
@@ -956,7 +1030,14 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
         '<span class="svc-meta">' + esc(s.duration) + ' ' + t('min') + ' · ' + esc(euro(s.price)) + '</span></label>';
     }).join('');
     newServices.querySelectorAll('input').forEach(function(cb){
-      cb.addEventListener('change', function(){ setMsg(newMsg, ''); updateTotal(); loadNewSlots(); });
+      cb.addEventListener('change', function(){
+        setMsg(newMsg, '');
+        // Default to what the services take, rounded up to a quarter; the barber can change it.
+        var min = totalMinutes();
+        if (min) newLength.value = String(Math.min(Math.ceil(min / LENGTH_STEP) * LENGTH_STEP, MAX_LENGTH));
+        updateTotal();
+        loadNewSlots();
+      });
     });
     updateTotal();
     loadNewSlots();
@@ -965,6 +1046,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
     var slugs = Array.prototype.map.call(newServices.querySelectorAll('input:checked'), function(cb){ return cb.value; });
     return (services || []).filter(function(s){ return slugs.indexOf(s.slug) !== -1; });
   }
+  function totalMinutes(){ return chosenServices().reduce(function(n, s){ return n + s.duration; }, 0); }
   function updateTotal(){
     var chosen = chosenServices();
     newTotal.hidden = !chosen.length;
@@ -982,15 +1064,15 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       s.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
   }
-  // Slots are judged by the length of the chosen services, so a long appointment can't be
-  // started where it would run into the next one.
+  // Start times are judged by the chosen length, so an appointment can't be started where it
+  // would run into the next one.
   function loadNewSlots(){
     setNewTime(null);
     var chosen = chosenServices();
     var date = newDate.value;
     if (!chosen.length){ newSlots.innerHTML = '<div class="slots-state">' + t('pick_service') + '</div>'; return; }
     if (!date){ newSlots.innerHTML = '<div class="slots-state">' + t('pick_date') + '</div>'; return; }
-    var duration = chosen.reduce(function(n, s){ return n + s.duration; }, 0);
+    var duration = +newLength.value;
     var id = ++newSlotsId;
     newSlots.innerHTML = '<div class="slots-state">' + t('loading') + '</div>';
     api('GET', '/barber/slots?date=' + encodeURIComponent(date) + '&duration=' + duration).then(function(r){
@@ -1011,6 +1093,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
     });
   }
   newDate.addEventListener('change', function(){ setMsg(newMsg, ''); loadNewSlots(); });
+  newLength.addEventListener('change', function(){ setMsg(newMsg, ''); loadNewSlots(); });
   [newFirst, newLast, newPhone, newEmail].forEach(function(el){
     el.addEventListener('input', function(){ el.removeAttribute('aria-invalid'); setMsg(newMsg, ''); });
   });
@@ -1044,7 +1127,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
     busy(newBtn, true, 'planning');
     api('POST', '/barber/bookings', {
       firstName: first, lastName: last, phone: phone, email: email, notes: newNotes.value.trim(),
-      serviceSlugs: chosen.map(function(s){ return s.slug; }), date: date, time: time
+      serviceSlugs: chosen.map(function(s){ return s.slug; }), date: date, time: time, length: +newLength.value
     }).then(function(r){
       busy(newBtn, false);
       if (r.ok){
@@ -1058,6 +1141,65 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       newError(esc(errorText(r)));
       newBtn.disabled = !newTime;
     }).catch(function(){ busy(newBtn, false); newBtn.disabled = !newTime; newError(esc(t('err_network'))); });
+  });
+
+  /* ---------- Edit ---------- */
+  var dlgEdit = document.getElementById('dlg-edit');
+  var editForm = document.getElementById('edit-form');
+  var editLength = document.getElementById('edit-length');
+  var editEnds = document.getElementById('edit-ends');
+  var editBtn = document.getElementById('edit-confirm');
+  var editMsg = document.getElementById('edit-msg');
+  var editFields = { firstName: 'edit-first', lastName: 'edit-last', phone: 'edit-phone', email: 'edit-email', notes: 'edit-notes' };
+  var editing = null;
+
+  function editInput(key){ return document.getElementById(editFields[key]); }
+  function openEdit(id){
+    editing = findBooking(id);
+    if (!editing) return;
+    document.getElementById('edit-who').textContent = who(editing);
+    fillLengths(editLength, lengthOf(editing));
+    Object.keys(editFields).forEach(function(k){ var el = editInput(k); el.value = editing[k] || ''; el.removeAttribute('aria-invalid'); });
+    updateEnds();
+    setMsg(editMsg, '');
+    busy(editBtn, false);
+    dlgEdit.showModal();
+  }
+  function updateEnds(){
+    editEnds.textContent = t('ends_at', { start: editing.time, end: addTime(editing.time, +editLength.value) });
+  }
+  function editError(html){
+    setMsg(editMsg, html);
+    editMsg.scrollIntoView({ block: 'nearest' });
+  }
+  editLength.addEventListener('change', function(){ setMsg(editMsg, ''); updateEnds(); });
+  Object.keys(editFields).forEach(function(k){
+    editInput(k).addEventListener('input', function(){ editInput(k).removeAttribute('aria-invalid'); setMsg(editMsg, ''); });
+  });
+
+  editForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!editing || editBtn.disabled) return;
+    var v = {};
+    Object.keys(editFields).forEach(function(k){ v[k] = editInput(k).value.trim(); });
+    var digits = v.phone.replace(/\D/g, '').length;
+    var err = null, bad = null;
+    if (!v.firstName || !v.lastName){ err = 'err_new_name'; bad = editInput(v.firstName ? 'lastName' : 'firstName'); }
+    else if (!/^\+?[\d\s()-]+$/.test(v.phone) || digits < 9 || digits > 15){ err = 'err_new_phone'; bad = editInput('phone'); }
+    else if (v.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)){ err = 'err_new_email'; bad = editInput('email'); }
+    if (err){ bad.setAttribute('aria-invalid', 'true'); bad.focus(); return editError(esc(t(err))); }
+
+    v.length = +editLength.value;
+    busy(editBtn, true, 'saving');
+    api('PATCH', '/barber/bookings/' + editing._id, v).then(function(r){
+      busy(editBtn, false);
+      if (r.ok){ dlgEdit.close(); toast(t('edited_toast')); loadAppointments(); return; }
+      if (r.status === 409 && /run into/.test(r.body.error || '')) return editError(esc(t('err_edit_overlap')));
+      var msg = r.body.error || '';
+      var key = r.status === 404 ? 'err_not_found' : r.status === 409 && /cancelled/.test(msg) ? 'err_already_cancelled' : r.status === 400 && /already over/.test(msg) ? 'err_over_edit' : null;
+      editError(esc(key ? t(key) : errorText(r)));
+      if (key) loadAppointments();
+    }).catch(function(){ busy(editBtn, false); editError(esc(t('err_network'))); });
   });
 
   /* ---------- Availability: blocks ---------- */

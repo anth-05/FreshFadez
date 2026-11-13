@@ -7,6 +7,7 @@ import availabilityRouter from './routes/availability.js';
 import bookingsRouter from './routes/bookings.js';
 import authRouter from './routes/auth.js';
 import barberRouter from './routes/barber.js';
+import paymentsRouter from './routes/payments.js';
 import { notFound, errorHandler } from './middleware/errors.js';
 
 export function createApp({ rateLimits = true } = {}) {
@@ -44,10 +45,20 @@ export function createApp({ rateLimits = true } = {}) {
     skip: () => !rateLimits,
   });
 
+  // Covers the website checking a payment after Mollie sends the customer back; Mollie's webhook is exempt.
+  const paymentLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 120,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => !rateLimits || req.path === '/webhook',
+  });
+
   app.get('/api/health', (req, res) => res.json({ ok: true }));
   app.use('/api/services', servicesRouter);
   app.use('/api/availability', availabilityRouter);
   app.use('/api/bookings', bookingLimiter, bookingsRouter);
+  app.use('/api/payments', paymentLimiter, paymentsRouter);
   app.use('/api/auth/login', loginLimiter);
   app.use('/api/auth', authRouter);
   app.use('/api/barber', barberRouter);

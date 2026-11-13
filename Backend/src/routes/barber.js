@@ -5,17 +5,21 @@ import Block from '../models/Block.js';
 import { asyncHandler } from '../middleware/asyncHandler.js';
 import { ApiError } from '../middleware/errors.js';
 import { barberAuth } from '../middleware/barberAuth.js';
-import { RESCHEDULE_DAYS_AHEAD, SLOT_MINUTES, isClosedOn, nowInShop, addDays } from '../config/businessHours.js';
+import { RESCHEDULE_DAYS_AHEAD, isClosedOn, nowInShop, addDays } from '../config/businessHours.js';
 import { createBooking, parseCustomer } from '../lib/newBooking.js';
 import {
   assertSlotOpen,
-  coveredSlots,
+  assertValidLength,
+  blocksOverlapping,
+  hasEnded,
   hasStarted,
   isValidDate,
   isValidStamp,
+  lengthOf,
   nowStamp,
   occupiedRange,
   overlaps,
+  placement,
   slotStatuses,
 } from '../lib/slots.js';
 
@@ -26,13 +30,15 @@ const PAGE_SIZE = 10;
 
 router.use(barberAuth);
 
-async function findConfirmed(id) {
+// `allowStarted`: an appointment in progress can still be edited (e.g. it finished early),
+// just not moved or cancelled.
+async function findConfirmed(id, { allowStarted = false } = {}) {
   if (!mongoose.isValidObjectId(id)) throw new ApiError(404, 'Booking not found');
   const booking = await Booking.findById(id).lean();
   if (!booking) throw new ApiError(404, 'Booking not found');
   if (booking.status === 'cancelled') throw new ApiError(409, 'This booking is already cancelled');
-  if (hasStarted(booking.date, booking.time)) {
-    throw new ApiError(400, 'This appointment has already started or passed');
+  if (allowStarted ? hasEnded(booking) : hasStarted(booking.date, booking.time)) {
+    throw new ApiError(400, allowStarted ? 'This appointment is already over' : 'This appointment has already started or passed');
   }
   return booking;
 }
@@ -95,11 +101,8 @@ router.get(
     const page = req.query.page === undefined ? 1 : Number(req.query.page);
     if (!Number.isInteger(page) || page < 1) throw new ApiError(400, 'page must be a positive whole number');
 
-    // An appointment counts as past once its slot has ended.
+    // An appointment counts as past once it has ended.
     const now = nowInShop();
-    const [h, m] = now.time.split(':').map(Number);
-    const minutes = h * 60 + m - SLOT_MINUTES;
-    const cutoff = minutes < 0 ? '' : `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
 
     let filter;
     let sort;
@@ -107,10 +110,10 @@ router.get(
       filter = { status: 'cancelled' };
       sort = { date: -1, time: -1, _id: -1 };
     } else if (view === 'upcoming') {
-      filter = { status: 'confirmed', $or: [{ date: { $gt: now.date } }, { date: now.date, time: { $gt: cutoff } }] };
+      filter = { status: 'confirmed', $or: [{ date: { $gt: now.date } }, { date: now.date, end: { $gt: now.time } }] };
       sort = { date: 1, time: 1, _id: 1 };
     } else {
-      filter = { status: 'confirmed', $or: [{ date: { $lt: now.date } }, { date: now.date, time: { $lte: cutoff } }] };
+      filter = { status: 'confirmed', $or: [{ date: { $lt: now.date } }, { date: now.date, end: { $lte: now.time } }] };
       sort = { date: -1, time: -1, _id: -1 };
     }
     if (q) filter = { $and: [filter, searchFilter(q)] };
@@ -124,16 +127,51 @@ router.get(
 router.post(
   '/bookings',
   asyncHandler(async (req, res) => {
-    const { date, time, serviceSlugs } = req.body ?? {};
+    const { date, time, serviceSlugs, length } = req.body ?? {};
     const booking = await createBooking({
       customer: parseCustomer(req.body, { emailRequired: false }),
       serviceSlugs,
       date,
       time,
+      length,
+      byBarber: true,
       maxDaysAhead: RESCHEDULE_DAYS_AHEAD,
       extra: { source: 'barber', saveInfo: false },
     });
     res.status(201).json(booking);
+  })
+);
+
+// Edit an appointment's length and customer details. Fields left out keep their current value.
+// Shortening frees the time after it; lengthening is refused if it runs into another appointment
+// or a blocked period.
+router.patch(
+  '/bookings/:id',
+  asyncHandler(async (req, res) => {
+    const booking = await findConfirmed(req.params.id, { allowStarted: true });
+    const body = req.body ?? {};
+    const current = { firstName: booking.firstName, lastName: booking.lastName, email: booking.email, phone: booking.phone, notes: booking.notes };
+    const customer = parseCustomer({ ...current, ...body }, { emailRequired: false });
+    const length = body.length === undefined ? lengthOf(booking) : body.length;
+    assertValidLength(length);
+
+    const place = placement(booking.date, booking.time, length);
+    if (length > lengthOf(booking)) {
+      const blocks = await blocksOverlapping(occupiedRange(booking.date, booking.time, length));
+      if (blocks.length) throw new ApiError(409, 'That would run into a blocked period');
+    }
+    try {
+      const updated = await Booking.findOneAndUpdate(
+        { _id: booking._id, status: 'confirmed', date: booking.date, time: booking.time },
+        { ...customer, length: place.length, end: place.end, slots: place.slots },
+        { new: true, runValidators: true }
+      );
+      if (!updated) throw new ApiError(409, 'This booking changed in the meantime, please refresh');
+      res.json(updated);
+    } catch (err) {
+      if (err.code === 11000) throw new ApiError(409, 'That would run into another appointment');
+      throw err;
+    }
   })
 );
 
@@ -160,17 +198,13 @@ router.post(
     if (booking.date === date && booking.time === time) {
       throw new ApiError(400, 'Pick a different date or time');
     }
-    await assertSlotOpen(date, time, { maxDaysAhead: RESCHEDULE_DAYS_AHEAD, duration: booking.totalDuration });
+    const length = lengthOf(booking);
+    await assertSlotOpen(date, time, { maxDaysAhead: RESCHEDULE_DAYS_AHEAD, length, quarters: true });
 
     try {
       const updated = await Booking.findOneAndUpdate(
         { _id: booking._id, status: 'confirmed', date: booking.date, time: booking.time },
-        {
-          date,
-          time,
-          slots: coveredSlots(date, time, booking.totalDuration),
-          rescheduledFrom: { date: booking.date, time: booking.time },
-        },
+        { ...placement(date, time, length), rescheduledFrom: { date: booking.date, time: booking.time } },
         { new: true }
       );
       if (!updated) throw new ApiError(409, 'This booking changed in the meantime, please refresh');
@@ -188,7 +222,8 @@ router.get(
     const { date, booking: bookingId, duration } = req.query;
     if (!isValidDate(date)) throw new ApiError(400, 'Query param "date" must be formatted as YYYY-MM-DD');
     // When picking a new time for a booking, judge slots by its duration and ignore its current spot.
-    // When planning a new appointment, judge them by the duration of the chosen services.
+    // When planning a new appointment, judge them by the length the barber chose.
+    // The barber can start appointments on any quarter hour.
     let options = {};
     if (bookingId !== undefined && duration !== undefined) {
       throw new ApiError(400, 'Use either "booking" or "duration", not both');
@@ -198,15 +233,15 @@ router.get(
       if (!Number.isInteger(minutes) || minutes < 1 || minutes > 600) {
         throw new ApiError(400, 'duration must be a whole number of minutes between 1 and 600');
       }
-      options = { duration: minutes };
+      options = { length: minutes };
     } else if (bookingId !== undefined) {
       if (!mongoose.isValidObjectId(bookingId)) throw new ApiError(404, 'Booking not found');
-      const booking = await Booking.findById(bookingId).select('totalDuration').lean();
+      const booking = await Booking.findById(bookingId).select('length totalDuration').lean();
       if (!booking) throw new ApiError(404, 'Booking not found');
-      options = { duration: booking.totalDuration, excludeId: booking._id };
+      options = { length: lengthOf(booking), excludeId: booking._id };
     }
     if (isClosedOn(date)) return res.json({ date, closed: true, slots: [] });
-    res.json({ date, closed: false, slots: await slotStatuses(date, options) });
+    res.json({ date, closed: false, slots: await slotStatuses(date, { ...options, quarters: true }) });
   })
 );
 
@@ -244,7 +279,7 @@ router.post(
       .lean();
     // Appointments that already started can't be moved anyway, so they don't stand in the way.
     const conflicts = candidates.filter(
-      (b) => overlaps(range, occupiedRange(b.date, b.time, b.totalDuration)) && !hasStarted(b.date, b.time)
+      (b) => overlaps(range, occupiedRange(b.date, b.time, lengthOf(b))) && !hasStarted(b.date, b.time)
     );
     if (conflicts.length) {
       throw new ApiError(

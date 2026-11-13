@@ -24,13 +24,31 @@ const bookingSchema = new mongoose.Schema(
     date: { type: String, required: true }, // 'YYYY-MM-DD'
     time: { type: String, required: true }, // 'HH:mm'
     totalPrice: { type: Number, required: true },
-    totalDuration: { type: Number, required: true },
+    totalDuration: { type: Number, required: true }, // what the services take
+    // What the appointment takes up in the agenda, and when it ends ('HH:mm'). Online bookings
+    // take at least an hour; the barber can shorten or lengthen it.
+    length: { type: Number },
+    end: { type: String },
     status: { type: String, enum: ['confirmed', 'cancelled'], default: 'confirmed' },
-    // Every time slot this booking occupies (see coveredSlots in lib/slots.js).
+    // Every quarter-hour unit this booking occupies (see coveredSlots in lib/slots.js).
     slots: { type: [String], default: undefined },
     cancelledAt: { type: Date },
     rescheduledFrom: { date: String, time: String },
     source: { type: String, enum: ['online', 'barber'], default: 'online' },
+    // The online reservation fee (Mollie). While it is unpaid the booking already holds its slot;
+    // a failed, cancelled or expired payment cancels the booking. The appointment is paid in the shop.
+    payment: {
+      type: new mongoose.Schema(
+        {
+          molliePaymentId: { type: String, index: true },
+          status: { type: String, enum: ['open', 'pending', 'authorized', 'paid', 'canceled', 'expired', 'failed'], default: 'open' },
+          amount: { type: Number },
+          paidAt: { type: Date },
+        },
+        { _id: false }
+      ),
+      default: undefined,
+    },
   },
   { timestamps: true }
 );
@@ -41,7 +59,7 @@ bookingSchema.index(
   { unique: true, partialFilterExpression: { status: 'confirmed' } }
 );
 
-// Long bookings span several slots: no two confirmed bookings may share any slot on the same day.
+// No two confirmed bookings may share any quarter-hour unit on the same day.
 bookingSchema.index(
   { date: 1, slots: 1 },
   { unique: true, partialFilterExpression: { status: 'confirmed', slots: { $exists: true } } }

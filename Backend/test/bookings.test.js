@@ -2,8 +2,11 @@ import { test, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import request from 'supertest';
 import Service from '../src/models/Service.js';
-import { TIME_SLOTS } from '../src/config/businessHours.js';
+import { startTimes } from '../src/config/businessHours.js';
 import { startTestServer, stopTestServer, resetDB } from './helpers/testServer.js';
+
+// The tests book on Mondays; these are that day's whole-hour start times.
+const TIME_SLOTS = startTimes(1);
 
 let app;
 
@@ -126,4 +129,16 @@ test('POST /api/bookings enforces length limits and text types', async () => {
   }
   const ok = await request(app).post('/api/bookings').send(validPayload({ notes: 'x'.repeat(500) }));
   assert.equal(ok.status, 201);
+});
+
+test('POST /api/bookings refuses times outside the opening hours of that day', async () => {
+  await Service.create({ slug: 'contour', name: 'Contour', category: 'contour', duration: 60, price: 12.5 });
+  await Service.create({ slug: 'knippen-baard', name: 'Knippen', category: 'knippen', duration: 60, price: 25 });
+  const saturday = nextWeekday(6);
+
+  assert.equal((await request(app).post('/api/bookings').send(validPayload({ date: saturday, time: '15:00' }))).status, 400);
+  assert.equal((await request(app).post('/api/bookings').send(validPayload({ date: saturday, time: '10:00' }))).status, 201);
+  // Two hour-long services starting at 13:00 would run past 14:00.
+  const late = await request(app).post('/api/bookings').send(validPayload({ date: saturday, time: '13:00', serviceSlugs: ['contour', 'knippen-baard'], email: 'late@example.com' }));
+  assert.equal(late.status, 409);
 });

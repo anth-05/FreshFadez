@@ -2,14 +2,12 @@ import 'dotenv/config';
 import { connectDB } from '../config/db.js';
 import Service from '../models/Service.js';
 
-// Mirrors the SERVICES array in Frontend/index.html.
+// The services and prices from the shop's Salonized page. Category slugs match cat_* in Frontend/index.html.
 const SERVICES = [
-  { slug: 'contour', name: 'Contour', category: 'contour', duration: 30, price: 20, order: 1 },
-  { slug: 'skin-fade', name: 'Skin fade', category: 'contour', duration: 45, price: 38, order: 2 },
-  { slug: 'baard', name: 'Baard', category: 'baard', duration: 20, price: 20, order: 3 },
-  { slug: 'knippen-baard', name: 'Knippen + baard', category: 'knippen', duration: 60, price: 50, order: 4 },
-  { slug: 'fade-style', name: 'Fade + style', category: 'knippen', duration: 45, price: 35, order: 5 },
-  { slug: 'kids', name: 'Kids', category: 'kids', duration: 30, price: 25, order: 6 },
+  { slug: 'contour', name: 'Contour', category: 'contour', duration: 60, price: 12.5, order: 1 },
+  { slug: 'baard', name: 'Baard trimmen', category: 'baard', duration: 30, price: 12.5, order: 2 },
+  { slug: 'knippen-baard', name: 'Knippen (inclusief baard)', category: 'knippen', duration: 60, price: 25, order: 3 },
+  { slug: 'kids', name: 'Knipbeurt kids (tot 11 jaar)', category: 'kids', duration: 60, price: 20, order: 4 },
 ];
 
 async function seed() {
@@ -17,10 +15,12 @@ async function seed() {
   await connectDB(process.env.MONGODB_URI);
 
   for (const service of SERVICES) {
-    await Service.findOneAndUpdate({ slug: service.slug }, service, { upsert: true, new: true });
+    await Service.findOneAndUpdate({ slug: service.slug }, { ...service, active: true }, { upsert: true, new: true });
   }
+  // Services no longer offered stay in the database (old bookings refer to them) but can't be booked.
+  const { modifiedCount } = await Service.updateMany({ slug: { $nin: SERVICES.map((s) => s.slug) } }, { active: false });
 
-  console.log(`Seeded ${SERVICES.length} services.`);
+  console.log(`Seeded ${SERVICES.length} services${modifiedCount ? `, switched off ${modifiedCount} old one(s)` : ''}.`);
   process.exit(0);
 }
 

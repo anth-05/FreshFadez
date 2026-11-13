@@ -2,8 +2,11 @@ import { test, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import request from 'supertest';
 import Booking from '../src/models/Booking.js';
-import { TIME_SLOTS } from '../src/config/businessHours.js';
+import { startTimes } from '../src/config/businessHours.js';
 import { startTestServer, stopTestServer, resetDB } from './helpers/testServer.js';
+
+// The tests book on Mondays; these are that day's whole-hour start times.
+const TIME_SLOTS = startTimes(1);
 
 let app;
 
@@ -57,3 +60,16 @@ test('GET /api/availability excludes booked slots', async () => {
   assert.equal(slot.available, false);
   assert.equal(res.body.slots.length, TIME_SLOTS.length);
 });
+
+test('GET /api/availability follows the opening hours of each day', async () => {
+  const times = async (weekday, duration) => {
+    const res = await request(app).get('/api/availability').query({ date: nextWeekday(weekday), ...(duration && { duration }) });
+    return res.body.slots.filter((s) => s.available).map((s) => s.time);
+  };
+  assert.deepEqual(await times(1), ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00']);
+  assert.deepEqual(await times(5), ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00']);
+  assert.deepEqual(await times(6), ['10:00', '11:00', '12:00', '13:00']);
+  // A 105-minute booking must be over by closing time (14:00 on Saturday).
+  assert.deepEqual(await times(6, 105), ['10:00', '11:00', '12:00']);
+});
+

@@ -19,10 +19,21 @@ services:
         value: https://freshfadezstudios.nl,https://www.freshfadezstudios.nl,https://freshfadez.onrender.com
       - key: BARBER_EMAIL
         value: saph@freshfadez.com
+      # Online reservation fee via Mollie. Customers return to FRONTEND_URL after paying, and Mollie
+      # reports payment changes to API_PUBLIC_URL/api/payments/webhook.
+      - key: BOOKING_FEE
+        value: "1.50"
+      - key: FRONTEND_URL
+        value: https://freshfadezstudios.nl
+      - key: API_PUBLIC_URL
+        value: https://freshfadez-api.onrender.com
       # Secrets: Render asks for these when the Blueprint is created; they never go in git.
       - key: MONGODB_URI
         sync: false
       - key: BARBER_PASSWORD
+        sync: false
+      # test_… while trying it out, live_… to take real payments. Leave empty to book without paying.
+      - key: MOLLIE_API_KEY
         sync: false
       - key: SESSION_SECRET
         generateValue: true

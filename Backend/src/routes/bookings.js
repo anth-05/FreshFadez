@@ -5,6 +5,7 @@ import { ApiError } from '../middleware/errors.js';
 import { adminAuth } from '../middleware/adminAuth.js';
 import { BOOKABLE_DAYS_AHEAD } from '../config/businessHours.js';
 import { createBooking, parseCustomer } from '../lib/newBooking.js';
+import { bookingFee, createBookingPayment, paymentsEnabled } from '../lib/mollie.js';
 
 const router = Router();
 
@@ -20,7 +21,22 @@ router.post(
       maxDaysAhead: BOOKABLE_DAYS_AHEAD,
       extra: { saveInfo: !!saveInfo, newsletter: !!newsletter },
     });
-    res.status(201).json(booking);
+    if (!paymentsEnabled()) return res.status(201).json(booking);
+
+    // The booking holds its slot while the customer pays the reservation fee at Mollie.
+    const redirectBase = process.env.FRONTEND_URL || req.get('origin');
+    let payment;
+    try {
+      if (!redirectBase) throw new Error('FRONTEND_URL is not set');
+      payment = await createBookingPayment(booking, { redirectBase, locale: req.body.lang });
+    } catch (err) {
+      console.error(err);
+      await Booking.updateOne({ _id: booking._id }, { status: 'cancelled', cancelledAt: new Date() });
+      throw new ApiError(502, 'The payment could not be started, please try again');
+    }
+    booking.payment = { molliePaymentId: payment.id, status: payment.status, amount: bookingFee() };
+    await booking.save();
+    res.status(201).json({ ...booking.toJSON(), checkoutUrl: payment.checkoutUrl });
   })
 );
 

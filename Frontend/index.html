@@ -3,15 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Fresh Fadez Studios — Lelystad's Finest</title>
-<meta name="description" content="Fresh Fadez Studios: premium barbershop voor knipbeurten, skin fades en baardverzorging. Boek direct online.">
+<title>Barbershop in Lelystad | Fresh Fadez Studios</title>
+<meta name="description" content="Fresh Fadez Studios is een barbershop in Lelystad (De Waag 8) voor knipbeurten, skin fades en baardtrims. Bekijk de prijzen en boek direct online je afspraak.">
+<link rel="canonical" href="https://freshfadezstudios.nl/">
+<meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="theme-color" content="#121417">
 <link rel="icon" type="image/png" href="./images/logo-mark-dark.png">
+<link rel="apple-touch-icon" href="./images/apple-touch-icon.png">
+<link rel="preload" as="image" href="./images/hero-redesign.jpg" fetchpriority="high">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Fresh Fadez Studios">
+<meta property="og:title" content="Barbershop in Lelystad | Fresh Fadez Studios">
+<meta property="og:description" content="Knipbeurten, skin fades en baardtrims in Lelystad. Kies je dienst en boek direct online.">
+<meta property="og:url" content="https://freshfadezstudios.nl/">
+<meta property="og:image" content="https://freshfadezstudios.nl/images/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Barber aan het werk bij Fresh Fadez Studios in Lelystad">
+<meta property="og:locale" content="nl_NL">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Barbershop in Lelystad | Fresh Fadez Studios">
+<meta name="twitter:description" content="Knipbeurten, skin fades en baardtrims in Lelystad. Kies je dienst en boek direct online.">
+<meta name="twitter:image" content="https://freshfadezstudios.nl/images/og-image.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HairSalon",
+  "@id": "https://freshfadezstudios.nl/#business",
+  "name": "Fresh Fadez Studios",
+  "description": "Barbershop in Lelystad voor knipbeurten, skin fades en baardtrims. Alleen op afspraak, online te boeken.",
+  "url": "https://freshfadezstudios.nl/",
+  "image": "https://freshfadezstudios.nl/images/og-image.jpg",
+  "logo": "https://freshfadezstudios.nl/images/logo-mark-dark.png",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "De Waag 8",
+    "postalCode": "8232 DG",
+    "addressLocality": "Lelystad",
+    "addressRegion": "Flevoland",
+    "addressCountry": "NL"
+  },
+  "hasMap": "https://www.google.com/maps/search/?api=1&query=De+Waag+8%2C+8232+DG+Lelystad",
+  "telephone": "+31686386417",
+  "email": "barbersaph@hotmail.com",
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "11:00", "closes": "21:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "11:00", "closes": "20:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "14:00" }
+  ],
+  "currenciesAccepted": "EUR",
+  "knowsLanguage": ["nl", "en"],
+  "makesOffer": [
+    { "@type": "Offer", "price": "25.00", "priceCurrency": "EUR", "itemOffered": { "@type": "Service", "name": "Knippen (inclusief baard)" } },
+    { "@type": "Offer", "price": "12.50", "priceCurrency": "EUR", "itemOffered": { "@type": "Service", "name": "Contour (alleen)" } },
+    { "@type": "Offer", "price": "12.50", "priceCurrency": "EUR", "itemOffered": { "@type": "Service", "name": "Baard trimmen" } },
+    { "@type": "Offer", "price": "20.00", "priceCurrency": "EUR", "itemOffered": { "@type": "Service", "name": "Knipbeurt kinderen (tot 11 jaar)" } }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&display=swap">
 <style>
-/* Layout: booking widget is the homepage, then alternating light/dark marketing sections in a 1200px column below it. */
+/* Layout: full-bleed photo hero, then alternating light/dark marketing sections in a 1200px column. Booking opens as a popup. */
 :root{
   --ink:#121417;
   --ink-2:#1E2226;
@@ -121,7 +178,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   .reveal{transform:none;transition:opacity 300ms ease}
   .menu-sheet{animation:none}
   .btn,.nav-cta,.topbar,.topbar .nav{transition:none}
-  .bk-check-badge,.bk-panel,.bk-step{animation:none!important;transition:none!important}
+  .bk-check-badge,.bk-panel,.bk-step,.bk-overlay{animation:none!important;transition:none!important}
 }
 .btn-white{background:var(--white);color:var(--ink)}
 .btn-ice{background:var(--ice);color:var(--ice-ink)}
@@ -138,14 +195,17 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 .nav-links a{color:var(--white);text-decoration:none}
 .nav-cta{display:inline-flex;align-items:center;min-height:44px;padding:0 22px;border-radius:999px;border:1px solid rgba(255,255,255,.5);color:var(--white);background:none;font-family:var(--font);text-decoration:none;font-size:15px;font-weight:500;cursor:pointer;transition:transform 160ms var(--ease-out),background-color 200ms ease}
 
-/* BOOK HERO (homepage) */
-.book-hero{position:relative;background:var(--ink);color:var(--white)}
-.book-hero-inner{display:flex;flex-wrap:wrap;gap:56px;align-items:center;padding-block:140px 80px}
-.book-copy{flex:1 1 380px;max-width:460px;min-width:0}
-.kicker{margin:0 0 20px;font-size:16px;color:var(--mist)}
-.book-hero h1{margin:0;font-size:clamp(36px,4.6vw,56px);line-height:1.03;font-weight:650;font-stretch:116%;letter-spacing:-.025em}
+/* HERO (homepage) */
+.book-hero{position:relative;display:flex;align-items:flex-end;min-height:min(100svh,880px);overflow:hidden;background:var(--ink);color:var(--white)}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 30%}
+.book-hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(18,20,23,.55) 0,rgba(18,20,23,0) 28%),linear-gradient(90deg,rgba(18,20,23,.88) 0,rgba(18,20,23,.5) 42%,rgba(18,20,23,0) 72%)}
+.book-hero-inner{position:relative;z-index:1;padding-block:clamp(112px,20vh,160px) clamp(48px,9vh,88px)}
+.book-copy{max-width:520px;min-width:0}
+.kicker{display:block;margin:0 0 20px;font-size:16px;line-height:1.5;font-weight:400;font-stretch:100%;letter-spacing:0;color:var(--mist)}
+.book-hero h1{margin:0;font-size:clamp(38px,5vw,64px);line-height:1.03;font-weight:650;font-stretch:116%;letter-spacing:-.025em}
 .book-lede{margin:24px 0 0;max-width:40ch;font-size:17px;line-height:1.6;color:#DDE1E4}
-.book-link{display:inline-block;margin-top:32px;color:var(--white);font-size:15px;font-weight:500;text-underline-offset:6px;text-decoration:underline}
+.hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:20px 28px;margin-top:36px}
+.book-link{display:inline-block;color:var(--white);font-size:15px;font-weight:500;text-underline-offset:6px;text-decoration:underline}
 
 /* TICKER */
 .ticker{background:var(--ice);color:var(--ice-ink);overflow:hidden;padding-block:9px}
@@ -158,30 +218,26 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 /* SERVICES */
 .services{display:flex;flex-wrap:wrap;align-items:center;gap:64px;padding-block:96px}
 .svc-left{flex:999 1 420px;min-width:0}
-.svc-left .lede{margin:18px 0 40px}
+.svc-left .lede{margin:18px 0 40px;text-wrap:pretty}
 .svc-tabs{display:flex;flex-direction:column;border-top:1px solid var(--line)}
 .svc-tab{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:18px 0;background:none;border:0;border-bottom:1px solid var(--line);font-family:var(--font);text-align:left;cursor:pointer;font-size:clamp(28px,3.4vw,42px);font-weight:600;font-stretch:114%;letter-spacing:-.02em;color:var(--muted-2);transition:color 160ms ease}
 .svc-tab[aria-selected="true"]{color:var(--ink)}
-.svc-short{display:none}
 .svc-tabs{position:relative}
 .svc-indicator{display:none}
 .svc-time{font-size:15px;font-weight:500;font-stretch:100%;letter-spacing:0;color:var(--muted)}
 .svc-card{flex:1 1 340px;max-width:400px;min-width:0;background:var(--ink);color:var(--white);border-radius:24px;overflow:hidden;display:flex;flex-direction:column}
-.ph{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:16px}
-.ph-dark{background-color:var(--ink-2);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 2px,transparent 2px 18px);color:rgba(255,255,255,.5)}
-.ph-light{background-color:#E3E6E4;background-image:repeating-linear-gradient(135deg,rgba(18,20,23,.07) 0 2px,transparent 2px 16px);color:var(--muted)}
-.ph-label{font-size:15px;font-weight:600}
-.ph-size{font-size:13px}
-.svc-card .ph{aspect-ratio:1/1;max-width:100%}
-.svc-card .ph .mark{position:absolute;top:22px;left:24px;opacity:.55}
-.svc-body{padding:28px 30px 30px;display:flex;flex-direction:column;gap:18px}
-.svc-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px}
-.svc-head h3{font-size:28px;font-weight:650;font-stretch:114%;letter-spacing:-.015em}
-.svc-price{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
-.svc-desc{margin:0;font-size:16px;line-height:1.6;color:var(--mist)}
-.svc-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding-top:6px}
-.svc-foot span{font-size:15px;color:var(--mist)}
-.svc-foot .btn{min-height:50px;padding:0 26px;border:0;cursor:pointer}
+.svc-card{align-self:stretch}
+/* Without a photo the card reads like a price card on the shop wall: name, what it is, price and time. */
+.svc-body{flex:1;padding:30px;display:flex;flex-direction:column;gap:22px}
+.svc-mark{opacity:.55}
+.svc-intro{margin-top:auto}
+.svc-intro h3{font-size:clamp(30px,2.6vw,36px);line-height:1.08;font-weight:650;font-stretch:114%;letter-spacing:-.02em;text-wrap:balance}
+.svc-desc{margin:12px 0 0;max-width:36ch;font-size:16px;line-height:1.6;color:var(--mist)}
+.svc-spec{margin:0;border-top:1px solid rgba(255,255,255,.14)}
+.svc-spec div{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.14)}
+.svc-spec dt{font-size:15px;color:var(--mist)}
+.svc-spec dd{margin:0;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.svc-body > .btn{width:100%;min-height:52px;padding:0 24px}
 
 /* ABOUT */
 .about{background:var(--ink);color:var(--white)}
@@ -191,7 +247,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 .about-copy .eyebrow{margin:0 0 16px;font-size:16px;color:var(--ice)}
 .about-copy p.body{margin:20px 0 0;font-size:17px;line-height:1.7;color:var(--mist);max-width:62ch}
 .about-sign{margin:32px 0 0;font-size:18px;font-weight:600;font-stretch:110%}
-.about-copy .text-link{display:inline-block;margin-top:28px;color:var(--ice);font-size:16px;font-weight:500;text-underline-offset:6px}
+.about-copy .text-link{display:inline-block;margin-top:28px;padding:0;border:0;background:none;color:var(--ice);font:500 16px/1.5 var(--font);text-decoration:underline;text-underline-offset:6px;cursor:pointer}
 
 /* WORK */
 .work{padding-block:96px}
@@ -210,7 +266,57 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 .visit-copy p{margin:18px 0 32px;font-size:17px;line-height:1.6;color:var(--mist)}
 .facts{position:relative;flex:1 1 360px;max-width:460px;min-width:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
 .facts dt{font-size:14px;color:var(--ice);margin-bottom:10px}
-.facts dd{margin:0;font-size:16px;line-height:1.6;user-select:text}
+.facts dd{margin:0;font-size:16px;line-height:1.6;user-select:text;overflow-wrap:anywhere}
+.facts dd a{color:var(--white);text-underline-offset:4px}
+@media (hover:hover) and (pointer:fine){.facts dd a:hover{color:var(--ice)}}
+
+/* POLICY */
+.policy{display:flex;flex-wrap:wrap;align-items:flex-start;gap:48px 72px;padding-bottom:96px}
+.policy-head{flex:1 1 340px;max-width:440px;min-width:0;position:sticky;top:104px}
+.policy-head .lede{margin:18px 0 0}
+.pol-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:36px}
+.pol-fact{display:flex;flex-direction:column;gap:6px;padding:22px 20px 20px;border-radius:20px;background:var(--ink);color:var(--white)}
+.pol-fact svg{color:var(--ice);margin-bottom:10px}
+.pol-fact strong{font-size:30px;line-height:1;font-weight:650;font-stretch:116%;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.pol-fact span{font-size:14px;line-height:1.45;color:var(--mist)}
+.policy-body{flex:999 1 480px;min-width:0}
+.pol-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.pol-item{border-bottom:1px solid var(--line)}
+.pol-h{margin:0;font:inherit}
+.pol-q{display:flex;align-items:center;gap:20px;width:100%;padding:24px 0;background:none;border:0;font-family:var(--font);text-align:left;color:var(--ink);cursor:pointer}
+.pol-num{flex:none;width:28px;font-size:15px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.pol-title{flex:1;min-width:0;font-size:clamp(20px,2.2vw,26px);line-height:1.2;font-weight:600;font-stretch:112%;letter-spacing:-.015em;color:var(--muted);transition:color 200ms ease}
+.pol-q[aria-expanded="true"] .pol-title{color:var(--ink)}
+.pol-icon{position:relative;flex:none;width:40px;height:40px;border-radius:999px;border:1px solid var(--line);transition:background-color 250ms var(--ease-out),border-color 250ms var(--ease-out),transform 350ms var(--ease-out)}
+.pol-icon::before,.pol-icon::after{content:"";position:absolute;top:50%;left:50%;width:14px;height:1.5px;margin:-.75px 0 0 -7px;border-radius:2px;background:var(--ink);transition:transform 350ms var(--ease-out),background-color 250ms ease}
+.pol-icon::after{transform:rotate(90deg)}
+.pol-q[aria-expanded="true"] .pol-icon{background:var(--ink);border-color:var(--ink);transform:rotate(180deg)}
+.pol-q[aria-expanded="true"] .pol-icon::before,.pol-q[aria-expanded="true"] .pol-icon::after{background:var(--white)}
+.pol-q[aria-expanded="true"] .pol-icon::after{transform:rotate(0)}
+@media (hover:hover) and (pointer:fine){
+  .pol-q:hover .pol-title{color:var(--ink)}
+  .pol-q:hover .pol-icon{border-color:var(--ink)}
+}
+.pol-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows 380ms var(--ease-out)}
+.pol-a.open{grid-template-rows:1fr}
+.pol-a-inner{overflow:hidden;min-height:0;padding-left:48px}
+.pol-a-inner p{margin:0 0 12px;max-width:60ch;font-size:16px;line-height:1.65;color:var(--muted)}
+.pol-a-inner p:last-child{margin-bottom:28px}
+.policy-thanks{margin:28px 0 0;max-width:60ch;font-size:15px;line-height:1.65;color:var(--muted)}
+@media (max-width:760px){
+  .policy{padding-bottom:64px;gap:32px}
+  .policy-head{position:static;max-width:none}
+  .pol-facts{margin-top:28px}
+  .pol-fact{padding:18px 16px 16px}
+  .pol-fact strong{font-size:26px}
+  .pol-q{gap:14px;padding:20px 0}
+  .pol-num{width:24px;font-size:14px}
+  .pol-title{font-size:18px}
+  .pol-icon{width:36px;height:36px}
+  .pol-a-inner{padding-left:38px}
+  .pol-a-inner p{font-size:15.5px}
+}
+@media (prefers-reduced-motion: reduce){.pol-a,.pol-icon,.pol-icon::before,.pol-icon::after{transition:none}}
 
 /* FOOTER */
 .footer{border-top:1px solid var(--line)}
@@ -243,9 +349,13 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   .menu-btn{display:inline-flex}
   .nav{padding-block:16px}
   .topbar .mark{width:46px;height:29px}
-  .book-hero-inner{padding-block:104px 48px;gap:32px}
+  .book-hero{min-height:88svh}
+  .hero-img{object-position:68% 30%}
+  .book-hero::after{background:linear-gradient(180deg,rgba(18,20,23,.5) 0,rgba(18,20,23,.1) 30%,rgba(18,20,23,.55) 55%,rgba(18,20,23,.94) 100%)}
+  .book-hero-inner{padding-block:120px 40px}
   .book-hero h1{font-size:clamp(32px,10vw,44px)}
   .book-lede{font-size:16px}
+  .hero-actions .btn{width:100%}
   .ticker{padding-block:7px}
   .ticker-item{font-size:13px;gap:16px;padding-right:16px}
   .ticker-item svg{width:13px;height:13px}
@@ -261,14 +371,10 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   .svc-blob{display:block;width:100%;height:100%;border-radius:10px;background:var(--white);box-shadow:0 1px 3px rgba(18,20,23,.14),0 6px 14px -8px rgba(18,20,23,.3)}
   .svc-blob.squish{animation:blobSquish 420ms var(--ease-out)}
   @keyframes blobSquish{0%{transform:none}35%{transform:scale(1.06,.9)}70%{transform:scale(.99,1.02)}100%{transform:none}}
-  .svc-tab span.svc-time,.svc-tab span.svc-long{display:none}
-  .svc-tab span.svc-short{display:inline}
-  .svc-card .ph{aspect-ratio:16/9}
-  .svc-card .ph .mark{top:16px;left:18px}
-  .svc-body{padding:22px 22px 24px;gap:14px}
-  .svc-head h3{font-size:24px}
+  .svc-tab span.svc-time{display:none}
+  .svc-body{padding:24px;gap:22px}
+  .svc-intro h3{font-size:28px}
   .svc-card{max-width:none;flex-basis:100%}
-  .svc-foot .btn{flex:1 1 auto}
   .about-inner{padding-block:64px;gap:36px}
   .about-img{max-width:none}
   .work{padding-block:64px}
@@ -286,10 +392,15 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 }
 @media (max-width: 380px){
   .facts{grid-template-columns:1fr}
+  .topbar .lang-toggle{display:none}
 }
 
-/* ============ BOOKING WIDGET (inline, always visible) ============ */
-.bk-panel{flex:1 1 420px;max-width:460px;min-width:0;width:100%;max-height:min(620px,72vh);overflow-y:auto;display:flex;flex-direction:column;background:rgba(255,255,255,.07);color:var(--white);border:1px solid rgba(255,255,255,.18);border-radius:24px;-webkit-backdrop-filter:blur(20px) saturate(140%);backdrop-filter:blur(20px) saturate(140%);box-shadow:0 30px 70px -20px rgba(0,0,0,.5);animation:riseIn 900ms .25s var(--ease-out) both}
+/* ============ BOOKING POPUP ============ */
+.bk-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(8,9,11,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity 260ms var(--ease-out),visibility 0s linear 260ms}
+.bk-overlay.open{opacity:1;visibility:visible;transition:opacity 260ms var(--ease-out),visibility 0s}
+.bk-panel{width:100%;max-width:480px;max-height:min(720px,calc(100svh - 48px));overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;background:#16191C;color:var(--white);border:1px solid rgba(255,255,255,.12);border-radius:24px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);transform:translateY(16px) scale(.97);transition:transform 320ms var(--ease-out)}
+.bk-overlay.open .bk-panel{transform:none}
+.bk-panel:focus{outline:none}
 .bk-panel{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
 .bk-panel::-webkit-scrollbar{width:8px}
 .bk-panel::-webkit-scrollbar-track{background:transparent}
@@ -314,6 +425,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 .bk-icon-btn{position:absolute;top:10px;width:32px;height:32px;border-radius:999px;border:0;background:none;color:rgba(255,255,255,.65);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background-color .15s ease,color .15s ease}
 .bk-icon-btn:hover{background:rgba(255,255,255,.1);color:var(--white)}
 .bk-icon-btn.left{left:20px}
+.bk-icon-btn.right{right:20px}
 
 .bk-service-groups{padding:0 20px}
 .bk-cat-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);margin:18px 0 10px}
@@ -367,7 +479,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 .bk-time-chip:disabled{color:rgba(255,255,255,.25);border-color:rgba(255,255,255,.08);opacity:.5;cursor:not-allowed}
 
 .bk-form{display:flex;flex-direction:column;gap:12px;padding:20px}
-.bk-required{text-align:right;font-size:11px;color:rgba(255,255,255,.4);padding:0 20px;margin-top:-8px}
+.bk-required{text-align:right;font-size:11px;color:rgba(255,255,255,.6);padding:0 20px;margin-top:-8px}
 .bk-row{display:flex;gap:12px}
 .bk-field{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:12px 14px;color:var(--white);font:400 14px/1.3 var(--font);caret-color:var(--ice);transition:border-color .15s ease,background-color .15s ease}
 .bk-field::placeholder{color:var(--mist)}
@@ -381,6 +493,16 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 .bk-summary-total{display:flex;justify-content:space-between;font-weight:700;font-size:14.5px;padding-top:10px;margin-top:6px;border-top:1px solid rgba(255,255,255,.12)}
 .bk-checkline{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.78);cursor:pointer}
 .bk-checkline input{width:18px;height:18px;accent-color:var(--ice)}
+.bk-policy{font-size:13px;color:rgba(255,255,255,.78);margin-top:-2px}
+.bk-policy summary{display:inline-block;padding:4px 0;color:var(--ice);text-decoration:underline;text-underline-offset:4px;cursor:pointer;list-style:none}
+.bk-policy summary::-webkit-details-marker{display:none}
+.bk-policy .pol-list{margin-top:10px;border-top-color:rgba(255,255,255,.1)}
+.bk-policy .pol-item{border-bottom-color:rgba(255,255,255,.1);padding:12px 0}
+.bk-policy .pol-h{display:flex;gap:8px;font-size:14px;font-weight:650;font-stretch:105%;color:var(--white)}
+.bk-policy .pol-num{width:22px;font-size:12.5px;color:var(--mist)}
+.bk-policy .pol-icon{display:none}
+.bk-policy .pol-a-inner{padding-left:30px}
+.bk-policy .pol-a-inner p,.bk-policy .pol-a-inner p:last-child{margin:6px 0 0;font-size:13px;line-height:1.55;color:var(--mist)}
 .bk-error{color:var(--danger);font-size:13px;text-align:center;display:none}
 .bk-error.show{display:block}
 
@@ -396,9 +518,16 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 .bk-receipt{position:relative;width:100%;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);padding:16px 0;text-align:left;margin-bottom:28px}
 .bk-receipt-line{font-weight:700;font-size:14.5px;margin-bottom:4px}
 .bk-receipt-sub{font-size:13px;color:var(--mist)}
+.bk-done-actions{position:relative;display:flex;flex-direction:column;gap:12px;width:100%}
+.bk-check-badge.wait{background:rgba(255,255,255,.1);color:var(--white)}
+.bk-check-badge.fail{background:var(--danger);color:var(--ice-ink)}
+.bk-fee{margin-top:12px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.bk-fee-row{display:flex;justify-content:space-between;gap:12px;font-weight:650;font-size:14px}
+.bk-fee-note{margin-top:4px;font-size:12.5px;line-height:1.45;color:var(--mist)}
 
 @media (max-width:760px){
-  .bk-panel{max-height:none;flex-basis:100%}
+  .bk-overlay{align-items:flex-end;padding:0}
+  .bk-panel{max-width:none;max-height:calc(100svh - 24px);border-radius:24px 24px 0 0;border-bottom:0;padding-bottom:env(safe-area-inset-bottom,0px);transform:translateY(100%);transition:transform 420ms var(--ease-drawer)}
 }
 @media (max-width:480px){
   .bk-time-grid{grid-template-columns:repeat(3,1fr)}
@@ -415,14 +544,10 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
         <circle cx="26" cy="29.5" r="3.3"/><circle cx="38" cy="29.5" r="3.3"/>
       </g>
     </symbol>
-    <symbol id="ff-camera" viewBox="0 0 24 24">
-      <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>
-      </g>
-    </symbol>
     <symbol id="ff-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
     <symbol id="ff-chev-l" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
     <symbol id="ff-chev-r" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+    <symbol id="ff-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></symbol>
     <symbol id="ff-check" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7.5" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
     <symbol id="ff-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25" stroke="currentColor" stroke-width="1.75" fill="none"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
   </defs>
@@ -468,16 +593,22 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 </div>
 
 <header class="book-hero" id="top">
+  <img class="hero-img" src="./images/hero-redesign.jpg" alt="Barber aan het werk bij Fresh Fadez Studios" data-i18n-alt="hero_img_alt" width="2000" height="1114" fetchpriority="high">
   <div class="wrap book-hero-inner">
     <div class="book-copy">
-      <p class="kicker" data-i18n="kicker">Premium barbershop &amp; studio</p>
-      <h1 data-i18n="hero_title">Boek je afspraak direct online</h1>
+      <h1><span class="kicker" data-i18n="kicker">Premium barbershop in Lelystad</span> <span data-i18n="hero_title">Boek je afspraak direct online</span></h1>
       <p class="book-lede" data-i18n="hero_desc">Kies je dienst en een tijd die jou uitkomt. Geen account nodig, klaar in een paar klikken.</p>
-      <a class="book-link" href="#services" data-i18n="hero_link">Bekijk diensten</a>
+      <div class="hero-actions">
+        <button type="button" class="btn btn-white" id="hero-book-btn" data-i18n="hero_cta">Afspraak maken</button>
+        <a class="book-link" href="#services" data-i18n="hero_link">Bekijk diensten</a>
+      </div>
     </div>
+  </div>
+</header>
 
-    <!-- BOOKING WIDGET -->
-    <section class="bk-panel" id="bk-panel" aria-label="Boek een afspraak">
+<!-- BOOKING POPUP -->
+<div class="bk-overlay" id="bk-overlay" aria-hidden="true">
+    <section class="bk-panel" id="bk-panel" role="dialog" aria-modal="true" aria-labelledby="bk-title-1" tabindex="-1">
 
       <div class="bk-progress" id="bk-progress">
         <span class="bk-dot" data-dot="1"></span>
@@ -488,7 +619,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       <!-- STEP 1 -->
       <div class="bk-step" id="bk-step-1" data-step="1">
         <div class="bk-head">
-          <div class="bk-head-title" data-i18n="modal_step1_title">KIES DIENSTEN</div>
+          <div class="bk-head-title" id="bk-title-1" data-i18n="modal_step1_title">KIES DIENSTEN</div>
+          <button type="button" class="bk-icon-btn right" data-bk-close aria-label="Sluiten"><svg width="18" height="18" aria-hidden="true"><use href="#ff-close"/></svg></button>
         </div>
         <div class="bk-service-groups" id="bk-service-groups"></div>
         <div class="bk-footer">
@@ -504,7 +636,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       <div class="bk-step" id="bk-step-2" data-step="2">
         <div class="bk-head">
           <button type="button" class="bk-icon-btn left" id="bk-back-2" aria-label="Terug"><svg width="18" height="18" aria-hidden="true"><use href="#ff-back"/></svg></button>
-          <div class="bk-head-title" data-i18n="modal_step2_title">KIES DATUM EN TIJD</div>
+          <div class="bk-head-title" id="bk-title-2" data-i18n="modal_step2_title">KIES DATUM EN TIJD</div>
+          <button type="button" class="bk-icon-btn right" data-bk-close aria-label="Sluiten"><svg width="18" height="18" aria-hidden="true"><use href="#ff-close"/></svg></button>
         </div>
         <div class="bk-info-row">
           <span class="bk-info-mark"><img src="./images/logo-mark-white.png" alt="" width="18" height="17"></span>
@@ -525,7 +658,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       <div class="bk-step" id="bk-step-3" data-step="3">
         <div class="bk-head">
           <button type="button" class="bk-icon-btn left" id="bk-back-3" aria-label="Terug"><svg width="18" height="18" aria-hidden="true"><use href="#ff-back"/></svg></button>
-          <div class="bk-head-title" data-i18n="modal_step3_title">JOUW GEGEVENS</div>
+          <div class="bk-head-title" id="bk-title-3" data-i18n="modal_step3_title">JOUW GEGEVENS</div>
+          <button type="button" class="bk-icon-btn right" data-bk-close aria-label="Sluiten"><svg width="18" height="18" aria-hidden="true"><use href="#ff-close"/></svg></button>
         </div>
         <div class="bk-required" data-i18n="modal_required">*Verplicht</div>
         <div class="bk-form">
@@ -542,6 +676,10 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
             <div class="bk-summary-meta" id="summary-duration"></div>
             <div id="summary-items"></div>
             <div class="bk-summary-total"><span data-i18n="modal_total">Totaal</span><span id="summary-total"></span></div>
+            <div class="bk-fee" id="summary-fee" hidden>
+              <div class="bk-fee-row"><span data-i18n="pay_fee_label">Reserveringskosten (nu online)</span><span id="summary-fee-amount"></span></div>
+              <div class="bk-fee-note" id="summary-fee-note"></div>
+            </div>
           </div>
 
           <label class="bk-checkline">
@@ -552,27 +690,37 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
             <input id="f-newsletter" type="checkbox">
             <span data-i18n="modal_newsletter">Ja, ik meld me aan voor de nieuwsbrief</span>
           </label>
+          <label class="bk-checkline">
+            <input id="f-agree" type="checkbox" required>
+            <span data-i18n="modal_agree">Ik ga akkoord met de policy &amp; voorwaarden*</span>
+          </label>
+          <details class="bk-policy">
+            <summary data-i18n="modal_read_policy">Lees de voorwaarden</summary>
+            <div id="bk-policy-body"></div>
+          </details>
 
           <div class="bk-error" id="booking-error"></div>
-          <button type="button" class="bk-cta disabled" id="confirm-btn" data-i18n="modal_confirm" style="margin-top:4px">Afspraak bevestigen</button>
+          <button type="button" class="bk-cta disabled" id="confirm-btn" style="margin-top:4px">Afspraak bevestigen</button>
         </div>
       </div>
 
       <!-- STEP 4 -->
       <div class="bk-step step4" id="bk-step-4" data-step="4">
         <div class="bk-glow" aria-hidden="true"></div>
-        <div class="bk-check-badge"><svg width="32" height="32" aria-hidden="true"><use href="#ff-check"/></svg></div>
-        <div class="bk-step4-title" data-i18n="modal_step4_title">Afspraak bevestigd</div>
-        <div class="bk-receipt">
+        <div class="bk-check-badge" id="bk-result-badge"><svg width="32" height="32" aria-hidden="true"><use href="#ff-check"/></svg></div>
+        <div class="bk-step4-title" id="bk-result-title" role="status">Afspraak bevestigd</div>
+        <div class="bk-receipt" id="bk-receipt">
           <div class="bk-receipt-line" id="confirm-line"></div>
           <div class="bk-receipt-sub" id="confirm-total"></div>
         </div>
-        <button type="button" class="bk-cta outline" id="bk-restart" data-i18n="modal_restart" style="position:relative">Nog een afspraak boeken</button>
+        <div class="bk-done-actions" id="bk-done-actions">
+          <button type="button" class="bk-cta" data-bk-close data-i18n="modal_close">Sluiten</button>
+          <button type="button" class="bk-cta outline" id="bk-restart" data-i18n="modal_restart">Nog een afspraak boeken</button>
+        </div>
       </div>
 
     </section>
-  </div>
-</header>
+</div>
 
 <div class="ticker" aria-hidden="true">
   <div class="ticker-track" id="ticker-track"></div>
@@ -586,42 +734,37 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       <div class="svc-tabs" role="tablist" aria-label="Diensten">
         <span class="svc-indicator" aria-hidden="true"><span class="svc-blob"></span></span>
         <button type="button" role="tab" class="svc-tab" id="tab-knippen-baard" data-slug="knippen-baard" aria-selected="true" aria-controls="svc-panel" tabindex="0"><span><span class="svc-long" data-i18n="chip_haircut">Knippen</span></span><span class="svc-time" data-time-for="knippen-baard">···</span></button>
-        <button type="button" role="tab" class="svc-tab" id="tab-skin-fade" data-slug="skin-fade" aria-selected="false" aria-controls="svc-panel" tabindex="-1"><span><span class="svc-long" data-i18n="chip_fade">Fade</span></span><span class="svc-time" data-time-for="skin-fade">···</span></button>
+        <button type="button" role="tab" class="svc-tab" id="tab-contour" data-slug="contour" aria-selected="false" aria-controls="svc-panel" tabindex="-1"><span><span class="svc-long" data-i18n="chip_contour">Contour</span></span><span class="svc-time" data-time-for="contour">···</span></button>
         <button type="button" role="tab" class="svc-tab" id="tab-baard" data-slug="baard" aria-selected="false" aria-controls="svc-panel" tabindex="-1"><span><span class="svc-long" data-i18n="chip_beard">Baard</span></span><span class="svc-time" data-time-for="baard">···</span></button>
       </div>
     </div>
 
     <article class="svc-card" id="svc-panel" role="tabpanel" aria-labelledby="tab-knippen-baard">
-      <div class="ph ph-dark">
-        <img class="mark" src="./images/logo-mark-white.png" alt="" width="26" height="25">
-        <svg width="36" height="36" aria-hidden="true"><use href="#ff-camera"/></svg>
-        <span class="ph-label" id="svc-photo">Foto: knipbeurt met baard</span>
-        <span class="ph-size">1200 × 1200</span>
-      </div>
       <div class="svc-body">
-        <div class="svc-head">
+        <img class="svc-mark" src="./images/logo-mark-white.png" alt="" width="26" height="25">
+        <div class="svc-intro">
           <h3 id="svc-name">···</h3>
-          <span class="svc-price" id="svc-price">···</span>
+          <p class="svc-desc" id="svc-desc"></p>
         </div>
-        <p class="svc-desc" id="svc-desc"></p>
-        <div class="svc-foot">
-          <span data-i18n="svc_takes">Duurt ongeveer <span id="svc-time">···</span></span>
-          <button type="button" class="btn btn-ice" id="svc-book">···</button>
-        </div>
+        <dl class="svc-spec">
+          <div><dt data-i18n="svc_price_label">Prijs</dt><dd id="svc-price">···</dd></div>
+          <div><dt data-i18n="svc_time_label">Duur</dt><dd id="svc-time">···</dd></div>
+        </dl>
+        <button type="button" class="btn btn-ice" id="svc-book">···</button>
       </div>
     </article>
   </section>
 
   <section class="about" id="about">
     <div class="about-inner wrap">
-      <img class="about-img" src="./images/about-redesign.jpg" alt="De oprichter van Fresh Fadez Studios, gezeten voor de logo-wand van de studio">
+      <img class="about-img" src="./images/about-redesign.jpg" width="975" height="1039" loading="lazy" decoding="async" alt="De oprichter van Fresh Fadez Studios, gezeten voor de logo-wand van de studio">
       <div class="about-copy">
         <p class="eyebrow" data-i18n="about_eyebrow">Over mij</p>
-        <h2 class="h2" data-i18n="about_title">[Jouw titel hier]</h2>
-        <p class="body" data-i18n="about_p1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-        <p class="body" data-i18n="about_p2">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p class="about-sign" data-i18n="about_sign">[Jouw naam], oprichter van Fresh Fadez Studios</p>
-        <a class="text-link" href="#" id="about-book-link" data-i18n="about_link">Boek een stoel bij mij</a>
+        <h2 class="h2" data-i18n="about_title">Elke knipbeurt met aandacht</h2>
+        <p class="body" data-i18n="about_p1">Fresh Fadez Studios is een barbershop in Lelystad, aan De Waag 8. Hier draait alles om strakke fades, scherpe lijnen en een baard die bij je gezicht past. Je zit hier alleen op afspraak, dus je hoeft nooit te wachten en de stoel is helemaal voor jou.</p>
+        <p class="body" data-i18n="about_p2">Elke afspraak begint met een kort gesprek over wat je wilt, zodat het resultaat past bij jouw haar en jouw routine. Of je nu komt voor een skin fade, een complete knipbeurt met baard of een kids cut: je loopt naar buiten met een cut waar je zelf blij mee bent.</p>
+        <p class="about-sign" data-i18n="about_sign">Oprichter van Fresh Fadez Studios</p>
+        <button type="button" class="text-link" id="about-book-link" data-i18n="about_link">Boek een stoel bij mij</button>
       </div>
     </div>
   </section>
@@ -630,21 +773,78 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     <div class="work-head">
       <div>
         <h2 class="h2" data-i18n="work_title">Echte klanten, echte resultaten</h2>
-        <p class="lede" data-i18n="work_lede">Een paar recente stoelen. Nieuw werk komt elke week op Instagram.</p>
+        <p class="lede" data-i18n="work_lede">Een paar recente knipbeurten uit de studio.</p>
       </div>
-      <a href="#" data-i18n="work_link">Volg ons op Instagram</a>
     </div>
     <div class="gallery">
-      <figure class="shot"><img src="./images/fade1.jpeg" alt="Skin fade met krullen" data-i18n-alt="gallery_1" loading="lazy" decoding="async" style="--y:66%"></figure>
-      <figure class="shot"><img src="./images/fade2.jpeg" alt="Drop fade met highlights en baard" data-i18n-alt="gallery_2" loading="lazy" decoding="async" style="--y:68%"></figure>
-      <figure class="shot"><img src="./images/fade3.jpeg" alt="Taper fade met textuur" data-i18n-alt="gallery_3" loading="lazy" decoding="async" style="--y:68%"></figure>
-      <figure class="shot"><img src="./images/fade4.jpeg" alt="Locs met lijnwerk en baard" data-i18n-alt="gallery_4" loading="lazy" decoding="async" style="--y:72%"></figure>
+      <figure class="shot"><img src="./images/fade1.jpeg" width="942" height="2048" alt="Skin fade met krullen" data-i18n-alt="gallery_1" loading="lazy" decoding="async" style="--y:66%"></figure>
+      <figure class="shot"><img src="./images/fade2.jpeg" width="735" height="1600" alt="Drop fade met highlights en baard" data-i18n-alt="gallery_2" loading="lazy" decoding="async" style="--y:68%"></figure>
+      <figure class="shot"><img src="./images/fade3.jpeg" width="735" height="1600" alt="Taper fade met textuur" data-i18n-alt="gallery_3" loading="lazy" decoding="async" style="--y:68%"></figure>
+      <figure class="shot"><img src="./images/fade4.jpeg" width="942" height="2048" alt="Locs met lijnwerk en baard" data-i18n-alt="gallery_4" loading="lazy" decoding="async" style="--y:72%"></figure>
+    </div>
+  </section>
+
+  <section class="policy wrap" id="policy">
+    <div class="policy-head">
+      <h2 class="h2" data-i18n="policy_title">Policy &amp; voorwaarden</h2>
+      <p class="lede" data-i18n="policy_intro">Om de kwaliteit van onze dienstverlening te waarborgen en onze planning efficiënt te laten verlopen, verzoeken wij iedere klant onderstaande voorwaarden zorgvuldig door te nemen. Bij het maken van een afspraak gaat de klant akkoord met de onderstaande bepalingen.</p>
+      <div class="pol-facts">
+        <div class="pol-fact"><svg width="20" height="20" aria-hidden="true"><use href="#ff-clock"/></svg><strong data-i18n="pol_fact1_num">15 min</strong><span data-i18n="pol_fact1_label">Te laat? Dan vervalt je afspraak.</span></div>
+        <div class="pol-fact"><svg width="20" height="20" aria-hidden="true"><use href="#ff-check"/></svg><strong data-i18n="pol_fact2_num">24 uur</strong><span data-i18n="pol_fact2_label">Tot zo lang vooraf kosteloos annuleren.</span></div>
+      </div>
+    </div>
+    <div class="policy-body">
+      <ol class="pol-list" id="policy-list">
+      <li class="pol-item">
+        <h3 class="pol-h"><button type="button" class="pol-q" id="pol-q1" aria-expanded="false" aria-controls="pol-a1"><span class="pol-num">01</span><span class="pol-title" data-i18n="pol1_title">Op tijd aanwezig zijn</span><span class="pol-icon" aria-hidden="true"></span></button></h3>
+        <div class="pol-a" id="pol-a1" role="region" aria-labelledby="pol-q1" inert>
+          <div class="pol-a-inner">
+            <p data-i18n="pol1_body">Wij verzoeken iedere klant om op tijd aanwezig te zijn op de geplande afspraak. Te laat komen wordt niet gewaardeerd. Bij een vertraging van 15 minuten of langer wordt de afspraak automatisch geannuleerd. Dit is nodig om de planning en de afspraken van andere klanten te respecteren. Bij het niet nakomen van de afspraak wordt het volledige bedrag in rekening gebracht.</p>
+          </div>
+        </div>
+      </li>
+      <li class="pol-item">
+        <h3 class="pol-h"><button type="button" class="pol-q" id="pol-q2" aria-expanded="false" aria-controls="pol-a2"><span class="pol-num">02</span><span class="pol-title" data-i18n="pol2_title">Annuleren en wijzigen van afspraken</span><span class="pol-icon" aria-hidden="true"></span></button></h3>
+        <div class="pol-a" id="pol-a2" role="region" aria-labelledby="pol-q2" inert>
+          <div class="pol-a-inner">
+            <p data-i18n="pol2_body1">Het annuleren of verplaatsen van een afspraak is uitsluitend kosteloos mogelijk tot uiterlijk 24 uur vóór het geplande tijdstip.</p>
+            <p data-i18n="pol2_body2">Bij annulering of wijziging binnen 24 uur vóór de afspraak wordt het volledige bedrag van de geboekte behandeling in rekening gebracht.</p>
+            <p data-i18n="pol2_body3">Annuleringen kunnen worden doorgegeven via een rechtstreeks bericht aan de kapper of via het online boekingssysteem.</p>
+          </div>
+        </div>
+      </li>
+      <li class="pol-item">
+        <h3 class="pol-h"><button type="button" class="pol-q" id="pol-q3" aria-expanded="false" aria-controls="pol-a3"><span class="pol-num">03</span><span class="pol-title" data-i18n="pol3_title">Haarverzorging voorafgaand aan de behandeling</span><span class="pol-icon" aria-hidden="true"></span></button></h3>
+        <div class="pol-a" id="pol-a3" role="region" aria-labelledby="pol-q3" inert>
+          <div class="pol-a-inner">
+            <p data-i18n="pol3_body">Klanten dienen ervoor te zorgen dat het haar vóór aanvang van de behandeling schoon en gewassen is. Indien hier niet aan wordt voldaan, kan dit invloed hebben op de uitvoering en kwaliteit van de behandeling.</p>
+          </div>
+        </div>
+      </li>
+      <li class="pol-item">
+        <h3 class="pol-h"><button type="button" class="pol-q" id="pol-q4" aria-expanded="false" aria-controls="pol-a4"><span class="pol-num">04</span><span class="pol-title" data-i18n="pol4_title">Verstrekken van correcte contactgegevens</span><span class="pol-icon" aria-hidden="true"></span></button></h3>
+        <div class="pol-a" id="pol-a4" role="region" aria-labelledby="pol-q4" inert>
+          <div class="pol-a-inner">
+            <p data-i18n="pol4_body">Bij het maken van een afspraak is de klant verplicht om juiste en actuele contactgegevens te verstrekken. Deze gegevens worden gebruikt om indien nodig contact op te nemen met de klant.</p>
+          </div>
+        </div>
+      </li>
+      <li class="pol-item">
+        <h3 class="pol-h"><button type="button" class="pol-q" id="pol-q5" aria-expanded="false" aria-controls="pol-a5"><span class="pol-num">05</span><span class="pol-title" data-i18n="pol5_title">Akkoordverklaring</span><span class="pol-icon" aria-hidden="true"></span></button></h3>
+        <div class="pol-a" id="pol-a5" role="region" aria-labelledby="pol-q5" inert>
+          <div class="pol-a-inner">
+            <p data-i18n="pol5_body">Door een afspraak te maken, verklaart de klant kennis te hebben genomen van deze voorwaarden en hiermee akkoord te gaan.</p>
+          </div>
+        </div>
+      </li>
+      </ol>
+      <p class="policy-thanks" data-i18n="policy_thanks">Wij danken u voor uw begrip en medewerking en streven ernaar iedere klant een professionele en kwalitatieve behandeling te bieden.</p>
     </div>
   </section>
 
   <section class="visit wrap" id="visit">
     <div class="visit-card">
-      <img class="watermark" src="./images/logo-mark-white.png" alt="" aria-hidden="true">
+      <img class="watermark" src="./images/logo-mark-white.png" width="430" height="409" alt="" aria-hidden="true">
       <div class="visit-copy">
         <h2 class="h2" data-i18n="visit_title">Jouw volgende knipbeurt is een klik verwijderd</h2>
         <p data-i18n="visit_body">Kies een tijd die jou uitkomt en laat de rest aan ons over.</p>
@@ -652,8 +852,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       </div>
       <dl class="facts">
         <div><dt data-i18n="fact_location">Locatie</dt><dd>De Waag 8<br>8232 DG Lelystad</dd></div>
-        <div><dt data-i18n="fact_hours">Openingstijden</dt><dd data-i18n="fact_hours_val">Ma–Za 12:00–20:00<br>Zondag gesloten</dd></div>
-        <div><dt data-i18n="fact_phone">Telefoon</dt><dd>06 12 34 56 78</dd></div>
+        <div><dt data-i18n="fact_hours">Openingstijden</dt><dd data-i18n="fact_hours_val">Ma–Do 11:00–21:00<br>Vr 11:00–20:00<br>Za 10:00–14:00<br>Zo gesloten</dd></div>
+        <div><dt data-i18n="fact_contact">Contact</dt><dd><a href="tel:+31686386417">06 86 38 64 17</a><br><a href="mailto:barbersaph@hotmail.com">barbersaph@hotmail.com</a></dd></div>
         <div><dt data-i18n="fact_bookings">Boekingen</dt><dd data-i18n="fact_bookings_val">Alleen op afspraak</dd></div>
       </dl>
     </div>
@@ -670,11 +870,9 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       <span class="bw"><span class="bn">FRESHFADEZ</span><span class="bs">STUDIOS</span></span>
       <span style="margin-left:8px">© 2026</span>
     </div>
-    <p class="powered"><span data-i18n="footer_powered">Aangedreven door</span> <a href="https://branch.nu" target="_blank" rel="noopener"><img src="./images/branch-logo-icon.png" alt="">Branch</a></p>
+    <p class="powered"><span data-i18n="footer_powered">Aangedreven door</span> <a href="https://branch.nu" target="_blank" rel="noopener"><img src="./images/branch-logo-icon.png" alt="" width="16" height="9">Branch</a></p>
     <div class="footer-links">
-      <a href="#">Instagram</a>
-      <a href="#">TikTok</a>
-      <a href="#">Facebook</a>
+      <a href="#policy" data-i18n="footer_policy">Voorwaarden</a>
       <a class="footer-barber" href="./barber-login.html" data-i18n="footer_barber">Barber login</a>
     </div>
   </div>
@@ -688,37 +886,57 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   var I18N = {
     nl: {
       nav_services:'Diensten', nav_about:'Over ons', nav_work:'Ons werk', nav_visit:'Bezoek', nav_book:'Boek nu',
-      kicker:'Premium barbershop & studio',
+      kicker:'Premium barbershop in Lelystad',
       hero_title:'Boek je afspraak direct online',
       hero_desc:'Kies je dienst en een tijd die jou uitkomt. Geen account nodig, klaar in een paar klikken.',
-      hero_cta:'Afspraak maken', hero_link:'Bekijk diensten',
-      ticker_1:'Knipbeurten', ticker_2:'Skin fades', ticker_3:'Baard verzorging', ticker_4:'Alleen op afspraak', ticker_5:'Ma–Za 12:00–20:00',
+      hero_cta:'Afspraak maken', hero_link:'Bekijk diensten', hero_img_alt:'Barber aan het werk bij Fresh Fadez Studios',
+      ticker_1:'Knipbeurten', ticker_2:'Skin fades', ticker_3:'Baard verzorging', ticker_4:'Alleen op afspraak', ticker_5:'Ma–Za geopend',
       svc_h2:'Vind jouw knipbeurt',
       svc_lede:'Elke dienst begint met een kort gesprek, zodat het resultaat past bij jouw gezicht, haar en routine.',
-      svc_takes:'Duurt ongeveer ',
-      about_eyebrow:'Over mij', about_title:'[Jouw titel hier]',
-      about_p1:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
-      about_p2:'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      about_sign:'[Jouw naam], oprichter van Fresh Fadez Studios', about_link:'Boek een stoel bij mij',
-      work_title:'Echte klanten, echte resultaten', work_lede:'Een paar recente stoelen. Nieuw werk komt elke week op Instagram.', work_link:'Volg ons op Instagram',
+      svc_price_label:'Prijs', svc_time_label:'Duur', svc_time_value:'ca. {n} min',
+      about_eyebrow:'Over mij', about_title:'Elke knipbeurt met aandacht',
+      about_p1:'Fresh Fadez Studios is een barbershop in Lelystad, aan De Waag 8. Hier draait alles om strakke fades, scherpe lijnen en een baard die bij je gezicht past. Je zit hier alleen op afspraak, dus je hoeft nooit te wachten en de stoel is helemaal voor jou.',
+      about_p2:'Elke afspraak begint met een kort gesprek over wat je wilt, zodat het resultaat past bij jouw haar en jouw routine. Of je nu komt voor een skin fade, een complete knipbeurt met baard of een kids cut: je loopt naar buiten met een cut waar je zelf blij mee bent.',
+      about_sign:'Oprichter van Fresh Fadez Studios', about_link:'Boek een stoel bij mij',
+      work_title:'Echte klanten, echte resultaten', work_lede:'Een paar recente knipbeurten uit de studio.',
       gallery_1:'Skin fade met krullen', gallery_2:'Drop fade met highlights en baard', gallery_3:'Taper fade met textuur', gallery_4:'Locs met lijnwerk en baard',
       visit_title:'Jouw volgende knipbeurt is een klik verwijderd', visit_body:'Kies een tijd die jou uitkomt en laat de rest aan ons over.',
-      fact_location:'Locatie', fact_hours:'Openingstijden', fact_hours_val:'Ma–Za 12:00–20:00<br>Zondag gesloten', fact_phone:'Telefoon', fact_bookings:'Boekingen', fact_bookings_val:'Alleen op afspraak',
+      fact_location:'Locatie', fact_hours:'Openingstijden', fact_hours_val:'Ma–Do 11:00–21:00<br>Vr 11:00–20:00<br>Za 10:00–14:00<br>Zo gesloten', fact_contact:'Contact', fact_bookings:'Boekingen', fact_bookings_val:'Alleen op afspraak',
       footer_powered:'Aangedreven door', footer_barber:'Barber login',
-      chip_haircut:'Knippen', chip_fade:'Fade', chip_beard:'Baard',
+      policy_title:'Policy & voorwaarden',
+      policy_intro:'Om de kwaliteit van onze dienstverlening te waarborgen en onze planning efficiënt te laten verlopen, verzoeken wij iedere klant onderstaande voorwaarden zorgvuldig door te nemen. Bij het maken van een afspraak gaat de klant akkoord met de onderstaande bepalingen.',
+      pol1_title:'Op tijd aanwezig zijn',
+      pol1_body:'Wij verzoeken iedere klant om op tijd aanwezig te zijn op de geplande afspraak. Te laat komen wordt niet gewaardeerd. Bij een vertraging van 15 minuten of langer wordt de afspraak automatisch geannuleerd. Dit is nodig om de planning en de afspraken van andere klanten te respecteren. Bij het niet nakomen van de afspraak wordt het volledige bedrag in rekening gebracht.',
+      pol2_title:'Annuleren en wijzigen van afspraken',
+      pol2_body1:'Het annuleren of verplaatsen van een afspraak is uitsluitend kosteloos mogelijk tot uiterlijk 24 uur vóór het geplande tijdstip.',
+      pol2_body2:'Bij annulering of wijziging binnen 24 uur vóór de afspraak wordt het volledige bedrag van de geboekte behandeling in rekening gebracht.',
+      pol2_body3:'Annuleringen kunnen worden doorgegeven via een rechtstreeks bericht aan de kapper of via het online boekingssysteem.',
+      pol3_title:'Haarverzorging voorafgaand aan de behandeling',
+      pol3_body:'Klanten dienen ervoor te zorgen dat het haar vóór aanvang van de behandeling schoon en gewassen is. Indien hier niet aan wordt voldaan, kan dit invloed hebben op de uitvoering en kwaliteit van de behandeling.',
+      pol4_title:'Verstrekken van correcte contactgegevens',
+      pol4_body:'Bij het maken van een afspraak is de klant verplicht om juiste en actuele contactgegevens te verstrekken. Deze gegevens worden gebruikt om indien nodig contact op te nemen met de klant.',
+      pol5_title:'Akkoordverklaring',
+      pol5_body:'Door een afspraak te maken, verklaart de klant kennis te hebben genomen van deze voorwaarden en hiermee akkoord te gaan.',
+      policy_thanks:'Wij danken u voor uw begrip en medewerking en streven ernaar iedere klant een professionele en kwalitatieve behandeling te bieden.',
+      pol_fact1_num:'15 min', pol_fact1_label:'Te laat? Dan vervalt je afspraak.', pol_fact2_num:'24 uur', pol_fact2_label:'Tot zo lang vooraf kosteloos annuleren.',
+      footer_policy:'Voorwaarden', modal_agree:'Ik ga akkoord met de policy & voorwaarden*', modal_read_policy:'Lees de voorwaarden',
+      chip_haircut:'Knippen', chip_contour:'Contour', chip_beard:'Baard',
       modal_step1_title:'KIES DIENSTEN', modal_step2_title:'KIES DATUM EN TIJD', modal_step3_title:'JOUW GEGEVENS', modal_step4_title:'Afspraak bevestigd',
       modal_required:'*Verplicht', modal_total:'Totaal', modal_choose_time:'Kies een tijd', modal_restart:'Nog een afspraak boeken',
       ph_first:'Voornaam*', ph_last:'Achternaam*', ph_email:'E-mailadres*', ph_phone:'Telefoonnummer*', ph_notes:'Opmerkingen',
       modal_save_details:'Bewaar mijn gegevens voor de volgende keer', modal_newsletter:'Ja, ik meld me aan voor de nieuwsbrief',
       modal_confirm:'Afspraak bevestigen', modal_close:'Sluiten',
+      pay_fee_label:'Reserveringskosten (nu online)', pay_in_store:'Je afspraak ({amount}) betaal je in de zaak.', pay_confirm:'Betaal {fee} en bevestig', pay_redirect:'Doorsturen naar betaling…',
+      pay_checking:'Betaling controleren…', pay_paid_sub:'{fee} reserveringskosten betaald · {amount} betaal je in de zaak',
+      pay_pending_title:'Betaling wordt verwerkt', pay_pending_body:'We hebben je betaling nog niet binnen. Ververs deze pagina over een minuutje om de status te zien.',
+      pay_failed_title:'Betaling niet gelukt', pay_failed_body:'Je afspraak is niet geboekt en er is niets afgeschreven. Probeer het opnieuw.', pay_retry:'Opnieuw boeken',
       ui_minutes:'min', ui_available_times_on:'Beschikbare tijden op', ui_at:'om',
       ui_loading:'Laden…', ui_load_error:'Kon gegevens niet laden. Probeer het opnieuw.', ui_retry:'Opnieuw proberen',
       ui_booking_error:'Er ging iets mis. Probeer het opnieuw.', ui_slot_taken:'Dit tijdstip is net geboekt. Kies een andere tijd.', ui_booking_rejected:'Je afspraak kon niet worden geboekt. Ververs de pagina en probeer het opnieuw.',
       ui_submitting:'Bezig…', ui_no_services:'Er zijn momenteel geen diensten beschikbaar.',
       cat_contour:'Contour (alleen)', cat_baard:'Baard', cat_knippen:'Knippen (inclusief baard)', cat_kids:'Knipbeurt kinderen (tot 11 jaar)',
-      svc_contour:'Contour', 'svc_skin-fade':'Skin Fade', svc_baard:'Baard trimmen', 'svc_knippen-baard':'Knippen (inclusief baard)', 'svc_fade-style':'Fade & Style', svc_kids:'Kids Cut',
-      'desc_knippen-baard':'Een volledige knipbeurt met baardtrim, naadloos op elkaar afgestemd.', 'desc_skin-fade':'Strak tot op de huid. Vloeiend, scherp en zonder harde lijnen.', desc_baard:'Scherpe lijnen en een nette afwerking, passend bij jouw gezicht.',
-      'photo_knippen-baard':'Foto: knipbeurt met baard', 'photo_skin-fade':'Foto: close-up van een skin fade', photo_baard:'Foto: baardtrim met warme handdoek',
+      svc_contour:'Contour', svc_baard:'Baard trimmen', 'svc_knippen-baard':'Knippen (inclusief baard)', svc_kids:'Knipbeurt kids',
+      'desc_knippen-baard':'Een volledige knipbeurt met baardtrim, naadloos op elkaar afgestemd.', desc_contour:'Alleen de lijnen strak gezet: haarlijn, contouren en nek. Ideaal tussen twee knipbeurten door.', desc_baard:'Scherpe lijnen en een nette afwerking, passend bij jouw gezicht.',
       book_prefix:'Boek ',
       days:['Zo','Ma','Di','Wo','Do','Vr','Za'],
       months:['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'],
@@ -726,37 +944,57 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     },
     en: {
       nav_services:'Services', nav_about:'About', nav_work:'Our work', nav_visit:'Visit', nav_book:'Book now',
-      kicker:'Premium barbershop & studio',
+      kicker:'Premium barbershop in Lelystad',
       hero_title:'Book your appointment, right now',
       hero_desc:'Pick your service and a time that works. No account needed, done in a few clicks.',
-      hero_cta:'Book an appointment', hero_link:'View services',
-      ticker_1:'Haircuts', ticker_2:'Skin fades', ticker_3:'Beard grooming', ticker_4:'By appointment only', ticker_5:'Mon–Sat 12:00–20:00',
+      hero_cta:'Book an appointment', hero_link:'View services', hero_img_alt:'Barber at work at Fresh Fadez Studios',
+      ticker_1:'Haircuts', ticker_2:'Skin fades', ticker_3:'Beard grooming', ticker_4:'By appointment only', ticker_5:'Open Mon–Sat',
       svc_h2:'Find your cut',
       svc_lede:'Every service starts with a quick consultation, so the result fits your face, your hair and your routine.',
-      svc_takes:'Takes about ',
-      about_eyebrow:'About me', about_title:'[Your title here]',
-      about_p1:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      about_p2:'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      about_sign:'[Your name], founder of Fresh Fadez Studios', about_link:'Book a chair with me',
-      work_title:'Real clients, real results', work_lede:'A few recent chairs. New work goes up on Instagram every week.', work_link:'Follow us on Instagram',
+      svc_price_label:'Price', svc_time_label:'Time', svc_time_value:'about {n} min',
+      about_eyebrow:'About me', about_title:'Every cut, done with care',
+      about_p1:'Fresh Fadez Studios is a barbershop in Lelystad, at De Waag 8. It is all about clean fades, sharp lines and a beard that suits your face. It is appointment only, so you never wait and the chair is all yours.',
+      about_p2:'Every appointment starts with a quick chat about what you want, so the result fits your hair and your routine. Whether you come in for a skin fade, a full cut with beard or a kids cut, you leave with a cut you are happy with.',
+      about_sign:'Founder of Fresh Fadez Studios', about_link:'Book a chair with me',
+      work_title:'Real clients, real results', work_lede:'A few recent cuts from the studio.',
       gallery_1:'Skin fade with curls', gallery_2:'Drop fade with highlights and beard', gallery_3:'Textured taper fade', gallery_4:'Locs with line-up and beard',
       visit_title:'Your next cut is a click away', visit_body:'Choose a time that works for you and let us take care of the rest.',
-      fact_location:'Location', fact_hours:'Opening hours', fact_hours_val:'Mon–Sat 12:00–20:00<br>Sunday closed', fact_phone:'Phone', fact_bookings:'Bookings', fact_bookings_val:'By appointment only',
+      fact_location:'Location', fact_hours:'Opening hours', fact_hours_val:'Mon–Thu 11:00–21:00<br>Fri 11:00–20:00<br>Sat 10:00–14:00<br>Sun closed', fact_contact:'Contact', fact_bookings:'Bookings', fact_bookings_val:'By appointment only',
       footer_powered:'Powered by', footer_barber:'Barber login',
-      chip_haircut:'Haircut', chip_fade:'Fade', chip_beard:'Beard',
+      policy_title:'Policy & terms',
+      policy_intro:'To protect the quality of our service and keep our schedule running smoothly, we ask every client to read the terms below carefully. By booking an appointment, the client agrees to the following terms.',
+      pol1_title:'Arrive on time',
+      pol1_body:'We ask every client to arrive on time for their scheduled appointment. Arriving late is not appreciated. If you are 15 minutes or more late, the appointment is cancelled automatically. This is necessary to respect the schedule and the appointments of other clients. If you miss your appointment, the full amount will be charged.',
+      pol2_title:'Cancelling and changing appointments',
+      pol2_body1:'Cancelling or rescheduling an appointment is only free of charge up to 24 hours before the scheduled time.',
+      pol2_body2:'If you cancel or reschedule within 24 hours of the appointment, the full price of the booked service will be charged.',
+      pol2_body3:'Cancellations can be made by sending a direct message to the barber or through the online booking system.',
+      pol3_title:'Hair care before your appointment',
+      pol3_body:'Clients must make sure their hair is clean and washed before the service begins. If it is not, this can affect how the service is carried out and its quality.',
+      pol4_title:'Correct contact details',
+      pol4_body:'When booking an appointment, the client must provide correct and up-to-date contact details. These details are used to contact the client when needed.',
+      pol5_title:'Agreement',
+      pol5_body:'By booking an appointment, the client confirms they have read these terms and agree to them.',
+      policy_thanks:'Thank you for your understanding and cooperation. We aim to give every client a professional, high-quality service.',
+      pol_fact1_num:'15 min', pol_fact1_label:'Late? Your appointment is cancelled.', pol_fact2_num:'24 hrs', pol_fact2_label:'Free to cancel up to this long before.',
+      footer_policy:'Terms', modal_agree:'I agree to the policy & terms*', modal_read_policy:'Read the terms',
+      chip_haircut:'Haircut', chip_contour:'Contour', chip_beard:'Beard',
       modal_step1_title:'CHOOSE SERVICES', modal_step2_title:'CHOOSE DATE AND TIME', modal_step3_title:'YOUR DETAILS', modal_step4_title:'Appointment confirmed',
       modal_required:'*Required', modal_total:'Total', modal_choose_time:'Choose a time', modal_restart:'Book another appointment',
       ph_first:'First name*', ph_last:'Last name*', ph_email:'Email address*', ph_phone:'Phone number*', ph_notes:'Notes',
       modal_save_details:'Save my details for next time', modal_newsletter:'Yes, sign me up for the newsletter',
       modal_confirm:'Confirm appointment', modal_close:'Close',
+      pay_fee_label:'Booking fee (paid online now)', pay_in_store:'You pay for your appointment ({amount}) in the shop.', pay_confirm:'Pay {fee} and confirm', pay_redirect:'Redirecting to payment…',
+      pay_checking:'Checking your payment…', pay_paid_sub:'{fee} booking fee paid · {amount} to pay in the shop',
+      pay_pending_title:'Payment is being processed', pay_pending_body:'We haven\u2019t received your payment yet. Refresh this page in a minute to see the status.',
+      pay_failed_title:'Payment not completed', pay_failed_body:'Your appointment was not booked and nothing was charged. Please try again.', pay_retry:'Book again',
       ui_minutes:'min', ui_available_times_on:'Available times on', ui_at:'at',
       ui_loading:'Loading…', ui_load_error:'Could not load data. Please try again.', ui_retry:'Try again',
       ui_booking_error:'Something went wrong. Please try again.', ui_slot_taken:'That time slot was just booked. Please choose another.', ui_booking_rejected:'Your appointment couldn\u2019t be booked. Refresh the page and try again.',
       ui_submitting:'Submitting…', ui_no_services:'No services are currently available.',
       cat_contour:'Contour (only)', cat_baard:'Beard', cat_knippen:'Haircut (incl. beard)', cat_kids:'Kids haircut (up to 11 years)',
-      svc_contour:'Contour', 'svc_skin-fade':'Skin Fade', svc_baard:'Beard trim', 'svc_knippen-baard':'Haircut (incl. beard)', 'svc_fade-style':'Fade & Style', svc_kids:'Kids Cut',
-      'desc_knippen-baard':'A complete haircut with a beard trim, blended seamlessly together.', 'desc_skin-fade':'Tight down to the skin. Smooth, sharp and free of harsh lines.', desc_baard:'Sharp lines and a clean finish, shaped to suit your face.',
-      'photo_knippen-baard':'Photo: haircut with beard trim', 'photo_skin-fade':'Photo: close-up of a skin fade', photo_baard:'Photo: beard trim with hot towel',
+      svc_contour:'Contour', svc_baard:'Beard trim', 'svc_knippen-baard':'Haircut (incl. beard)', svc_kids:'Kids haircut',
+      'desc_knippen-baard':'A complete haircut with a beard trim, blended seamlessly together.', desc_contour:'Just the lines sharpened up: hairline, edges and neck. Ideal between two haircuts.', desc_baard:'Sharp lines and a clean finish, shaped to suit your face.',
       book_prefix:'Book ',
       days:['Su','Mo','Tu','We','Th','Fr','Sa'],
       months:['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
@@ -773,7 +1011,6 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     document.querySelectorAll('[data-i18n]').forEach(function(el){
       var key = el.dataset.i18n;
       if (I18N[currentLang][key] === undefined) return;
-      if (el.id === 'svc-takes' || key === 'svc_takes'){ return; }
       if (key === 'fact_hours_val' || key === 'fact_bookings_val'){ el.innerHTML = I18N[currentLang][key]; return; }
       el.textContent = I18N[currentLang][key];
     });
@@ -785,17 +1022,14 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       var key = el.dataset.i18nPh;
       if (I18N[currentLang][key] !== undefined) el.placeholder = I18N[currentLang][key];
     });
-    var svcTakes = document.querySelector('[data-i18n="svc_takes"]');
-    if (svcTakes){
-      svcTakes.firstChild && svcTakes.firstChild.nodeType === 3 ? (svcTakes.firstChild.textContent = t('svc_takes')) : svcTakes.prepend(document.createTextNode(t('svc_takes')));
-    }
     document.getElementById('lang-btn-label').textContent = currentLang.toUpperCase();
     document.querySelectorAll('.lang-opt,[data-lang]').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.lang === currentLang ? 'true' : 'false'); });
     renderTicker();
     renderServices();
     renderShowcase();
     renderDates();
-    if (selectedTime) renderSummary();
+    applyPaymentUi();
+    renderResult();
   }
   function setLanguage(lang){
     currentLang = lang;
@@ -838,7 +1072,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   var selected = {};
   var dateOffset = 0, selectedDateIdx = null, selectedTime = null;
   var availabilityRequestId = 0;
-  var SHOWCASE = ['knippen-baard', 'skin-fade', 'baard'];
+  var SHOWCASE = ['knippen-baard', 'contour', 'baard'];
   var activeShowcase = 'knippen-baard';
 
   function spinnerSvg(){
@@ -1001,6 +1235,83 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     document.getElementById('summary-total').textContent = euro(total);
     document.getElementById('confirm-line').textContent = label;
     document.getElementById('confirm-total').textContent = t('modal_total') + ' ' + euro(total) + ' · Fresh Fadez Studios';
+    document.getElementById('summary-fee-amount').textContent = euro(PAYMENT.fee);
+    document.getElementById('summary-fee-note').textContent = t('pay_in_store').replace('{amount}', euro(total));
+  }
+
+  /* ---- Reservation fee (Mollie): paid online, the appointment itself is paid in the shop ---- */
+  var PAYMENT = { enabled: false, fee: 0 };
+  function applyPaymentUi(){
+    document.getElementById('summary-fee').hidden = !PAYMENT.enabled;
+    var btn = document.getElementById('confirm-btn');
+    if (!btn.classList.contains('busy')) btn.textContent = PAYMENT.enabled ? t('pay_confirm').replace('{fee}', euro(PAYMENT.fee)) : t('modal_confirm');
+    if (selectedTime) renderSummary();
+  }
+  function loadPaymentConfig(){
+    fetch(API_BASE + '/payments/config').then(function(res){ return res.ok ? res.json() : null; })
+      .then(function(c){ if (c) PAYMENT = c; applyPaymentUi(); })
+      .catch(function(err){ console.error(err); });
+  }
+
+  function isoLabel(iso, time){
+    var p = iso.split('-'), d = new Date(+p[0], p[1] - 1, +p[2]);
+    return I18N[currentLang].dayNamesFull[d.getDay()] + ' ' + d.getDate() + ' ' + I18N[currentLang].months[d.getMonth()].toLowerCase() + ' ' + t('ui_at') + ' ' + time;
+  }
+  // What step 4 shows: 'confirmed' (no payment needed), or the outcome of the Mollie payment.
+  var result = null;
+  function showResult(state, data){
+    result = { state: state, data: data };
+    bookingDone = state === 'confirmed' || state === 'paid' || state === 'failed';
+    renderResult();
+    goStep(4);
+  }
+  function renderResult(){
+    if (!result) return;
+    var st = result.state, data = result.data || {};
+    var icons = { confirmed: 'ff-check', paid: 'ff-check', pending: 'ff-clock', failed: 'ff-close' };
+    var badge = document.getElementById('bk-result-badge');
+    badge.className = 'bk-check-badge' + (st === 'failed' ? ' fail' : st === 'checking' || st === 'pending' ? ' wait' : '');
+    badge.innerHTML = st === 'checking' ? spinnerSvg() : '<svg width="32" height="32" aria-hidden="true"><use href="#' + icons[st] + '"/></svg>';
+    var titles = { confirmed: 'modal_step4_title', paid: 'modal_step4_title', checking: 'pay_checking', pending: 'pay_pending_title', failed: 'pay_failed_title' };
+    document.getElementById('bk-result-title').textContent = t(titles[st]);
+    var line = document.getElementById('confirm-line'), sub = document.getElementById('confirm-total');
+    if (st === 'paid'){
+      line.textContent = isoLabel(data.date, data.time);
+      sub.textContent = t('pay_paid_sub').replace('{fee}', euro(data.fee)).replace('{amount}', euro(data.totalPrice));
+    } else if (st === 'pending' || st === 'failed'){
+      line.textContent = '';
+      sub.textContent = t(st === 'pending' ? 'pay_pending_body' : 'pay_failed_body');
+    }
+    line.hidden = !line.textContent;
+    document.getElementById('bk-receipt').hidden = st === 'checking';
+    document.getElementById('bk-done-actions').hidden = st === 'checking';
+    var restart = document.getElementById('bk-restart');
+    restart.hidden = st === 'pending';
+    restart.textContent = t(st === 'failed' ? 'pay_retry' : 'modal_restart');
+  }
+
+  // Mollie sends the customer back to /?booking=<id>. The id stays in the address until the outcome
+  // is final, so refreshing a payment that is still processing checks it again.
+  function checkPayment(id, attempt){
+    if (!attempt){ showResult('checking'); goToBooking(4); }
+    fetch(API_BASE + '/payments/bookings/' + encodeURIComponent(id)).then(function(res){
+      if (!res.ok) throw new Error('status ' + res.status);
+      return res.json();
+    }).then(function(b){
+      var failed = b.status === 'cancelled' || ['canceled','expired','failed'].indexOf(b.paymentStatus) !== -1;
+      if (b.paymentStatus === 'paid' && !failed) return finishPayment('paid', b);
+      if (failed) return finishPayment('failed', b);
+      if (attempt < 6) return setTimeout(function(){ checkPayment(id, attempt + 1); }, 2500);
+      showResult('pending', b);
+    }).catch(function(err){
+      console.error(err);
+      if (attempt < 2) return setTimeout(function(){ checkPayment(id, attempt + 1); }, 2500);
+      showResult('pending');
+    });
+  }
+  function finishPayment(state, b){
+    history.replaceState(null, '', location.pathname + location.hash);
+    showResult(state, b);
   }
 
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -1015,7 +1326,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   };
   function checkForm(){
     var ok = document.getElementById('f-first').value.trim() && document.getElementById('f-last').value.trim() &&
-      EMAIL_RE.test(document.getElementById('f-email').value.trim()) && isValidPhone(document.getElementById('f-phone').value.trim());
+      EMAIL_RE.test(document.getElementById('f-email').value.trim()) && isValidPhone(document.getElementById('f-phone').value.trim()) &&
+      document.getElementById('f-agree').checked;
     document.getElementById('confirm-btn').classList.toggle('disabled', !ok);
   }
   // Flag email/phone only once the client leaves the field, and clear it as soon as it's fixed.
@@ -1028,13 +1340,14 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   ['f-first','f-last','f-email','f-phone'].forEach(function(id){
     document.getElementById(id).addEventListener('input', checkForm);
   });
+  document.getElementById('f-agree').addEventListener('change', checkForm);
 
   function confirmBooking(){
     var btn = document.getElementById('confirm-btn');
     if (btn.classList.contains('disabled')) return;
     var errorEl = document.getElementById('booking-error');
     errorEl.classList.remove('show');
-    btn.classList.add('disabled');
+    btn.classList.add('disabled','busy');
     var originalLabel = btn.textContent;
     btn.textContent = t('ui_submitting');
 
@@ -1049,7 +1362,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       newsletter: document.getElementById('f-newsletter').checked,
       serviceSlugs: Object.keys(selected).filter(function(id){ return selected[id]; }),
       date: d.iso,
-      time: selectedTime
+      time: selectedTime,
+      lang: currentLang
     };
 
     fetch(API_BASE + '/bookings', {
@@ -1063,17 +1377,24 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
         errorEl.textContent = r.res.status === 409 ? t('ui_slot_taken') : r.res.status === 400 ? t('ui_booking_rejected') : t('ui_booking_error');
         errorEl.classList.add('show');
         btn.textContent = originalLabel;
-        btn.classList.remove('disabled');
+        btn.classList.remove('disabled','busy');
         if (r.res.status === 409){ selectedTime = null; goStep(2); }
         return;
       }
-      goStep(4);
+      if (r.body.checkoutUrl){
+        btn.textContent = t('pay_redirect');
+        window.location.href = r.body.checkoutUrl;
+        return;
+      }
+      btn.textContent = originalLabel;
+      btn.classList.remove('busy');
+      showResult('confirmed');
     }).catch(function(err){
       console.error(err);
       errorEl.textContent = t('ui_booking_error');
       errorEl.classList.add('show');
       btn.textContent = originalLabel;
-      btn.classList.remove('disabled');
+      btn.classList.remove('disabled','busy');
     });
   }
   document.getElementById('confirm-btn').addEventListener('click', confirmBooking);
@@ -1094,16 +1415,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     document.getElementById('svc-name').textContent = t('svc_' + activeShowcase);
     document.getElementById('svc-price').textContent = s ? euro(s.price) : '···';
     document.getElementById('svc-desc').textContent = t('desc_' + activeShowcase) || '';
-    document.getElementById('svc-time').textContent = s ? (s.duration + ' ' + t('ui_minutes')) : '···';
-    document.getElementById('svc-photo').textContent = t('photo_' + activeShowcase) || '';
+    document.getElementById('svc-time').textContent = s ? t('svc_time_value').replace('{n}', s.duration) : '···';
     document.getElementById('svc-book').textContent = t('book_prefix') + (t('svc_' + activeShowcase) || '').toLowerCase();
-    var svcTakesEl = document.querySelector('[data-i18n="svc_takes"]');
-    if (svcTakesEl){
-      var timeSpan = document.getElementById('svc-time');
-      svcTakesEl.innerHTML = '';
-      svcTakesEl.appendChild(document.createTextNode(t('svc_takes')));
-      svcTakesEl.appendChild(timeSpan);
-    }
   }
 
   var tabs = document.querySelectorAll('.svc-tab');
@@ -1130,7 +1443,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     moveIndicator(animateSwap && !focusTab);
     updateShowcasePanel();
     if (!reduce && animateSwap && !focusTab){
-      document.querySelectorAll('#svc-panel .ph, #svc-panel .svc-body').forEach(function(el, i){
+      document.querySelectorAll('#svc-panel .svc-body').forEach(function(el, i){
         el.classList.remove('svc-anim'); void el.offsetWidth;
         el.style.animationDelay = (i * 60) + 'ms';
         el.classList.add('svc-anim');
@@ -1149,6 +1462,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   document.getElementById('svc-book').addEventListener('click', function(){ quickBook(activeShowcase); });
 
   function quickBook(slug){
+    bookingDone = false;
     selected = {};
     selected[slug] = true;
     selectedTime = null; selectedDateIdx = null; dateOffset = 0;
@@ -1156,12 +1470,54 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     goToBooking(2);
   }
 
-  /* ================= Booking widget navigation (inline, always visible) ================= */
-  function goToBooking(step){
-    scrollToEl(document.getElementById('top'));
-    goStep(step || 1);
+  /* ================= Booking popup ================= */
+  var overlay = document.getElementById('bk-overlay');
+  var panel = document.getElementById('bk-panel');
+  var lastFocus = null, bookingDone = false;
+
+  function setPageInert(on){
+    Array.prototype.forEach.call(document.body.children, function(el){
+      if (el === overlay || el.tagName === 'SCRIPT' || el.tagName === 'svg') return;
+      if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert');
+    });
   }
+  function goToBooking(step){
+    // A finished booking starts fresh next time the popup opens.
+    if (bookingDone && !step) resetBooking();
+    if (step) goStep(step);
+    if (overlay.classList.contains('open')) return;
+    lastFocus = document.activeElement;
+    setMenu(false);
+    closeLangMenu();
+    document.documentElement.style.overflow = 'hidden';
+    overlay.setAttribute('aria-hidden', 'false');
+    setPageInert(true);
+    overlay.classList.add('open');
+    panel.focus({preventScroll:true});
+  }
+  function closeBooking(){
+    if (!overlay.classList.contains('open')) return;
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    setPageInert(false);
+    document.documentElement.style.overflow = '';
+    if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
+  }
+  overlay.addEventListener('mousedown', function(e){ if (e.target === overlay) closeBooking(); });
+  overlay.querySelectorAll('[data-bk-close]').forEach(function(b){ b.addEventListener('click', closeBooking); });
+  document.addEventListener('keydown', function(e){
+    if (!overlay.classList.contains('open')) return;
+    if (e.key === 'Escape'){ e.stopImmediatePropagation(); closeBooking(); return; }
+    if (e.key !== 'Tab') return;
+    var f = Array.prototype.filter.call(panel.querySelectorAll('button,input,[href],[tabindex]:not([tabindex="-1"])'), function(el){ return !el.disabled && el.offsetParent !== null; });
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && (document.activeElement === first || document.activeElement === panel)){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }, true);
   function resetBooking(){
+    bookingDone = false;
+    result = null;
     selected = {}; dateOffset = 0; selectedDateIdx = null; selectedTime = null;
     ['f-first','f-last','f-email','f-phone','f-notes'].forEach(function(id){
       var el = document.getElementById(id);
@@ -1171,6 +1527,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     });
     document.getElementById('f-save').checked = true;
     document.getElementById('f-newsletter').checked = false;
+    document.getElementById('f-agree').checked = false;
+    checkForm();
     document.getElementById('booking-error').classList.remove('show');
     renderServices();
     goStep(1);
@@ -1205,10 +1563,10 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   document.getElementById('bk-date-next').addEventListener('click', function(){ shiftDate(1); });
   document.getElementById('bk-restart').addEventListener('click', resetBooking);
 
-  ['nav-book-btn','menu-book-btn','visit-book-btn','mobile-cta-btn'].forEach(function(id){
-    document.getElementById(id).addEventListener('click', function(){ goToBooking(1); });
+  ['hero-book-btn','nav-book-btn','menu-book-btn','visit-book-btn','mobile-cta-btn'].forEach(function(id){
+    document.getElementById(id).addEventListener('click', function(){ goToBooking(); });
   });
-  document.getElementById('about-book-link').addEventListener('click', function(e){ e.preventDefault(); goToBooking(1); });
+  document.getElementById('about-book-link').addEventListener('click', function(){ goToBooking(); });
 
   /* ================= Mobile menu ================= */
   var menuBtn = document.getElementById('menu-btn');
@@ -1294,7 +1652,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 
   /* Scroll reveal */
   if (!reduce && 'IntersectionObserver' in window){
-    var groups = [['.svc-left','.svc-card'],['.about-img','.about-copy'],['.work-head'],['.gallery .shot'],['.visit-card'],['.footer-inner']];
+    var groups = [['.svc-left','.svc-card'],['.about-img','.about-copy'],['.work-head'],['.gallery .shot'],['.visit-card'],['.policy-head','.policy-body'],['.footer-inner']];
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
     }, {rootMargin:'0px 0px -8% 0px', threshold:0.08});
@@ -1312,6 +1670,25 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
   }
 
   /* ================= Init ================= */
+  // The popup shows the same policy text as the page section; clone it before translating so both stay in sync.
+  var policyClone = document.getElementById('policy-list').cloneNode(true);
+  policyClone.removeAttribute('id');
+  // In the popup every rule is shown in full, so drop the accordion buttons and ids.
+  policyClone.querySelectorAll('.pol-q').forEach(function(b){ var h = b.parentNode; while (b.firstChild) h.insertBefore(b.firstChild, b); b.remove(); });
+  policyClone.querySelectorAll('.pol-a').forEach(function(a){ a.removeAttribute('inert'); a.removeAttribute('id'); a.removeAttribute('role'); a.removeAttribute('aria-labelledby'); a.classList.add('open'); });
+  document.getElementById('bk-policy-body').appendChild(policyClone);
+
+  /* Policy accordion */
+  function setPolicyItem(btn, open){
+    var panelEl = document.getElementById(btn.getAttribute('aria-controls'));
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    panelEl.classList.toggle('open', open);
+    if (open) panelEl.removeAttribute('inert'); else panelEl.setAttribute('inert', '');
+  }
+  document.querySelectorAll('#policy-list .pol-q').forEach(function(btn, i){
+    btn.addEventListener('click', function(){ setPolicyItem(btn, btn.getAttribute('aria-expanded') !== 'true'); });
+    if (i === 0) setPolicyItem(btn, true);
+  });
   applyLanguage();
   selectShowcase('knippen-baard');
   goStep(1);
@@ -1323,6 +1700,9 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     requestAnimationFrame(function(){ indicator.classList.add('ready'); });
   });
   loadServices();
+  loadPaymentConfig();
+  var returnId = new URLSearchParams(location.search).get('booking');
+  if (returnId) checkPayment(returnId, 0);
 })();
 </script>
 </body>
