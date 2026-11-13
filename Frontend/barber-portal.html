@@ -94,6 +94,7 @@ h1{margin:0;font-size:clamp(26px,5vw,34px);line-height:1.05;font-weight:650;font
 .flag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;border:1px solid var(--line-dark);font-size:11px;font-weight:600;color:var(--muted-dark);white-space:nowrap}
 .flag svg{width:12px;height:12px;flex:none}
 .flag-live{border-color:var(--ok);color:var(--ok)}
+.flag-unpaid,.flag-clash{border-color:rgba(242,163,153,.5);color:var(--danger)}
 .r-phone{font-size:14px;color:var(--ice);text-underline-offset:3px;white-space:nowrap}
 .r-actions{display:flex;gap:6px}
 .r-actions .btn{min-height:36px;padding:0 14px;font-size:13px}
@@ -493,7 +494,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       empty_upcoming:'Geen komende afspraken.', empty_past:'Nog geen afgeronde afspraken.', empty_cancelled:'Geen geannuleerde afspraken.',
       search_upcoming:'Zoek in komend', search_past:'Zoek in geweest', search_cancelled:'Zoek in geannuleerd',
       search_ph:'Naam, e-mail of telefoon',
-      prev_aria:'Vorige pagina', next_aria:'Volgende pagina', pages_aria:'Pagina\'s', page_n:'Pagina {n}', details:'Details', d_phone:'Telefoon', d_email:'E-mail', d_notes:'Notitie', d_history:'Geschiedenis', flag_note:'Notitie', flag_moved:'Verplaatst', no_results:'Geen afspraken gevonden voor “{q}”.',
+      prev_aria:'Vorige pagina', next_aria:'Volgende pagina', pages_aria:'Pagina\'s', page_n:'Pagina {n}', details:'Details', d_phone:'Telefoon', d_email:'E-mail', d_notes:'Notitie', d_history:'Geschiedenis', flag_note:'Notitie', flag_unpaid:'Niet betaald', flag_clash:'Overlapt met {time}', d_payment:'Reservering', pay_paid:'€{fee} online betaald', pay_open:'€{fee} nog niet betaald (klant is bij de betaling of heeft die afgebroken)', flag_moved:'Verplaatst', no_results:'Geen afspraken gevonden voor “{q}”.',
       page_info:'Pagina {page} van {pages} · {total} afspraken',
       yesterday:'Gisteren', count_one:'1 afspraak', count_many:'{n} afspraken',
       today:'Vandaag', tomorrow:'Morgen', min:'min', in_progress:'Nu bezig',
@@ -539,7 +540,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       empty_upcoming:'No upcoming appointments.', empty_past:'No finished appointments yet.', empty_cancelled:'No cancelled appointments.',
       search_upcoming:'Search upcoming', search_past:'Search past', search_cancelled:'Search cancelled',
       search_ph:'Name, email or phone',
-      prev_aria:'Previous page', next_aria:'Next page', pages_aria:'Pages', page_n:'Page {n}', details:'Details', d_phone:'Phone', d_email:'Email', d_notes:'Note', d_history:'History', flag_note:'Note', flag_moved:'Moved', no_results:'No appointments found for “{q}”.',
+      prev_aria:'Previous page', next_aria:'Next page', pages_aria:'Pages', page_n:'Page {n}', details:'Details', d_phone:'Phone', d_email:'Email', d_notes:'Note', d_history:'History', flag_note:'Note', flag_unpaid:'Not paid', flag_clash:'Overlaps {time}', d_payment:'Booking fee', pay_paid:'€{fee} paid online', pay_open:'€{fee} not paid yet (the customer is paying or abandoned it)', flag_moved:'Moved', no_results:'No appointments found for “{q}”.',
       page_info:'Page {page} of {pages} · {total} appointments',
       yesterday:'Yesterday', count_one:'1 appointment', count_many:'{n} appointments',
       today:'Today', tomorrow:'Tomorrow', min:'min', in_progress:'In progress',
@@ -775,6 +776,17 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
     }
     var perDay = {};
     bookings.forEach(function(b){ perDay[b.date] = (perDay[b.date] || 0) + 1; });
+    // Appointments that overlap another one on the same day (only possible with data from an older
+    // version); the barber should move one of them.
+    var clashWith = {};
+    if (view === 'upcoming'){
+      bookings.forEach(function(a){
+        bookings.forEach(function(b){
+          if (a === b || a.date !== b.date) return;
+          if (a.time < addTime(b.time, lengthOf(b)) && b.time < addTime(a.time, lengthOf(a))) clashWith[a._id] = clashWith[a._id] || b.time;
+        });
+      });
+    }
     var chev = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
     var html = '', lastDay = null;
     bookings.forEach(function(b){
@@ -788,7 +800,9 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       var started = view === 'upcoming' && b.date + 'T' + b.time <= nowStamp();
       var len = lengthOf(b);
       var moved = b.rescheduledFrom && b.rescheduledFrom.date;
-      var flags = (started ? flag('live', t('in_progress')) : '') + (moved ? flag('moved', t('flag_moved')) : '') + (b.notes ? flag('note', t('flag_note')) : '');
+      // An online booking holds its time while the customer pays the fee at Mollie; until then the barber sees it's unpaid.
+      var unpaid = b.status === 'confirmed' && b.payment && b.payment.status !== 'paid';
+      var flags = (started ? flag('live', t('in_progress')) : '') + (clashWith[b._id] ? flag('clash', t('flag_clash', { time: clashWith[b._id] })) : '') + (unpaid ? flag('unpaid', t('flag_unpaid')) : '') + (moved ? flag('moved', t('flag_moved')) : '') + (b.notes ? flag('note', t('flag_note')) : '');
       // An appointment in progress can still be edited (e.g. it finished early), not moved or cancelled.
       var actions = view !== 'upcoming' ? '' :
         '<div class="r-actions"><button type="button" class="btn" data-edit="' + id + '">' + t('edit') + '</button>' +
@@ -811,6 +825,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
           '<dt>' + t('d_phone') + '</dt><dd><a href="tel:' + esc(b.phone) + '">' + esc(b.phone) + '</a></dd>' +
           (b.email ? '<dt>' + t('d_email') + '</dt><dd><a href="mailto:' + esc(b.email) + '">' + esc(b.email) + '</a></dd>' : '') +
           (b.notes ? '<dt>' + t('d_notes') + '</dt><dd class="r-notes">' + esc(b.notes) + '</dd>' : '') +
+          (b.payment ? '<dt>' + t('d_payment') + '</dt><dd>' + esc(t(b.payment.status === 'paid' ? 'pay_paid' : 'pay_open', { fee: Number(b.payment.amount || 0).toFixed(2).replace('.', ',') })) + '</dd>' : '') +
           (history.length ? '<dt>' + t('d_history') + '</dt><dd>' + history.map(esc).join('<br>') + '</dd>' : '') +
         '</dl>' + actions + '</div>' +
       '</div>';
@@ -829,6 +844,8 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
     listEl.querySelectorAll('[data-move]').forEach(function(btn){ btn.addEventListener('click', function(){ openMove(btn.dataset.move); }); });
   }
   var FLAG_ICONS = {
+    clash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 3 20h18z"/><path d="M12 10v4M12 17h.01"/></svg>',
+    unpaid: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5l2.5 1.5"/></svg>',
     live: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="currentColor"/></svg>',
     moved: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>',
     note: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h4"/></svg>'

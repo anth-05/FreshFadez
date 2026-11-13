@@ -95,7 +95,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ice);outline-offset
 .wrap{width:100%;max-width:1200px;margin:0 auto;padding-inline:24px}
 h1,h2,h3{text-wrap:balance;margin:0}
 .h2{font-size:clamp(34px,4vw,44px);line-height:1.05;font-weight:650;font-stretch:114%;letter-spacing:-0.02em}
-.lede{font-size:17px;line-height:1.65;color:var(--muted);max-width:44ch}
+.lede{font-size:17px;line-height:1.65;color:var(--muted);max-width:44ch;text-wrap:pretty}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 30px;border-radius:999px;font:600 16px/1 var(--font);text-decoration:none;border:0;cursor:pointer;transition:transform 160ms var(--ease-out),background-color 200ms ease,box-shadow 200ms var(--ease-out)}
 @media (hover:hover) and (pointer:fine){
   a:hover{color:var(--ink)}
@@ -206,6 +206,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 .book-lede{margin:24px 0 0;max-width:40ch;font-size:17px;line-height:1.6;color:#DDE1E4}
 .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:20px 28px;margin-top:36px}
 .book-link{display:inline-block;color:var(--white);font-size:15px;font-weight:500;text-underline-offset:6px;text-decoration:underline}
+/* A bigger touch area for the text link without moving it. */
+@media (pointer:coarse){.book-link{padding-block:11px;margin-block:-11px}}
 
 /* TICKER */
 .ticker{background:var(--ice);color:var(--ice-ink);overflow:hidden;padding-block:9px}
@@ -218,7 +220,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 /* SERVICES */
 .services{display:flex;flex-wrap:wrap;align-items:center;gap:64px;padding-block:96px}
 .svc-left{flex:999 1 420px;min-width:0}
-.svc-left .lede{margin:18px 0 40px;text-wrap:pretty}
+.svc-left .lede{margin:18px 0 40px}
 .svc-tabs{display:flex;flex-direction:column;border-top:1px solid var(--line)}
 .svc-tab{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:18px 0;background:none;border:0;border-bottom:1px solid var(--line);font-family:var(--font);text-align:left;cursor:pointer;font-size:clamp(28px,3.4vw,42px);font-weight:600;font-stretch:114%;letter-spacing:-.02em;color:var(--muted-2);transition:color 160ms ease}
 .svc-tab[aria-selected="true"]{color:var(--ink)}
@@ -530,6 +532,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
 .bk-policy .pol-a-inner p,.bk-policy .pol-a-inner p:last-child{margin:6px 0 0;font-size:13px;line-height:1.55;color:var(--mist)}
 .bk-error{color:var(--danger);font-size:13px;text-align:center;display:none}
 .bk-error.show{display:block}
+.bk-time-error{margin:16px 20px 0;padding:10px 12px;border-radius:12px;background:rgba(242,163,153,.1);border:1px solid rgba(242,163,153,.3)}
 
 .bk-loading{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--mist);font-size:13.5px;padding:40px 0}
 .bk-spin{animation:bkSpin .8s linear infinite}
@@ -674,6 +677,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
           <div class="bk-date-strip" id="bk-date-strip"></div>
           <button type="button" class="bk-date-nav" id="bk-date-next" aria-label="Volgende week"><svg width="16" height="16" aria-hidden="true"><use href="#ff-chev-r"/></svg></button>
         </div>
+        <!-- Shown when the chosen time was taken just before confirming and the client is sent back here. -->
+        <div class="bk-error bk-time-error" id="time-error" role="alert"></div>
         <div class="bk-time-section" id="bk-time-section" hidden>
           <div class="bk-time-label" id="bk-time-label"></div>
           <div class="bk-time-grid" id="bk-time-grid"></div>
@@ -1246,7 +1251,8 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     renderTimes();
   }
   function shiftDate(dir){ dateOffset = Math.max(0, Math.min(7, dateOffset + dir)); renderDates(); }
-  function pickDate(idx){ selectedDateIdx = idx; selectedTime = null; renderDates(); }
+  function clearTimeError(){ document.getElementById('time-error').classList.remove('show'); }
+  function pickDate(idx){ clearTimeError(); selectedDateIdx = idx; selectedTime = null; renderDates(); }
 
   function renderTimes(){
     var section = document.getElementById('bk-time-section');
@@ -1282,7 +1288,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       if (retryBtn) retryBtn.addEventListener('click', renderTimes);
     });
   }
-  function pickTime(time){ selectedTime = time; renderSummary(); goStep(3); }
+  function pickTime(time){ clearTimeError(); selectedTime = time; renderSummary(); goStep(3); }
 
   function renderSummary(){
     var d = bookingDates()[selectedDateIdx];
@@ -1438,11 +1444,19 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
       return res.json().then(function(body){ return { res: res, body: body }; });
     }).then(function(r){
       if (!r.res.ok){
-        errorEl.textContent = r.res.status === 409 ? t('ui_slot_taken') : r.res.status === 400 ? t('ui_booking_rejected') : t('ui_booking_error');
-        errorEl.classList.add('show');
         btn.textContent = originalLabel;
         btn.classList.remove('disabled','busy');
-        if (r.res.status === 409){ selectedTime = null; goStep(2); }
+        // The time was taken (or ran out) meanwhile: explain it on the time step the client is sent back to.
+        if (r.res.status === 409){
+          var timeError = document.getElementById('time-error');
+          timeError.textContent = t('ui_slot_taken');
+          timeError.classList.add('show');
+          selectedTime = null;
+          goStep(2);
+          return;
+        }
+        errorEl.textContent = r.res.status === 400 ? t('ui_booking_rejected') : t('ui_booking_error');
+        errorEl.classList.add('show');
         return;
       }
       if (r.body.checkoutUrl){
@@ -1594,6 +1608,7 @@ button,.btn,.nav-cta,.svc-tab,.menu-btn,.to-top{user-select:none;-webkit-user-se
     document.getElementById('f-agree').checked = false;
     checkForm();
     document.getElementById('booking-error').classList.remove('show');
+    clearTimeError();
     renderServices();
     goStep(1);
   }

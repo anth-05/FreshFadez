@@ -73,11 +73,15 @@ export function occupiedRange(date, time, length) {
   return slotRange(date, time, length);
 }
 
-// Every quarter-hour unit a booking overlaps while the shop is open. A 105-minute booking at 12:00
-// holds 12:00 up to 13:30; one the barber plans at 20:30 on a Monday only holds 20:30 and 20:45.
+// Every quarter hour of the day, 00:00 to 23:45.
+const DAY_QUARTERS = Array.from({ length: 96 }, (_, i) => addMinutes('00:00', i * UNIT_MINUTES));
+
+// Every quarter-hour unit a booking overlaps, also outside opening hours: an appointment the barber
+// runs past closing, or one made before the opening hours changed, still holds all of its time.
+// A 105-minute booking at 12:00 holds 12:00 up to 13:30.
 export function coveredSlots(date, time, length) {
   const range = occupiedRange(date, time, length);
-  return quarterTimesOn(date).filter((t) => overlaps(range, slotRange(date, t, UNIT_MINUTES)));
+  return DAY_QUARTERS.filter((t) => overlaps(range, slotRange(date, t, UNIT_MINUTES)));
 }
 
 // The fields that place a booking in the agenda.
@@ -85,9 +89,22 @@ export function placement(date, time, length) {
   return { date, time, length, end: addMinutes(time, length), slots: coveredSlots(date, time, length) };
 }
 
-// Bookings whose slots could not be stored (old overlapping data) are judged by their computed range.
-export function slotsOf(booking) {
-  return booking.slots?.length ? booking.slots : coveredSlots(booking.date, booking.time, lengthOf(booking));
+const sameSlots = (a, b) => Array.isArray(a) && a.length === b.length && a.every((t, i) => t === b[i]);
+
+// The confirmed bookings on a date that overlap `range`. Clashes are judged by each booking's real
+// time and length, not its stored slots, so a booking whose slots are stale (an older version stored
+// them differently) can never be planned over. The unique slot index stays as the race-free check.
+async function bookingsOverlapping(date, range, excludeId) {
+  const filter = { date, status: 'confirmed' };
+  if (excludeId) filter._id = { $ne: excludeId };
+  const bookings = await Booking.find(filter).select('date time length totalDuration').sort({ time: 1 }).lean();
+  return bookings.filter((b) => overlaps(range, occupiedRange(b.date, b.time, lengthOf(b))));
+}
+
+// Throws a 409 naming the appointment in the way when (date, time) for `length` minutes clashes.
+export async function assertNoOverlap(date, time, length, excludeId) {
+  const [clash] = await bookingsOverlapping(date, occupiedRange(date, time, length), excludeId);
+  if (clash) throw new ApiError(409, `That would run into another appointment (${clash.time})`);
 }
 
 export function nowStamp(now = nowInShop()) {
@@ -121,20 +138,20 @@ export async function slotStatuses(date, { length = SLOT_MINUTES, excludeId, qua
   const filter = { date, status: 'confirmed' };
   if (excludeId) filter._id = { $ne: excludeId };
   const [bookings, blocks] = await Promise.all([
-    Booking.find(filter).select('date time slots length totalDuration').lean(),
+    Booking.find(filter).select('date time length totalDuration').lean(),
     blocksOverlapping(dayRange(date)),
   ]);
-  const taken = new Set(bookings.flatMap(slotsOf));
+  const ranges = bookings.map((b) => occupiedRange(b.date, b.time, lengthOf(b)));
   const starts = quarters ? quarterTimesOn(date) : timeSlotsOn(date);
   const step = quarters ? UNIT_MINUTES : SLOT_MINUTES;
   return starts.map((time) => {
     let status = 'free';
-    if (taken.has(time)) status = 'booked';
+    if (ranges.some((r) => overlaps(r, slotRange(date, time, UNIT_MINUTES)))) status = 'booked';
     else if (blocks.some((b) => overlaps(b, slotRange(date, time, step)))) status = 'blocked';
     else if (hasStarted(date, time, now)) status = 'past';
     else {
       const range = occupiedRange(date, time, length);
-      const fits = coveredSlots(date, time, length).every((t) => !taken.has(t)) && !blocks.some((b) => overlaps(b, range)) &&
+      const fits = !ranges.some((r) => overlaps(r, range)) && !blocks.some((b) => overlaps(b, range)) &&
         (quarters || endsByClosing(date, time, length));
       if (!fits) status = 'no_room';
     }
@@ -142,9 +159,9 @@ export async function slotStatuses(date, { length = SLOT_MINUTES, excludeId, qua
   });
 }
 
-// Throws unless a booking of `length` minutes can start at (date, time). Whether another booking
-// already holds one of its slots is left to the unique index on Booking, the only race-free check.
-export async function assertSlotOpen(date, time, { maxDaysAhead, length, quarters = false }) {
+// Throws unless a booking of `length` minutes can start at (date, time). Two requests for the same
+// time at the same moment can both pass these checks; the unique slot index on Booking stops the second.
+export async function assertSlotOpen(date, time, { maxDaysAhead, length, quarters = false, excludeId }) {
   if (!isValidDate(date)) throw new ApiError(400, 'date must be a real date formatted as YYYY-MM-DD');
   if (!(quarters ? quarterTimesOn(date) : timeSlotsOn(date)).includes(time)) throw new ApiError(400, 'Invalid time slot');
   const now = nowInShop();
@@ -159,26 +176,34 @@ export async function assertSlotOpen(date, time, { maxDaysAhead, length, quarter
   }
   const blocks = await blocksOverlapping(occupiedRange(date, time, length));
   if (blocks.length) throw new ApiError(409, 'That time is not available, please pick another one');
+  await assertNoOverlap(date, time, length, excludeId);
 }
 
-// Gives bookings stored before quarter-hour units existed their length, end and units. If old data
-// already overlaps, the later booking keeps its length but holds no units (see slotsOf) and is
-// reported on every start until the barber reschedules it.
+// Brings stored placement up to date: bookings from before lengths existed, and upcoming bookings
+// whose slots no longer match their time (stored by an older version, or before opening hours or the
+// slot rules changed). If two of them really overlap, the later one keeps its length but holds no
+// slots (clash checks still see it by its time) and is reported on every start until it is moved.
 export async function backfillBookingSlots() {
-  const missing = await Booking.find({ $or: [{ length: { $exists: false } }, { slots: { $exists: false } }] })
+  const since = addDays(nowInShop().date, -1);
+  const candidates = await Booking.find({
+    $or: [{ length: { $exists: false } }, { slots: { $exists: false } }, { status: 'confirmed', date: { $gte: since } }],
+  })
     .sort({ createdAt: 1 })
     .lean();
   const overlapping = [];
   let updated = 0;
-  for (const b of missing) {
+  for (const b of candidates) {
     const place = placement(b.date, b.time, lengthOf(b));
+    if (b.length === place.length && b.end === place.end && sameSlots(b.slots, place.slots)) continue;
     try {
       await Booking.updateOne({ _id: b._id }, place);
       updated++;
     } catch (err) {
       if (err.code !== 11000) throw err;
       const { slots, ...rest } = place;
-      await Booking.updateOne({ _id: b._id }, { ...rest, $unset: { slots: 1 } });
+      if (b.length !== rest.length || b.end !== rest.end || b.slots !== undefined) {
+        await Booking.updateOne({ _id: b._id }, { ...rest, $unset: { slots: 1 } });
+      }
       if (b.status === 'confirmed') overlapping.push(b);
     }
   }

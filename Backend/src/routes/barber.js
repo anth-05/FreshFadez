@@ -8,6 +8,7 @@ import { barberAuth } from '../middleware/barberAuth.js';
 import { RESCHEDULE_DAYS_AHEAD, isClosedOn, nowInShop, addDays } from '../config/businessHours.js';
 import { createBooking, parseCustomer } from '../lib/newBooking.js';
 import {
+  assertNoOverlap,
   assertSlotOpen,
   assertValidLength,
   blocksOverlapping,
@@ -159,6 +160,7 @@ router.patch(
     if (length > lengthOf(booking)) {
       const blocks = await blocksOverlapping(occupiedRange(booking.date, booking.time, length));
       if (blocks.length) throw new ApiError(409, 'That would run into a blocked period');
+      await assertNoOverlap(booking.date, booking.time, length, booking._id);
     }
     try {
       const updated = await Booking.findOneAndUpdate(
@@ -199,7 +201,7 @@ router.post(
       throw new ApiError(400, 'Pick a different date or time');
     }
     const length = lengthOf(booking);
-    await assertSlotOpen(date, time, { maxDaysAhead: RESCHEDULE_DAYS_AHEAD, length, quarters: true });
+    await assertSlotOpen(date, time, { maxDaysAhead: RESCHEDULE_DAYS_AHEAD, length, quarters: true, excludeId: booking._id });
 
     try {
       const updated = await Booking.findOneAndUpdate(

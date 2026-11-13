@@ -229,7 +229,7 @@ test('sad flow: planning on top of an existing appointment is refused and change
 
   const res = await plan(monday, '12:00');
   assert.equal(res.status, 409);
-  assert.match(res.body.error, /no longer available/);
+  assert.match(res.body.error, /another appointment \(12:00\)/);
   const day = await Booking.find({ date: monday }).lean();
   assert.equal(day.length, 1);
   assert.equal(String(day[0]._id), existing.body._id);
@@ -685,15 +685,70 @@ test('search is scoped to the view', async () => {
 /* ---------------- Long appointments ---------------- */
 
 
-test('coveredSlots: bookings hold every quarter they overlap, but not past closing', () => {
+test('coveredSlots: bookings hold every quarter they overlap, also past closing', () => {
   assert.deepEqual(coveredSlots('2026-11-02', '12:00', 30), ['12:00', '12:15']);
   assert.deepEqual(coveredSlots('2026-11-02', '12:30', 30), ['12:30', '12:45']);
   assert.deepEqual(coveredSlots('2026-11-02', '12:00', 60), ['12:00', '12:15', '12:30', '12:45']);
   assert.deepEqual(coveredSlots('2026-11-02', '12:00', 105), ['12:00', '12:15', '12:30', '12:45', '13:00', '13:15', '13:30']);
   assert.deepEqual(coveredSlots('2026-11-02', '15:00', 105), ['15:00', '15:15', '15:30', '15:45', '16:00', '16:15', '16:30']);
-  assert.deepEqual(coveredSlots('2026-11-02', '20:30', 60), ['20:30', '20:45']);
-  // Saturday closes at 14:00.
-  assert.deepEqual(coveredSlots('2026-11-07', '13:30', 60), ['13:30', '13:45']);
+  // Past closing (21:00 on Monday, 14:00 on Saturday) the time is still held.
+  assert.deepEqual(coveredSlots('2026-11-02', '20:30', 60), ['20:30', '20:45', '21:00', '21:15']);
+  assert.deepEqual(coveredSlots('2026-11-07', '13:30', 60), ['13:30', '13:45', '14:00', '14:15']);
+});
+
+/* ---------------- Overlaps with old or stale data ---------------- */
+
+// A booking written straight to the database, as an older version of the app could have stored it.
+function rawBooking(date, time, extra = {}) {
+  return Booking.collection.insertOne({
+    firstName: 'Oud', lastName: 'Klant', email: 'o@x.nl', phone: '0612345678',
+    services: [{ slug: 'contour', name: 'Contour', price: 12.5, duration: 60 }], totalPrice: 12.5, totalDuration: 60,
+    date, time, status: 'confirmed', createdAt: new Date(), ...extra,
+  });
+}
+
+test('regression: 19:00–20:00 with stale stored slots still blocks a new appointment at 19:45', async () => {
+  const monday = MONDAY();
+  // Shows as 19:00–20:00, but an older version stored only its first hour slot.
+  await rawBooking(monday, '19:00', { length: 60, end: '20:00', slots: ['19:00'] });
+  assert.equal(await slotStatus(monday, '19:45'), 'booked');
+  const res = await plan(monday, '19:45', { length: 30 });
+  assert.equal(res.status, 409);
+  assert.match(res.body.error, /19:00/);
+  assert.equal((await plan(monday, '20:00', { length: 30 })).status, 201);
+});
+
+test('regression: an old booking outside today\'s opening hours still blocks planning over it', async () => {
+  const saturday = nextWeekday(6);
+  // From the old fixed times: Saturday 15:00, after the new 14:00 closing.
+  await rawBooking(saturday, '15:00', { length: 60, end: '16:00', slots: [] });
+  assert.equal((await plan(saturday, '13:30', { length: 120 })).status, 409);
+  assert.equal((await plan(saturday, '13:30', { length: 90 })).status, 201); // ends 15:00 exactly
+});
+
+test('regression: lengthening and rescheduling check real times too, not only stored slots', async () => {
+  const monday = MONDAY();
+  await rawBooking(monday, '19:00', { length: 60, end: '20:00', slots: ['19:00'] });
+  const early = await plan(monday, '18:00', { length: 30 });
+  assert.equal((await barber.patch(`/bookings/${early.body._id}`, { length: 75 })).status, 409);
+  assert.equal((await barber.post(`/bookings/${early.body._id}/reschedule`, { date: monday, time: '19:30' })).status, 409);
+  assert.equal((await barber.patch(`/bookings/${early.body._id}`, { length: 60 })).status, 200); // 18:00–19:00 fits
+});
+
+test('regression: an appointment planned past closing keeps that time for itself', async () => {
+  const friday = nextWeekday(5); // closes 20:00
+  const late = await plan(friday, '19:30', { length: 90 }); // until 21:00
+  assert.equal(late.status, 201);
+  assert.deepEqual(late.body.slots.slice(-2), ['20:30', '20:45']);
+});
+
+test('backfill repairs stale slots on upcoming bookings', async () => {
+  const monday = MONDAY();
+  const { insertedId } = await rawBooking(monday, '19:00', { length: 60, end: '20:00', slots: ['19:00'] });
+  const { updated } = await backfillBookingSlots();
+  assert.equal(updated, 1);
+  assert.deepEqual((await Booking.findById(insertedId).lean()).slots, ['19:00', '19:15', '19:30', '19:45']);
+  assert.equal((await backfillBookingSlots()).updated, 0); // nothing left to repair
 });
 
 test('lengths: online bookings take at least an hour, barber ones the services rounded to a quarter', () => {
