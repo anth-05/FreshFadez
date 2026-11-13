@@ -33,6 +33,7 @@ function validPayload(overrides = {}) {
     lastName: 'Doe',
     email: 'jane@example.com',
     phone: '0612345678',
+    acceptedPolicy: true,
     serviceSlugs: ['contour'],
     date: monday,
     time: TIME_SLOTS[0],
@@ -141,4 +142,17 @@ test('POST /api/bookings refuses times outside the opening hours of that day', a
   // Two hour-long services starting at 13:00 would run past 14:00.
   const late = await request(app).post('/api/bookings').send(validPayload({ date: saturday, time: '13:00', serviceSlugs: ['contour', 'knippen-baard'], email: 'late@example.com' }));
   assert.equal(late.status, 409);
+});
+
+test('POST /api/bookings requires agreeing with the policy and records when', async () => {
+  await Service.create({ slug: 'contour', name: 'Contour', category: 'contour', duration: 30, price: 20 });
+  for (const acceptedPolicy of [undefined, false, 'true', 1]) {
+    const res = await request(app).post('/api/bookings').send(validPayload({ acceptedPolicy }));
+    assert.equal(res.status, 400, `acceptedPolicy ${JSON.stringify(acceptedPolicy)}`);
+    assert.match(res.body.error, /policy/);
+  }
+  const before = Date.now();
+  const ok = await request(app).post('/api/bookings').send(validPayload());
+  assert.equal(ok.status, 201);
+  assert.ok(new Date(ok.body.policyAcceptedAt).getTime() >= before);
 });

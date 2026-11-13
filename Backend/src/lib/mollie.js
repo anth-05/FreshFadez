@@ -41,7 +41,7 @@ export async function createBookingPayment(booking, { redirectBase, locale = 'nl
     method: 'POST',
     body: {
       amount: { currency: 'EUR', value: bookingFee().toFixed(2) },
-      description: `Fresh Fadez Studios reservering ${booking.date} ${booking.time}`,
+      description: `Fresh Fadez reservering ${booking.date} ${booking.time}`,
       redirectUrl: `${redirectBase.replace(/\/$/, '')}/?booking=${booking._id}`,
       ...(webhookBase && { webhookUrl: `${webhookBase.replace(/\/$/, '')}/api/payments/webhook` }),
       locale: locale === 'en' ? 'en_US' : 'nl_NL',

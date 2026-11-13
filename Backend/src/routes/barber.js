@@ -137,7 +137,7 @@ router.post(
       length,
       byBarber: true,
       maxDaysAhead: RESCHEDULE_DAYS_AHEAD,
-      extra: { source: 'barber', saveInfo: false },
+      extra: { source: 'barber' },
     });
     res.status(201).json(booking);
   })

@@ -12,14 +12,16 @@ const router = Router();
 router.post(
   '/',
   asyncHandler(async (req, res) => {
-    const { saveInfo = true, newsletter = false, date, time, serviceSlugs } = req.body ?? {};
+    const { date, time, serviceSlugs, acceptedPolicy } = req.body ?? {};
+    const customer = parseCustomer(req.body);
+    if (acceptedPolicy !== true) throw new ApiError(400, 'You have to agree with the policy & terms to book');
     const booking = await createBooking({
-      customer: parseCustomer(req.body),
+      customer,
       serviceSlugs,
       date,
       time,
       maxDaysAhead: BOOKABLE_DAYS_AHEAD,
-      extra: { saveInfo: !!saveInfo, newsletter: !!newsletter },
+      extra: { policyAcceptedAt: new Date() },
     });
     if (!paymentsEnabled()) return res.status(201).json(booking);
 

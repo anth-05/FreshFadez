@@ -68,6 +68,7 @@ function payload(overrides = {}) {
     lastName: 'Doe',
     email: 'jane@example.com',
     phone: '0612345678',
+    acceptedPolicy: true,
     serviceSlugs: ['contour'],
     date: nextMonday(),
     time: TIME_SLOTS[0],

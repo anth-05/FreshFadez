@@ -18,8 +18,6 @@ const bookingSchema = new mongoose.Schema(
     email: { type: String, trim: true, lowercase: true, default: '', maxlength: 254 },
     phone: { type: String, required: true, trim: true },
     notes: { type: String, trim: true, default: '', maxlength: 500 },
-    saveInfo: { type: Boolean, default: true },
-    newsletter: { type: Boolean, default: false },
     services: { type: [bookedServiceSchema], required: true, validate: (v) => v.length > 0 },
     date: { type: String, required: true }, // 'YYYY-MM-DD'
     time: { type: String, required: true }, // 'HH:mm'
@@ -35,6 +33,9 @@ const bookingSchema = new mongoose.Schema(
     cancelledAt: { type: Date },
     rescheduledFrom: { date: String, time: String },
     source: { type: String, enum: ['online', 'barber'], default: 'online' },
+    // When the customer ticked "I agree with the policy & terms" while booking online (proof for
+    // e.g. the 24-hour cancellation rule). Not set for appointments the barber plans in.
+    policyAcceptedAt: { type: Date },
     // The online reservation fee (Mollie). While it is unpaid the booking already holds its slot;
     // a failed, cancelled or expired payment cancels the booking. The appointment is paid in the shop.
     payment: {

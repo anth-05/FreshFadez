@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Barber portal — Fresh Fadez Studios</title>
+<title>Barber portal — Fresh Fadez</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#121417">
 <link rel="icon" type="image/png" sizes="512x512" href="./images/ff-icon.png">
@@ -46,7 +46,6 @@ html:has(dialog[open]){overflow:hidden}
 .brand{display:flex;align-items:center;gap:12px;color:var(--white);text-decoration:none}
 .brand .bw{display:flex;flex-direction:column;gap:5px;line-height:1}
 .brand .bn{font-size:15px;font-weight:700;font-stretch:112%;letter-spacing:.02em}
-.brand .bs{font-size:11px;letter-spacing:.4em;color:var(--muted-dark)}
 .top-right{display:flex;align-items:center;gap:10px}
 .pill{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line-dark);background:none;color:var(--white);font:600 13px/1 var(--font);letter-spacing:.02em;cursor:pointer}
 .lang{display:flex;gap:6px}
@@ -245,8 +244,8 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
 
 <header class="top">
   <a class="brand" href="./index.html">
-    <img src="./images/ff-logo-white.svg" alt="Fresh Fadez Studios" width="33" height="24">
-    <span class="bw"><span class="bn">FRESHFADEZ</span><span class="bs">STUDIOS</span></span>
+    <img src="./images/ff-logo-white.svg" alt="Fresh Fadez" width="33" height="24">
+    <span class="bw"><span class="bn">FRESHFADEZ</span></span>
   </a>
   <div class="top-right">
     <div class="lang">
@@ -494,7 +493,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       empty_upcoming:'Geen komende afspraken.', empty_past:'Nog geen afgeronde afspraken.', empty_cancelled:'Geen geannuleerde afspraken.',
       search_upcoming:'Zoek in komend', search_past:'Zoek in geweest', search_cancelled:'Zoek in geannuleerd',
       search_ph:'Naam, e-mail of telefoon',
-      prev_aria:'Vorige pagina', next_aria:'Volgende pagina', pages_aria:'Pagina\'s', page_n:'Pagina {n}', details:'Details', d_phone:'Telefoon', d_email:'E-mail', d_notes:'Notitie', d_history:'Geschiedenis', flag_note:'Notitie', flag_unpaid:'Niet betaald', flag_clash:'Overlapt met {time}', d_payment:'Reservering', pay_paid:'€{fee} online betaald', pay_open:'€{fee} nog niet betaald (klant is bij de betaling of heeft die afgebroken)', flag_moved:'Verplaatst', no_results:'Geen afspraken gevonden voor “{q}”.',
+      prev_aria:'Vorige pagina', next_aria:'Volgende pagina', pages_aria:'Pagina\'s', page_n:'Pagina {n}', details:'Details', d_phone:'Telefoon', d_email:'E-mail', d_notes:'Notitie', d_history:'Geschiedenis', flag_note:'Notitie', flag_unpaid:'Niet betaald', flag_clash:'Overlapt met {time}', d_payment:'Reservering', d_policy:'Voorwaarden', policy_on:'akkoord op {when}', pay_paid:'€{fee} online betaald', pay_open:'€{fee} nog niet betaald (klant is bij de betaling of heeft die afgebroken)', flag_moved:'Verplaatst', no_results:'Geen afspraken gevonden voor “{q}”.',
       page_info:'Pagina {page} van {pages} · {total} afspraken',
       yesterday:'Gisteren', count_one:'1 afspraak', count_many:'{n} afspraken',
       today:'Vandaag', tomorrow:'Morgen', min:'min', in_progress:'Nu bezig',
@@ -540,7 +539,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
       empty_upcoming:'No upcoming appointments.', empty_past:'No finished appointments yet.', empty_cancelled:'No cancelled appointments.',
       search_upcoming:'Search upcoming', search_past:'Search past', search_cancelled:'Search cancelled',
       search_ph:'Name, email or phone',
-      prev_aria:'Previous page', next_aria:'Next page', pages_aria:'Pages', page_n:'Page {n}', details:'Details', d_phone:'Phone', d_email:'Email', d_notes:'Note', d_history:'History', flag_note:'Note', flag_unpaid:'Not paid', flag_clash:'Overlaps {time}', d_payment:'Booking fee', pay_paid:'€{fee} paid online', pay_open:'€{fee} not paid yet (the customer is paying or abandoned it)', flag_moved:'Moved', no_results:'No appointments found for “{q}”.',
+      prev_aria:'Previous page', next_aria:'Next page', pages_aria:'Pages', page_n:'Page {n}', details:'Details', d_phone:'Phone', d_email:'Email', d_notes:'Note', d_history:'History', flag_note:'Note', flag_unpaid:'Not paid', flag_clash:'Overlaps {time}', d_payment:'Booking fee', d_policy:'Terms', policy_on:'accepted on {when}', pay_paid:'€{fee} paid online', pay_open:'€{fee} not paid yet (the customer is paying or abandoned it)', flag_moved:'Moved', no_results:'No appointments found for “{q}”.',
       page_info:'Page {page} of {pages} · {total} appointments',
       yesterday:'Yesterday', count_one:'1 appointment', count_many:'{n} appointments',
       today:'Today', tomorrow:'Tomorrow', min:'min', in_progress:'In progress',
@@ -825,6 +824,7 @@ textarea.field{min-height:72px;padding:12px 14px;line-height:1.4;resize:vertical
           '<dt>' + t('d_phone') + '</dt><dd><a href="tel:' + esc(b.phone) + '">' + esc(b.phone) + '</a></dd>' +
           (b.email ? '<dt>' + t('d_email') + '</dt><dd><a href="mailto:' + esc(b.email) + '">' + esc(b.email) + '</a></dd>' : '') +
           (b.notes ? '<dt>' + t('d_notes') + '</dt><dd class="r-notes">' + esc(b.notes) + '</dd>' : '') +
+          (b.policyAcceptedAt ? '<dt>' + t('d_policy') + '</dt><dd>' + esc(t('policy_on', { when: new Date(b.policyAcceptedAt).toLocaleString(locale(), { dateStyle:'medium', timeStyle:'short' }) })) + '</dd>' : '') +
           (b.payment ? '<dt>' + t('d_payment') + '</dt><dd>' + esc(t(b.payment.status === 'paid' ? 'pay_paid' : 'pay_open', { fee: Number(b.payment.amount || 0).toFixed(2).replace('.', ',') })) + '</dd>' : '') +
           (history.length ? '<dt>' + t('d_history') + '</dt><dd>' + history.map(esc).join('<br>') + '</dd>' : '') +
         '</dl>' + actions + '</div>' +
