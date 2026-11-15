@@ -1,0 +1,74 @@
+/* TEMPORARY chat demo. Remove this file, chat-demo.js and the two <!-- chat-demo --> lines in index.html. */
+
+.cd-launch{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:46;display:flex;align-items:center;gap:10px;height:52px;padding:0 20px 0 16px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:var(--ink);color:var(--white);font:600 15px/1 var(--font);cursor:pointer;box-shadow:0 14px 36px -12px rgba(0,0,0,.55);transition:transform .35s var(--spring),opacity .25s var(--ease-out)}
+.cd-launch svg{flex:none}
+.cd-launch:active{transform:scale(.95)}
+.cd-launch .cd-dot{position:absolute;top:10px;left:34px;width:9px;height:9px;border-radius:50%;background:#6FD08C;border:2px solid var(--ink)}
+.cd-open .cd-launch{opacity:0;transform:scale(.8);pointer-events:none}
+
+/* the back-to-top button sits above the launcher while the demo is on */
+.to-top{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+
+.cd-panel{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:47;width:380px;height:min(600px,calc(100vh - 120px));display:flex;flex-direction:column;background:var(--paper);border-radius:20px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(0,0,0,.5),0 0 0 1px rgba(18,20,23,.08);transform-origin:bottom right;opacity:0;visibility:hidden;transform:translateY(16px) scale(.96);transition:opacity .25s var(--ease-out),transform .35s var(--ease-out),visibility 0s linear .35s}
+.cd-open .cd-panel{opacity:1;visibility:visible;transform:none;transition:opacity .25s var(--ease-out),transform .35s var(--ease-out),visibility 0s}
+
+.cd-head{display:flex;align-items:center;gap:12px;padding:16px 16px 16px 18px;background:var(--ink);color:var(--white)}
+.cd-avatar{position:relative;flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink-2);border:1px solid rgba(255,255,255,.14);display:grid;place-items:center}
+.cd-avatar img{width:24px;height:18px;object-fit:contain}
+.cd-avatar::after{content:"";position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border-radius:50%;background:#6FD08C;border:2px solid var(--ink)}
+.cd-title{min-width:0;flex:1}
+.cd-title b{display:block;font-size:15px;font-weight:600;font-stretch:110%;letter-spacing:.01em}
+.cd-title span{display:block;margin-top:3px;font-size:12px;color:var(--mist)}
+.cd-close{flex:none;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:var(--white);display:grid;place-items:center;cursor:pointer}
+@media (hover:hover) and (pointer:fine){.cd-close:hover{background:rgba(255,255,255,.16)}}
+
+.cd-note{margin:0;padding:8px 18px;font-size:12px;line-height:1.4;color:var(--muted);background:var(--white);border-bottom:1px solid var(--line)}
+.cd-note b{color:var(--ink);font-weight:600}
+
+.cd-log{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:18px 14px 8px;display:flex;flex-direction:column;gap:8px}
+.cd-msg{max-width:84%;padding:10px 14px;border-radius:18px;font-size:14.5px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;animation:cd-in .3s var(--ease-out)}
+.cd-bot{align-self:flex-start;background:var(--white);color:var(--ink);border:1px solid var(--line);border-bottom-left-radius:6px}
+.cd-user{align-self:flex-end;background:var(--ink);color:var(--white);border-bottom-right-radius:6px}
+.cd-card{align-self:flex-start;max-width:88%;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:14px 16px;animation:cd-in .3s var(--ease-out)}
+.cd-card .cd-tag{display:flex;align-items:center;gap:7px;margin-bottom:10px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.cd-card .cd-tag.ok{color:#1F7A3E}
+.cd-card .cd-tag.no{color:#A33A2B}
+.cd-row{display:flex;justify-content:space-between;gap:16px;padding:6px 0;font-size:14px;border-top:1px solid var(--line)}
+.cd-row:first-of-type{border-top:0}
+.cd-row span{color:var(--muted)}
+.cd-row b{font-weight:600;text-align:right}
+.cd-row s{color:var(--muted-2);font-weight:400}
+
+.cd-chips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 2px;animation:cd-in .3s var(--ease-out)}
+.cd-chip{border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:999px;padding:8px 13px;font:500 13.5px/1.2 var(--font);cursor:pointer;transition:background-color .15s,color .15s}
+@media (hover:hover) and (pointer:fine){.cd-chip:hover{background:var(--ink);color:var(--white)}}
+.cd-chip:active{transform:scale(.97)}
+.cd-chips.used .cd-chip{display:none}
+.cd-chips.used{padding:0}
+
+.cd-typing{align-self:flex-start;display:flex;gap:4px;padding:14px 16px;background:var(--white);border:1px solid var(--line);border-radius:18px;border-bottom-left-radius:6px}
+.cd-typing i{width:6px;height:6px;border-radius:50%;background:var(--muted-2);animation:cd-dot 1s infinite ease-in-out}
+.cd-typing i:nth-child(2){animation-delay:.15s}
+.cd-typing i:nth-child(3){animation-delay:.3s}
+
+.cd-form{display:flex;gap:8px;padding:12px;background:var(--white);border-top:1px solid var(--line)}
+.cd-form input{flex:1;min-width:0;height:44px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--paper);color:var(--ink);font:400 16px/1 var(--font);outline:0}
+.cd-form input:focus{border-color:var(--ink)}
+.cd-form button{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--ink);color:var(--white);display:grid;place-items:center;cursor:pointer}
+.cd-form button:disabled{opacity:.4;cursor:default}
+
+@keyframes cd-in{from{opacity:0;transform:translateY(6px)}}
+@keyframes cd-dot{0%,80%,100%{opacity:.3;transform:none}40%{opacity:1;transform:translateY(-3px)}}
+
+@media (max-width:760px){
+  .cd-launch{right:16px;bottom:calc(88px + env(safe-area-inset-bottom,0px));width:52px;padding:0;justify-content:center}
+  .cd-launch .cd-label{display:none}
+  .cd-launch .cd-dot{left:auto;right:9px}
+  .to-top{bottom:calc(152px + env(safe-area-inset-bottom,0px))}
+  .cd-panel{inset:auto 0 0 0;width:auto;height:min(88vh,calc(100dvh - 40px));border-radius:20px 20px 0 0;padding-bottom:env(safe-area-inset-bottom,0px);background:var(--paper);transform-origin:bottom center;transform:translateY(40px)}
+  .cd-open .to-top{opacity:0;visibility:hidden}
+}
+@media (prefers-reduced-motion: reduce){
+  .cd-launch,.cd-panel,.cd-open .cd-panel,.cd-msg,.cd-card,.cd-chips{transition:none;animation:none}
+  .cd-typing i{animation:none;opacity:.6}
+}
