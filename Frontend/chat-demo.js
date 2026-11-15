@@ -29,7 +29,11 @@
       late: 'Let op: binnen 24 uur voor je afspraak kan ik niets meer wijzigen. Bel dan even naar de zaak.',
       fallback: 'Dat begrijp ik nog niet helemaal. Kies een van deze opties:',
       more: 'Kan ik nog ergens anders mee helpen?', thanks: 'Graag gedaan! Fijne dag.',
-      newTime: 'Nieuw', old: 'Was'
+      newTime: 'Nieuw', old: 'Was',
+      peek: 'Hoi! Ik ben Fresh. Je afspraak verplaatsen of annuleren? Ik regel het voor je.', peekClose: 'Verberg bericht',
+      mascot: 'Fresh, de mascotte van Fresh Fadez. Tik voor een tip.',
+      introSub: 'Jouw barber-assistent', introTap: 'Tik op mij voor een tip',
+      tips: ['Tip: een fade ziet er het strakst uit als je hem elke 2 à 3 weken laat bijwerken.', 'Tip: kom met droog, schoon haar, dan kan ik meteen zien hoe het valt.', 'Tip: een beetje baardolie per dag en je baard blijft zacht.', 'Tip: neem gerust een foto mee van de cut die je wilt.', 'Weetje: ik heb mijn tondeuse altijd bij me.']
     },
     en: {
       launch: 'Chat with Fresh', title: 'Fresh', status: 'Fresh Fadez Studios assistant',
@@ -53,7 +57,11 @@
       late: 'Note: within 24 hours of your appointment I cannot change it. Please call the shop instead.',
       fallback: 'I did not quite get that yet. Pick one of these:',
       more: 'Anything else I can help with?', thanks: 'You are welcome! Have a great day.',
-      newTime: 'New', old: 'Was'
+      newTime: 'New', old: 'Was',
+      peek: 'Hi! I am Fresh. Need to move or cancel your appointment? I will sort it out.', peekClose: 'Hide message',
+      mascot: 'Fresh, the Fresh Fadez mascot. Tap for a tip.',
+      introSub: 'Your barber assistant', introTap: 'Tap me for a tip',
+      tips: ['Tip: a fade looks sharpest when you get it touched up every 2 to 3 weeks.', 'Tip: come in with dry, clean hair so I can see how it falls.', 'Tip: a little beard oil every day keeps your beard soft.', 'Tip: feel free to bring a photo of the cut you want.', 'Fun fact: I always carry my clippers.']
     }
   };
 
@@ -84,7 +92,7 @@
   }
 
   // ---------- DOM ----------
-  var ICON_CHAT = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.4 7.6L3 21l1.4-5.6A8.5 8.5 0 1 1 21 12z"/></svg>';
+  var POSE = function (n) { return './images/fresh/fresh-' + n + '.webp'; };
   var ICON_X = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var ICON_SEND = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 3.8 21.5 12 3 20.2l1.9-6.9L14 12 4.9 10.7z"/></svg>';
   var ICON_OK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 2.5a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19zm-1.3 13.6-3.6-3.6 1.4-1.4 2.2 2.2 4.5-4.5 1.4 1.4z"/></svg>';
@@ -92,10 +100,12 @@
   var root = document.createElement('div');
   root.className = 'cd-root';
   root.innerHTML =
-    '<button type="button" class="cd-launch" aria-expanded="false" aria-controls="cd-panel">' + ICON_CHAT +
+    '<div class="cd-peek" hidden><p></p><button type="button" class="cd-peek-x">' + ICON_X + '</button></div>' +
+    '<button type="button" class="cd-launch" aria-expanded="false" aria-controls="cd-panel">' +
+      '<span class="cd-face"><img class="cd-pose" src="' + POSE(0) + '" alt="" width="44" height="44"></span>' +
       '<span class="cd-dot" aria-hidden="true"></span><span class="cd-label"></span></button>' +
     '<section class="cd-panel" id="cd-panel" role="dialog" aria-labelledby="cd-title" aria-hidden="true">' +
-      '<header class="cd-head"><span class="cd-avatar"><img src="./images/ff-logo-white.svg" alt="" width="24" height="18"></span>' +
+      '<header class="cd-head"><button type="button" class="cd-avatar"><img class="cd-pose" src="' + POSE(0) + '" alt="" width="52" height="52"></button>' +
         '<div class="cd-title"><b id="cd-title"></b><span class="cd-status"></span></div>' +
         '<button type="button" class="cd-close">' + ICON_X + '</button></header>' +
       '<p class="cd-note"></p>' +
@@ -111,6 +121,8 @@
   var form = root.querySelector('.cd-form');
   var input = form.querySelector('input');
   var sendBtn = form.querySelector('button');
+  var avatar = root.querySelector('.cd-avatar');
+  var peek = root.querySelector('.cd-peek');
   var started = false;
   var busy = false;
 
@@ -124,9 +136,93 @@
     input.placeholder = t('placeholder');
     input.setAttribute('aria-label', t('placeholder'));
     sendBtn.setAttribute('aria-label', t('send'));
+    avatar.setAttribute('aria-label', t('mascot'));
+    peek.querySelector('p').textContent = t('peek');
+    peek.querySelector('.cd-peek-x').setAttribute('aria-label', t('peekClose'));
+    var intro = log.querySelector('.cd-intro');
+    if (intro) { intro.querySelector('span').textContent = t('introSub'); intro.querySelector('small').textContent = t('introTap'); }
   }
   applyLang();
   new MutationObserver(applyLang).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+
+  // ---------- Fresh, the mascot ----------
+  // The GIF's 8 frames: 0 arms crossed, 1 wink, 2-4 reaching for the clippers, 5-6 clippers up, 7 thumbs up.
+  for (var i = 0; i < 8; i++) new Image().src = POSE(i);
+  var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var poseTimer = null;
+  var mood = 'idle';
+
+  function setPose(n) {
+    root.querySelectorAll('.cd-pose').forEach(function (img) { img.src = POSE(n); });
+  }
+  function bounce(kind) {
+    if (reduceMotion) return;
+    root.querySelectorAll('.cd-avatar, .cd-intro-fig, .cd-face').forEach(function (el) {
+      el.classList.remove('cd-hop', 'cd-shake');
+      void el.offsetWidth;
+      el.classList.add(kind || 'cd-hop');
+    });
+  }
+  // Plays frames in order, holds the last one, then settles back to idle.
+  function play(frames, hold, next) {
+    clearTimeout(poseTimer);
+    var i = 0;
+    (function step() {
+      setPose(frames[i]);
+      if (++i < frames.length) { poseTimer = setTimeout(step, 180); return; }
+      if (hold) poseTimer = setTimeout(next || idle, hold);
+    })();
+  }
+  function idle() { mood = 'idle'; setPose(0); }
+  function wink() { mood = 'wink'; bounce(); play([1], 900); }
+  function think() { mood = 'think'; play([2, 3, 4, 5], 0); }
+  function celebrate() { mood = 'happy'; bounce(); play([5, 6, 7], 2600); }
+  function shrug() { mood = 'idle'; bounce('cd-shake'); play([0], 0); }
+
+  // Every now and then he winks on his own, but only when nothing else is going on.
+  setInterval(function () {
+    if (mood === 'idle' && !busy && !document.hidden && Math.random() < 0.5) wink();
+  }, 7000);
+
+  var lastTip = -1;
+  avatar.addEventListener('click', tapMascot);
+  function tapMascot() {
+    if (busy) return;
+    var tips = t('tips'), n;
+    do { n = Math.floor(Math.random() * tips.length); } while (tips.length > 1 && n === lastTip);
+    lastTip = n;
+    bot(function () { bubble(tips[n], 'bot'); celebrate(); }, true);
+  }
+
+  // A speech bubble pops out of the launcher once per visit.
+  function seen(set) {
+    try { if (set) sessionStorage.setItem('cd-peeked', '1'); return sessionStorage.getItem('cd-peeked') === '1'; } catch (e) { return false; }
+  }
+  function hidePeek() { document.documentElement.classList.remove('cd-peeking'); peek.classList.remove('show'); setTimeout(function () { peek.hidden = true; }, 300); seen(true); }
+  if (!seen()) {
+    setTimeout(function () {
+      if (document.documentElement.classList.contains('cd-open') || document.querySelector('.bk-overlay.open, .bk-overlay[aria-hidden="false"]')) return;
+      peek.hidden = false;
+      document.documentElement.classList.add('cd-peeking');
+      requestAnimationFrame(function () { peek.classList.add('show'); });
+      wink();
+      setTimeout(function () { if (!peek.hidden) hidePeek(); }, 12000);
+    }, 4000);
+  }
+  peek.querySelector('.cd-peek-x').addEventListener('click', hidePeek);
+  peek.querySelector('p').addEventListener('click', function () { hidePeek(); open(); });
+
+  function intro() {
+    var el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'cd-intro';
+    el.innerHTML = '<span class="cd-intro-fig"><img class="cd-pose" src="' + POSE(0) + '" alt="" width="120" height="120"></span>' +
+      '<b>Fresh</b><span></span><small></small>';
+    el.querySelector('span:not(.cd-intro-fig)').textContent = t('introSub');
+    el.querySelector('small').textContent = t('introTap');
+    el.addEventListener('click', tapMascot);
+    log.appendChild(el);
+  }
 
   function scroll() { log.scrollTop = log.scrollHeight; }
 
@@ -184,8 +280,9 @@
   }
 
   // Bot "types" for a moment, then runs the steps.
-  function bot(steps) {
+  function bot(steps, keepPose) {
     busy = true;
+    if (!keepPose) think();
     sendBtn.disabled = true;
     var dots = document.createElement('div');
     dots.className = 'cd-typing';
@@ -194,6 +291,7 @@
     scroll();
     setTimeout(function () {
       dots.remove();
+      if (mood === 'think') idle();
       steps();
       busy = false;
       sendBtn.disabled = false;
@@ -230,7 +328,7 @@
     bot(function () {
       bubble(t('found'), 'bot');
       showBooking();
-      if (Math.random() < 0.15) { bubble(t('late'), 'bot'); anythingElse(); return; }
+      if (Math.random() < 0.15) { bubble(t('late'), 'bot'); shrug(); anythingElse(); return; }
 
       if (kind === 'move') {
         bubble(t('pickTime'), 'bot');
@@ -248,6 +346,7 @@
             bot(function () {
               card(t('moved'), 'ok', [[t('ref'), booking.ref], [t('svc'), booking.svc], [t('newTime'), fmt(d), t('old') + ': ' + fmt(was)]]);
               bubble(t('movedMsg'), 'bot');
+              celebrate();
               anythingElse();
             });
           } };
@@ -258,6 +357,7 @@
           { label: t('yes'), run: function () { bot(function () {
             card(t('cancelled'), 'no', [[t('ref'), booking.ref], [t('svc'), booking.svc], [t('when'), fmt(booking.when)]]);
             bubble(t('cancelledMsg'), 'bot');
+            shrug();
             anythingElse();
           }); } },
           { label: t('no'), run: function () { bot(function () { bubble(t('kept'), 'bot'); anythingElse(); }); } }
@@ -271,6 +371,7 @@
             bot(function () {
               card(t('changed'), 'ok', [[t('ref'), booking.ref], [t('svc'), s, t('old') + ': ' + was], [t('when'), fmt(booking.when)]]);
               bubble(t('changedMsg'), 'bot');
+              celebrate();
               anythingElse();
             });
           } };
@@ -290,7 +391,8 @@
     if (/open|tijden|hours|wanneer|when/.test(q)) return bot(function () { bubble(t('hours'), 'bot'); anythingElse(); });
     if (/prijs|prijzen|kost|price|cost|€/.test(q)) return bot(function () { bubble(t('prices'), 'bot'); anythingElse(); });
     if (/mens|human|person|echt|real|bot\b/.test(q)) return bot(function () { bubble(t('human'), 'bot'); anythingElse(); });
-    if (/bedankt|dank|thanks|thank/.test(q)) return bot(function () { bubble(t('thanks'), 'bot'); });
+    if (/bedankt|dank|thanks|thank/.test(q)) return bot(function () { bubble(t('thanks'), 'bot'); celebrate(); });
+    if (/^(hoi|hallo|hey|hi|hello|yo)\b/.test(q)) return bot(function () { bubble(t('welcome'), 'bot'); wink(); menu(); });
     bot(function () { bubble(t('fallback'), 'bot'); menu(); });
   }
 
@@ -305,12 +407,14 @@
   });
 
   function open() {
+    if (!peek.hidden) hidePeek(); else seen(true);
     document.documentElement.classList.add('cd-open');
     launch.setAttribute('aria-expanded', 'true');
     panel.setAttribute('aria-hidden', 'false');
     if (!started) {
       started = true;
-      bot(function () { bubble(t('welcome'), 'bot'); menu(); });
+      intro();
+      bot(function () { bubble(t('welcome'), 'bot'); menu(); wink(); }, true);
     }
     setTimeout(function () { input.focus({ preventScroll: true }); }, 200);
   }

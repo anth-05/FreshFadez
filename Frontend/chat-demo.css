@@ -1,23 +1,34 @@
 /* TEMPORARY chat demo. Remove this file, chat-demo.js and the two <!-- chat-demo --> lines in index.html. */
 
-.cd-launch{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:46;display:flex;align-items:center;gap:10px;height:52px;padding:0 20px 0 16px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:var(--ink);color:var(--white);font:600 15px/1 var(--font);cursor:pointer;box-shadow:0 14px 36px -12px rgba(0,0,0,.55);transition:transform .35s var(--spring),opacity .25s var(--ease-out)}
-.cd-launch svg{flex:none}
+.cd-launch{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:46;display:flex;align-items:center;gap:12px;height:60px;padding:0 22px 0 7px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:var(--ink);color:var(--white);font:600 15px/1 var(--font);cursor:pointer;box-shadow:0 14px 36px -12px rgba(0,0,0,.55);transition:transform .35s var(--spring),opacity .25s var(--ease-out)}
+.cd-face{flex:none;width:46px;height:46px;border-radius:50%;overflow:hidden;background:#090808;display:block}
+.cd-pose{display:block;width:100%;height:100%;object-fit:cover}
+.cd-face .cd-pose,.cd-avatar .cd-pose{transform:scale(1.45);transform-origin:50% 12%}
 .cd-launch:active{transform:scale(.95)}
-.cd-launch .cd-dot{position:absolute;top:10px;left:34px;width:9px;height:9px;border-radius:50%;background:#6FD08C;border:2px solid var(--ink)}
+.cd-launch .cd-dot{position:absolute;top:8px;left:42px;width:9px;height:9px;border-radius:50%;background:#6FD08C;border:2px solid var(--ink)}
 .cd-open .cd-launch{opacity:0;transform:scale(.8);pointer-events:none}
 
 /* the back-to-top button sits above the launcher while the demo is on */
-.to-top{bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+.to-top{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+
+/* speech bubble that pops out of the launcher */
+.cd-peek{position:fixed;right:24px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:46;width:260px;display:flex;align-items:flex-start;gap:4px;padding:14px 8px 14px 16px;background:var(--white);color:var(--ink);border-radius:18px 18px 6px 18px;box-shadow:0 18px 40px -14px rgba(0,0,0,.35),0 0 0 1px rgba(18,20,23,.08);opacity:0;transform:translateY(10px) scale(.94);transform-origin:bottom right;transition:opacity .3s var(--ease-out),transform .45s var(--spring)}
+.cd-peek.show{opacity:1;transform:none}
+.cd-peek p{margin:0;flex:1;font-size:14px;line-height:1.45;cursor:pointer}
+.cd-peek-x{flex:none;width:28px;height:28px;margin-top:-6px;border:0;border-radius:50%;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer}
+.cd-peek-x svg{width:14px;height:14px}
+@media (hover:hover) and (pointer:fine){.cd-peek-x:hover{background:var(--paper);color:var(--ink)}}
+.cd-open .cd-peek{display:none}
 
 .cd-panel{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:47;width:380px;height:min(600px,calc(100vh - 120px));display:flex;flex-direction:column;background:var(--paper);border-radius:20px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(0,0,0,.5),0 0 0 1px rgba(18,20,23,.08);transform-origin:bottom right;opacity:0;visibility:hidden;transform:translateY(16px) scale(.96);transition:opacity .25s var(--ease-out),transform .35s var(--ease-out),visibility 0s linear .35s}
 .cd-open .cd-panel{opacity:1;visibility:visible;transform:none;transition:opacity .25s var(--ease-out),transform .35s var(--ease-out),visibility 0s}
 
-.cd-head{display:flex;align-items:center;gap:12px;padding:16px 16px 16px 18px;background:var(--ink);color:var(--white)}
-.cd-avatar{position:relative;flex:none;width:40px;height:40px;border-radius:50%;background:var(--ink-2);border:1px solid rgba(255,255,255,.14);display:grid;place-items:center}
-.cd-avatar img{width:24px;height:18px;object-fit:contain}
-.cd-avatar::after{content:"";position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border-radius:50%;background:#6FD08C;border:2px solid var(--ink)}
+.cd-head{display:flex;align-items:center;gap:12px;padding:14px 16px 14px 14px;background:var(--ink);color:var(--white)}
+.cd-avatar{position:relative;flex:none;width:52px;height:52px;padding:0;overflow:hidden;border-radius:50%;background:#090808;border:1px solid rgba(255,255,255,.18);cursor:pointer}
+.cd-avatar .cd-pose{border-radius:50%}
+.cd-avatar:focus-visible,.cd-intro:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
 .cd-title{min-width:0;flex:1}
-.cd-title b{display:block;font-size:15px;font-weight:600;font-stretch:110%;letter-spacing:.01em}
+.cd-title b{display:block;font-size:17px;font-weight:600;font-stretch:110%;letter-spacing:.01em}
 .cd-title span{display:block;margin-top:3px;font-size:12px;color:var(--mist)}
 .cd-close{flex:none;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:var(--white);display:grid;place-items:center;cursor:pointer}
 @media (hover:hover) and (pointer:fine){.cd-close:hover{background:rgba(255,255,255,.16)}}
@@ -26,6 +37,20 @@
 .cd-note b{color:var(--ink);font-weight:600}
 
 .cd-log{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:18px 14px 8px;display:flex;flex-direction:column;gap:8px}
+.cd-intro{align-self:center;display:flex;flex-direction:column;align-items:center;gap:2px;margin:2px 0 10px;padding:0;border:0;background:none;color:var(--ink);font-family:var(--font);text-align:center;cursor:pointer}
+.cd-intro-fig{display:block;width:120px;height:120px;margin-bottom:10px;border-radius:28px;overflow:hidden;background:#090808;box-shadow:0 16px 30px -16px rgba(0,0,0,.6)}
+.cd-intro b{font-size:20px;font-weight:700;font-stretch:115%;letter-spacing:.01em}
+.cd-intro span:not(.cd-intro-fig){font-size:13.5px;color:var(--muted)}
+.cd-intro small{margin-top:6px;font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+@media (hover:hover) and (pointer:fine){.cd-intro:hover .cd-intro-fig,.cd-avatar:hover{transform:rotate(-4deg)}}
+.cd-intro-fig,.cd-avatar{transition:transform .3s var(--spring)}
+
+/* mascot reactions */
+.cd-hop{animation:cd-hop .5s var(--spring)}
+.cd-shake{animation:cd-shake .5s ease-in-out}
+@keyframes cd-hop{0%{transform:none}35%{transform:translateY(-5px) scale(1.06)}100%{transform:none}}
+@keyframes cd-shake{0%,100%{transform:none}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+
 .cd-msg{max-width:84%;padding:10px 14px;border-radius:18px;font-size:14.5px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;animation:cd-in .3s var(--ease-out)}
 .cd-bot{align-self:flex-start;background:var(--white);color:var(--ink);border:1px solid var(--line);border-bottom-left-radius:6px}
 .cd-user{align-self:flex-end;background:var(--ink);color:var(--white);border-bottom-right-radius:6px}
@@ -61,14 +86,17 @@
 @keyframes cd-dot{0%,80%,100%{opacity:.3;transform:none}40%{opacity:1;transform:translateY(-3px)}}
 
 @media (max-width:760px){
-  .cd-launch{right:16px;bottom:calc(88px + env(safe-area-inset-bottom,0px));width:52px;padding:0;justify-content:center}
+  .cd-launch{right:16px;bottom:calc(88px + env(safe-area-inset-bottom,0px));width:60px;padding:0;justify-content:center}
+  .cd-face{width:50px;height:50px}
+  .cd-peek{right:16px;bottom:calc(160px + env(safe-area-inset-bottom,0px));width:min(260px,calc(100vw - 32px))}
   .cd-launch .cd-label{display:none}
-  .cd-launch .cd-dot{left:auto;right:9px}
-  .to-top{bottom:calc(152px + env(safe-area-inset-bottom,0px))}
+  .cd-launch .cd-dot{left:auto;right:6px;top:6px}
+  .to-top{bottom:calc(160px + env(safe-area-inset-bottom,0px))}
+  .cd-peeking .to-top{opacity:0;visibility:hidden}
   .cd-panel{inset:auto 0 0 0;width:auto;height:min(88vh,calc(100dvh - 40px));border-radius:20px 20px 0 0;padding-bottom:env(safe-area-inset-bottom,0px);background:var(--paper);transform-origin:bottom center;transform:translateY(40px)}
   .cd-open .to-top{opacity:0;visibility:hidden}
 }
 @media (prefers-reduced-motion: reduce){
-  .cd-launch,.cd-panel,.cd-open .cd-panel,.cd-msg,.cd-card,.cd-chips{transition:none;animation:none}
+  .cd-launch,.cd-panel,.cd-open .cd-panel,.cd-msg,.cd-card,.cd-chips,.cd-peek,.cd-intro-fig,.cd-avatar{transition:none;animation:none}
   .cd-typing i{animation:none;opacity:.6}
 }
